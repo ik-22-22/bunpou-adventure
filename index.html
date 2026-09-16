@@ -480,6 +480,39 @@
 
 
 .question-source{font-weight:700;letter-spacing:.02em}.question-source.exam{color:#fbbf24!important;border-left-color:#fbbf24!important}.question-source.surasura{color:#7dd3fc!important}
+
+/* ===== v800 魔法・弱点・仲間ガチャ拡張 ===== */
+.gacha-summary{background:#0f172a;border:1px solid #7c3aed;border-radius:8px;padding:12px;margin-bottom:10px;display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.gacha-point{font-size:22px;font-weight:900;color:#fbbf24}
+.gacha-result{background:linear-gradient(135deg,#1e293b,#312e81);border:2px solid #fbbf24;border-radius:10px;padding:16px;text-align:center;margin:10px 0 14px;box-shadow:0 0 24px rgba(251,191,36,.18)}
+.companion-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.companion-card{background:#0f172a;border:2px solid #334155;border-radius:8px;padding:8px;text-align:center;min-height:180px}
+.companion-card.owned{border-color:#fbbf24;box-shadow:0 0 12px rgba(251,191,36,.12)}
+.companion-card.locked{opacity:.62}
+.companion-card .companion-name{font-weight:900;margin-top:5px}
+.companion-card .companion-rarity{font-size:11px;margin-top:2px}
+.companion-card .companion-effect{font-size:10px;color:#cbd5e1;line-height:1.45;margin-top:5px}
+.companion-sheet{width:100px;height:100px;margin:0 auto;background-repeat:no-repeat;background-position:center;background-size:400% 500%;image-rendering:auto;border-radius:6px}
+.daily-goals{background:#111827;border:1px solid #334155;border-radius:8px;padding:10px;margin:12px 0;font-size:12px}
+.daily-goal.done{color:#4ade80;text-decoration:line-through}
+.action-panel{background:#0b1220;border:2px solid #7c3aed;border-radius:10px;padding:12px;margin-top:12px}
+.action-explain{background:#111827;border-left:4px solid #4ade80;padding:10px;border-radius:6px;margin-bottom:10px;font-size:13px;line-height:1.55}
+.action-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.action-btn{border:1px solid #475569;background:#172033;color:#f8fafc;padding:11px;border-radius:7px;font-weight:900;cursor:pointer}
+.action-btn:hover{border-color:#67e8f9;transform:translateY(-1px)}
+.action-btn.magic{border-color:#7c3aed}
+.action-btn.finisher{border-color:#fbbf24;background:#3a2a08}
+.spell-list{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-top:8px}
+.spell-btn{border:1px solid #334155;background:#0f172a;color:#f8fafc;padding:9px;border-radius:6px;cursor:pointer;text-align:left}
+.spell-btn:disabled{opacity:.45;cursor:not-allowed}
+.weakness-tag{font-weight:900;color:#fbbf24}
+.locked-enemy{opacity:.6;filter:saturate(.55)}
+@media(max-width:650px){.companion-grid{grid-template-columns:repeat(2,1fr)}.action-grid,.spell-list{grid-template-columns:1fr}}
+
+/* ===== v900 polish ===== */
+#v900-tools{margin:0 0 12px;padding:12px;border:1px solid rgba(251,191,36,.28);border-radius:14px;background:linear-gradient(135deg,rgba(30,41,59,.92),rgba(49,46,129,.25));display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}#v900-tools small{display:block;color:#94a3b8;margin-top:3px}.v900-tool-buttons{display:flex;gap:7px;flex-wrap:wrap}.v900-tool-buttons button{border:1px solid #475569;background:#111827;color:#f8fafc;border-radius:10px;padding:8px 11px;font-weight:800;cursor:pointer}.enemy-badge,.element-tag{display:inline-block;margin-top:3px;padding:3px 6px;border-radius:7px;background:rgba(99,102,241,.16);color:#e0e7ff}.enemy-topic{color:#c4b5fd;font-size:11px;margin-top:3px}.enemy-weak{color:#67e8f9;font-size:11px;margin-top:3px}.attribute-hint{margin:8px 0;padding:9px;border:1px solid rgba(251,191,36,.35);border-radius:10px;background:rgba(120,53,15,.16);line-height:1.55}.companion-battle-skill{margin-top:10px;padding:9px;border-top:1px solid #334155}.companion-battle-skill>div{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}.companion-battle-skill button{border:1px solid #475569;background:#172033;color:#fff;border-radius:8px;padding:6px 8px;cursor:pointer}.companion-battle-skill button:disabled{opacity:.45}.companion-battle-skill small{display:block;color:#94a3b8}.drop-highlight{margin-top:8px;padding:8px;border-radius:9px;background:rgba(124,58,237,.18);color:#c4b5fd;font-weight:800}.weak-row{margin:9px 0}.weak-row>span{float:right;color:#cbd5e1;font-size:12px}.weak-row>div{height:8px;background:#1e293b;border-radius:10px;overflow:hidden;clear:both;margin-top:5px}.weak-row i{display:block;height:100%;background:#38bdf8;border-radius:10px}.achievement{display:flex;gap:10px;align-items:center;padding:9px;border-bottom:1px solid #334155;opacity:.48}.achievement.got{opacity:1}.achievement span{font-size:22px}.achievement small{display:block;color:#94a3b8;margin-top:2px}.training-question{font-size:17px;line-height:1.65;padding:12px;margin:10px 0;background:#111827;border-radius:10px}.training-choice{display:block;width:100%;text-align:left;margin:7px 0;padding:10px;border:1px solid #475569;border-radius:9px;background:#172033;color:#f8fafc;cursor:pointer}.training-source{color:#67e8f9;font-size:12px}.modal-note{color:#94a3b8;font-size:12px}.v900-tools+*{}.v900-close{position:absolute;right:10px;top:7px;border:0;background:transparent;color:#fff;font-size:28px;cursor:pointer}.v900-modal-inner{position:relative;max-width:720px;width:calc(100% - 28px);max-height:82vh;overflow:auto;background:#0f172a;border:1px solid #475569;border-radius:16px;padding:18px;box-shadow:0 20px 70px rgba(0,0,0,.55)}#v900-modal{position:fixed;inset:0;z-index:9999;background:rgba(2,6,23,.78);display:none;align-items:center;justify-content:center;padding:14px}.v900-modal-inner h3{margin-top:0;color:#fbbf24}#v900-toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,30px);opacity:0;z-index:10000;padding:11px 16px;border-radius:12px;background:#111827;border:1px solid #fbbf24;color:#fff;font-weight:900;pointer-events:none;transition:.25s}#v900-toast.show{opacity:1;transform:translate(-50%,0)}#v900-mini{margin-top:8px;padding:8px 10px;border-radius:9px;background:#0f172a;border:1px solid #334155;color:#cbd5e1;font-size:12px}
+/* v1000 */
+.status-strip{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0;font-size:13px}.status-badge{display:inline-flex;align-items:center;gap:4px;padding:5px 8px;border-radius:999px;background:rgba(15,23,42,.88);border:1px solid rgba(148,163,184,.35);font-weight:800}.status-burn{border-color:#fb923c;color:#fed7aa}.status-paralyze{border-color:#facc15;color:#fef08a}.status-freeze{border-color:#67e8f9;color:#cffafe}.v1000-float{position:fixed;left:50%;top:42%;transform:translate(-50%,-50%);font-size:28px;font-weight:1000;z-index:9999;pointer-events:none;animation:v1000Float .75s ease-out forwards;text-shadow:0 3px 12px rgba(0,0,0,.6)}@keyframes v1000Float{0%{opacity:0;transform:translate(-50%,-30%) scale(.7)}20%{opacity:1}100%{opacity:0;transform:translate(-50%,-110%) scale(1.15)}}.v1000-mobile-tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0}.v1000-mobile-tools button{min-height:46px;font-size:14px;font-weight:900;border-radius:12px}.v1000-backup{padding:12px;border:1px solid rgba(148,163,184,.25);border-radius:14px;background:rgba(15,23,42,.65);margin:10px 0}.companion-growth{font-size:12px;margin-top:5px;color:#cbd5e1}.companion-active{outline:2px solid #fbbf24;box-shadow:0 0 16px rgba(251,191,36,.25)}.companion-take{margin-top:7px;width:100%;min-height:38px;border-radius:10px;font-weight:900}#v1000-status-area{margin:6px 0}@media(max-width:700px){body{font-size:15px;overflow-x:hidden}#main-container{width:100%!important;max-width:100%!important;padding:8px!important;box-sizing:border-box}.tab-btn,.action-btn,.spell-btn,.choice-btn,button{min-height:48px}.action-grid{grid-template-columns:1fr!important;gap:9px!important}#choices-container{display:grid;grid-template-columns:1fr!important;gap:9px!important}#choices-container button{width:100%;font-size:16px!important;line-height:1.35;padding:12px 10px!important}.enemy-grid,.companion-grid,.shop-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}.enemy-card,.companion-card{min-width:0!important;padding:8px!important}#question-timer{font-size:26px!important;font-weight:1000}.question-box{font-size:17px!important;line-height:1.7!important}.story-text,.modal-content{max-height:72vh;overflow:auto}.v1000-mobile-tools{grid-template-columns:1fr 1fr}}@media(max-width:390px){.enemy-grid,.companion-grid,.shop-grid{grid-template-columns:1fr!important}.v1000-mobile-tools{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -600,7 +633,7 @@
     <div class="status">
         <div>名前: <span id="display-hero-name">リンク</span></div>
         <div>Lv: <span id="level">1</span></div><div>EXP: <span id="exp">0</span> / <span id="exp-next">100</span></div>
-        <div>HP: <span id="player-hp" class="hp">3</span> / <span id="player-max-hp">3</span></div>
+        <div>HP: <span id="player-hp" class="hp">3</span> / <span id="player-max-hp">3</span></div><div>MP: <span id="player-mp" style="color:#67e8f9">3</span> / <span id="player-max-mp" style="color:#67e8f9">3</span></div>
         <div>ATK: <span id="attack">1</span></div>
         <div>DEF: <span id="defense">0</span></div><div>CRI: <span id="critical-rate">5</span>%</div>
         <div>ポーション: <span id="potions" style="color: #4ade80;">0</span>個</div>
@@ -613,7 +646,7 @@
 
     <div class="skill-board" id="skill-board">
       <div class="skill-head"><b style="color:#38bdf8;">⚡ スキルポイント</b><span class="skill-points">残り <span id="skill-points">0</span> SP</span></div>
-      <div style="font-size:10px;color:#64748b;margin-top:4px;">レベルアップごとに1SP。自分で振ることも、自動振り分けすることもできます。</div>
+      <div style="font-size:10px;color:#64748b;margin-top:4px;">レベルアップごとに3SP。攻撃・防御・HP・クリティカル・魔法を自分で育てられます。</div>
       <div class="skill-grid">
         <div class="skill-row"><b>⚔️ 攻撃力</b><span>1SP = ATK +1</span><button onclick="spendSkillPoint('atk')">＋</button><span id="skill-atk">0</span></div>
         <div class="skill-row"><b>🛡️ 防御力</b><span>1SP = DEF +1</span><button onclick="spendSkillPoint('def')">＋</button><span id="skill-def">0</span></div>
@@ -662,7 +695,7 @@
     <div class="nav-tabs" id="menu-tabs">
         <button class="tab-btn active" onclick="switchTab('adventure')">🗺️ 20体の敵を選ぶ</button>
         <button class="tab-btn" onclick="switchTab('story')">📜 ストーリー</button>
-        <button class="tab-btn" onclick="switchTab('shop')">🔨 鍛冶屋・装備</button><button class="tab-btn" onclick="switchTab('collection')">📖 図鑑・武器帳</button>
+        <button class="tab-btn" onclick="switchTab('shop')">🔨 鍛冶屋・装備</button><button class="tab-btn" onclick="switchTab('collection')">📖 図鑑・武器帳</button><button class="tab-btn" onclick="switchTab('companions')">🎴 仲間ガチャ</button>
     </div>
 
     <div id="adventure-tab" class="box">
@@ -676,7 +709,7 @@
             <div class="quiz-timer-wrap" id="quiz-timer-wrap"><span class="quiz-timer-label">⏱ 残り時間</span><span class="quiz-timer" id="quiz-timer">30</span><span class="quiz-timer-label">秒</span><div class="quiz-timer-bar"><div class="quiz-timer-fill" id="quiz-timer-fill"></div></div></div>
             <div id="question-source" style="font-size:12px;color:#94a3b8;margin:0 0 7px;padding:6px 9px;border-left:3px solid #38bdf8;background:rgba(15,23,42,.55);line-height:1.45;"></div>
             <div id="question-text" style="font-size: 17px; margin-bottom: 15px; line-height: 1.6;"></div>
-            <div id="choices-container"></div>
+            <div id="choices-container"></div><div id="action-panel" style="display:none;"></div>
         </div>
         <div id="message" style="font-weight: bold; text-align: center; height: 30px; font-size: 16px; margin-top:10px;"></div>
     </div>
@@ -695,6 +728,19 @@
 <button class="tab-btn" id="collection-weapon-btn" onclick="switchCollection('weapon')">⚔️ 武器帳</button>
 </div>
 <div id="enemy-collection"></div><div id="weapon-collection" style="display:none"></div>
+</div>
+
+<div id="companions-tab" class="box" style="display:none;">
+  <h3 style="color:#fbbf24;margin-top:0;">🎴 仲間ガチャ</h3>
+  <div id="gacha-summary" class="gacha-summary"></div>
+  <div id="gacha-result" class="gacha-result" style="display:none;"></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">
+    <button class="title-btn primary" style="width:auto;padding:10px 16px;" onclick="drawCompanion()">🎴 1回引く（1ポイント）</button>
+  </div>
+  <p style="font-size:12px;color:#94a3b8;">戦闘に勝つとガチャポイントを1獲得。引いた結果はその場で確定してセーブされ、引き直しはありません。重複した仲間は120Gに変換されます。</p>
+  <div id="daily-goals-box" class="daily-goals"></div>
+  <h4 style="color:#67e8f9;">【 仲間図鑑 】</h4>
+  <div id="companion-list" class="companion-grid"></div>
 </div>
 
 <div id="shop-tab" class="box" style="display:none;">
@@ -851,6 +897,26 @@
         });
     }
 
+    // ===== 属性システム：6属性 =====
+    const ELEMENTS = {
+      "炎": {icon:"🔥", strong:"氷", color:"#fb7185"},
+      "氷": {icon:"❄️", strong:"炎", color:"#7dd3fc"},
+      "雷": {icon:"⚡", strong:"水", color:"#fde047"},
+      "水": {icon:"💧", strong:"炎", color:"#60a5fa"},
+      "光": {icon:"✨", strong:"闇", color:"#fef08a"},
+      "闇": {icon:"🌑", strong:"光", color:"#c4b5fd"},
+      "風": {icon:"🌪️", strong:"土", color:"#86efac"},
+      "土": {icon:"🪨", strong:"雷", color:"#d6d3d1"},
+      "無": {icon:"◯", strong:"", color:"#cbd5e1"}
+    };
+    const enemyElements = ["水","闇","闇","無","闇","炎","炎","水","水","闇","闇","雷","氷","炎","光","闇","闇","炎","炎","無"];
+    const enemyElementWeaknesses = ["雷","炎","光","雷","光","水","水","雷","雷","光","光","水","炎","水","闇","光","光","水","光","光"];
+    enemies.forEach((e,i)=>{
+      e.element = enemyElements[i] || "無";
+      e.elementWeakness = enemyElementWeaknesses[i] || "光";
+      e.elementResistance = ELEMENTS[e.element]?.strong || "";
+    });
+
     // 武器は「G＋素材」で鍛造する。はじまりの枝だけは最初から所持。
     const weaponLore = [{"title":"はじまりの枝","story":"旅立ちの木片","text":"村の修理小屋で使われていたただの棒。だが、最初の一歩を支えた道具は、あとから振り返ると不思議なほど重い。","theme":"強さを持たない者にも、始める理由はある。"},{"title":"帰路の残響","story":"帰路を照らす刃","text":"名もない旅人が、夜道で迷わないよう腰に下げていた剣。柄には小さな傷がいくつも残る。","theme":"帰る場所を忘れないための剣。"},{"title":"守護者の鋼","story":"誰かを守るための鋼","text":"国境の兵士が持っていた剣。敵を倒す回数より、守った人の数を大切にした兵士の記録が残る。","theme":"刃は勝利の数ではなく、守った時間を覚えている。"},{"title":"空白の誓約","story":"誓いの余白","text":"騎士団の誓約式で授けられた剣。刀身には名前を刻む場所が一つだけ空けられていた。","theme":"最後に刻むべき名前は、持ち主自身が決める。"},{"title":"玉座なき王","story":"王のいない玉座","text":"王国が滅びたあとも残った大剣。王を守るためではなく、民が明日を選ぶために振るわれたという。","theme":"命令を失った剣は、初めて自分の意思を持った。"},{"title":"忘却の鉄","story":"忘却の刃","text":"錆びているのに折れない古剣。誰かが何度も研ぎ直した痕跡だけが残っている。","theme":"忘れられた者ほど、最後まで残ることがある。"},{"title":"風葬の刃","story":"風の記憶","text":"風を読む剣士が使った細身の剣。剣士は敵の動きではなく、戦いを避ける道を探していた。","theme":"最も速い一撃は、振るわずに済んだ一撃かもしれない。"},{"title":"紅蓮の残火","story":"燃え残った願い","text":"炎を宿す魔剣。かつての持ち主は、怒りを力に変え続け、最後には怒りだけが残った。","theme":"力は願いを叶えるが、願いの形まで変えてしまう。"},{"title":"凍結した祈り","story":"凍った約束","text":"決闘の前に交わした約束を忘れないため作られた細剣。刃は冷たいのに、柄だけは温かい。","theme":"忘れないことと、縛られることは似ている。"},{"title":"轟雷の記録","story":"空を叩く音","text":"雷を鍛造炉へ呼び込んで作られた槌。使い手は強さを証明するため、何度も同じ岩を叩き続けた。","theme":"証明を続けるほど、証明したい理由は遠ざかる。"},{"title":"森のささやき","story":"小さな声","text":"森の精霊が一人の盗賊に渡した短剣。盗賊は初めて、奪うためではなく返すために刃を使った。","theme":"小さな選択が、長い物語を変える。"},{"title":"白き守護者","story":"守護者の残響","text":"聖騎士が最後の戦いで振るった大剣。勝利した記録はないが、逃げ延びた村人の記録が残っている。","theme":"勝敗に記録されない勝利がある。"},{"title":"黒い願望","story":"黒い願い","text":"持ち主の欲望を映す魔刀。強くなるほど刃は鋭くなるが、持ち主の影も濃くなる。","theme":"欲望は力になる。しかし力になった欲望は、手放しにくい。"},{"title":"旧世界の光","story":"失われた文明の光","text":"古代都市で見つかった剣。光を放つ仕組みは解明されていないが、柄には『未来へ』という古い印がある。","theme":"未来を照らす光は、過去を消すためのものではない。"},{"title":"竜と人の境界","story":"竜と人の境界","text":"竜と人間が共に暮らした時代の遺物。二つの種族の争いを終わらせるため作られた。","theme":"異なる者を切り分けるのではなく、共に生きるための刃。"},{"title":"降下命令","story":"天から落ちた命令","text":"天界から授けられたとされる神剣。しかし最初の持ち主は、その命令に疑問を抱いて地上へ降りた。","theme":"正しい命令でも、正しいとは限らない。"},{"title":"星を待つ者","story":"星を待つ剣","text":"夜空を見上げ続けた剣士の細剣。剣士は勝利ではなく、いつか帰ってくる星を待っていた。","theme":"待つことにも、戦うことと同じくらい勇気がいる。"},{"title":"銀河の断章","story":"終わりを選ぶ刃","text":"世界を滅ぼせるほどの力を持つ剣。だが最後の所有者は、一度も振るわずに封印した。","theme":"使える力と、使うべき力は同じではない。"},{"title":"継承者の刃","story":"継承される意志","text":"何人もの勇者を渡り歩いた剣。持ち主が変わるたび、刀身には新しい傷が増えていった。","theme":"剣が受け継ぐのは技術ではなく、選択の記憶。"},{"title":"終焉の光の聖剣","story":"最後に残るもの","text":"すべての素材と記録が集まって完成する究極の剣。伝説には『世界を終わらせる剣』とあるが、真の力は持ち主の選択に反応する。","theme":"終わりを決めるのは剣ではない。最後に握る人間だ。"}];
 
@@ -994,6 +1060,84 @@
     // 直近に出した問題を記録し、同じ問題の連続出題を防ぐ
     let recentQuestionKeys = [];
     const RECENT_QUESTION_MEMORY = 80;
+
+    // ===== v800 拡張データ =====
+    let currentQuestionObject = null;
+    let learnedSpells = ["ファイア"];
+    let maxMp = 3;
+    let currentMp = 3;
+    let gachaPoints = 0;
+    let companions = [];
+    let gachaHistory = [];
+    let battleCombo = 0;
+    let wrongQuestionKeys = [];
+    let topicStats = {};
+    let dailyGoals = {date:"", correct:0, battles:0, categories:[], claimed:false, dirty:true};
+
+    const spellMaster = [
+      {name:"ファイア",icon:"🔥",element:"炎",power:1.45,cost:1,sp:3,desc:"炎の初級魔法。"},
+      {name:"ブリザド",icon:"❄️",element:"氷",power:1.55,cost:1,sp:3,desc:"氷の初級魔法。"},
+      {name:"サンダー",icon:"⚡",element:"雷",power:1.65,cost:2,sp:4,desc:"雷を落とす魔法。"},
+      {name:"ウォータ",icon:"💧",element:"水",power:1.75,cost:2,sp:4,desc:"水流をぶつける魔法。"},
+      {name:"ファイラ",icon:"🔥",element:"炎",power:2.05,cost:3,sp:6,desc:"炎を強くした中級魔法。"},
+      {name:"ブリザラ",icon:"❄️",element:"氷",power:2.15,cost:3,sp:6,desc:"氷を強くした中級魔法。"},
+      {name:"サンダラ",icon:"⚡",element:"雷",power:2.25,cost:4,sp:7,desc:"雷撃を強化した中級魔法。"},
+      {name:"ファイガ",icon:"🔥",element:"炎",power:2.75,cost:5,sp:10,desc:"灼熱の上級魔法。"},
+      {name:"サンダガ",icon:"⚡",element:"雷",power:3.0,cost:6,sp:12,desc:"強烈な雷を落とす上級魔法。"}
+    ];
+
+    // 属性魔法を拡張（既存のファイア系はそのまま活用）
+    spellMaster.push(
+      {name:"ウォタラ",icon:"💧",element:"水",power:1.95,cost:3,sp:6,desc:"水流を強化した中級魔法。"},
+      {name:"ホーリー",icon:"✨",element:"光",power:2.10,cost:4,sp:7,desc:"光の力で闇を打ち払う。"},
+      {name:"ダーク",icon:"🌑",element:"闇",power:2.10,cost:4,sp:7,desc:"闇の力で敵を包み込む。"},
+      {name:"ウォタガ",icon:"💧",element:"水",power:2.85,cost:6,sp:11,desc:"激しい水流を解き放つ上級魔法。"},
+      {name:"ホーリガ",icon:"✨",element:"光",power:2.85,cost:6,sp:11,desc:"聖なる光の上級魔法。"},
+      {name:"ダークガ",icon:"🌑",element:"闇",power:2.85,cost:6,sp:11,desc:"深い闇を解き放つ上級魔法。"}
+    );
+
+    // 添付画像の20枠を、そのまま仲間の見た目として使用。
+    const companionMaster = [
+      ["レッドビースト","SSR","ATK +2","atk"],["森の獣王","SR","EXP +8%","exp"],["鋼翼ホーク","SR","DEF +2","def"],["ぷるりん","R","最大HP +2","hp"],
+      ["青花魔獣","R","魔法ダメージ +4%","magic"],["翠騎士","SR","物理ダメージ +5%","physical"],["王冠ぷるりん","SSR","ガチャ重複G +80","gcoin"],["火の精","R","炎魔法 +8%","fire"],
+      ["氷花獣","SR","氷魔法 +8%","ice"],["炎槍兵","R","CRI +2%","crit"],["紫苑魔女","SSR","魔法ダメージ +10%","magic"],["白狼","SR","反撃ダメージ -5%","counter"],
+      ["包帯戦士","R","HP回復量 +3","heal"],["甲冑兵","R","DEF +3","def"],["黄角獣","SSR","物理ダメージ +10%","physical"],["蒼騎士","SR","CRI +3%","crit"],
+      ["翠竜","SSR","最大MP +2","mp"],["黄金蛇","SR","EXP +12%","exp"],["赤翼鳥","R","炎魔法 +10%","fire"],["白翼鳥","SSR","魔法ダメージ +12%","magic"]
+    ].map((x,i)=>({id:i,name:x[0],rarity:x[1],effect:x[2],type:x[3],sheetIndex:i,owned:false}));
+
+    const COMPANION_SHEET_DATA="data:image/webp;base64,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";
+    const companionRates = {SSR:0.08,SR:0.22,R:0.70};
+    const enemyWeaknessTypes = Array.from({length:20},(_,i)=>i%2===0?"magic":"physical");
+    const enemyTopics = [
+      "言葉の単位・文節・単語","文の成分・主述","修飾語・文節の関係","接続語・独立語","並立・補助の関係",
+      "名詞・代名詞・品詞","副詞・連体詞・接続詞・感動詞","動詞の活用","形容詞・形容動詞","用言・活用総合",
+      "助詞（格助詞）","助詞（接続助詞）","助詞（副助詞）","助詞（終助詞）","助詞総合・文法総合",
+      "助動詞・受け身・可能","助動詞総合","敬語・文語","文法総合・入試基礎","高校入試総合"
+    ];
+    const enemySpecials = ["ぷるぷるガード","森影ショット","ナイトソニック","ミミックトラップ","スカルブレイク","花粉ラッシュ","紅蓮詠唱","苔岩プレス","蒼竜斬","オーガクラッシュ","影縫い","古代コア波動","氷牙ブリザード","煉獄フレア","聖翼ジャッジ","幽影ミラー","冥界サイレンス","炎竜ブレイズ","深紅の終焉","鏡像・反転"];
+    // 敵データ生成後に定義される拡張設定を、ここで安全に関連付ける。
+    enemies.forEach((e,i)=>{ e.weaknessType=enemyWeaknessTypes[i]; e.topic=enemyTopics[i]; e.special=enemySpecials[i]; });
+
+    function ensureDailyGoals(){
+      const d=new Date(); const key=`${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+      if(dailyGoals.date!==key){ dailyGoals={date:key,correct:0,battles:0,categories:[],claimed:false,dirty:true}; }
+    }
+    function enemyUnlocked(id){ return id===0 || !!defeatedEnemies[id-1]; }
+    function enemyWeaknessText(e){ return e.weaknessType==="magic"?"✨ 魔法に弱い":"⚔️ 物理に弱い"; }
+    function getMaxMp(){ return 3 + Math.floor((level-1)/5) + (companions.find(c=>c.owned&&c.type==="mp")?2:0); }
+    function getMagicBonus(spell){
+      let b=1;
+      if(companions.find(c=>c.owned&&c.type==="magic")) b+=0.10;
+      if(spell.element==="炎" && companions.find(c=>c.owned&&c.type==="fire")) b+=0.10;
+      if(spell.element==="氷" && companions.find(c=>c.owned&&c.type==="ice")) b+=0.08;
+      return b;
+    }
+    function getPhysicalBonus(){ return companions.find(c=>c.owned&&c.type==="physical")?1.10:1; }
+    function getCompanionExpBonus(){ return companions.filter(c=>c.owned&&c.type==="exp").reduce((s,c)=>s+(c.name==="黄金蛇"?0.12:0.08),0); }
+    function getCompanionCritBonus(){ return companions.filter(c=>c.owned&&c.type==="crit").reduce((s,c)=>s+(c.name==="蒼騎士"?0.03:0.02),0)*100; }
+    function companionEffectText(c){ return c.effect; }
+    function rarityLabel(r){ return r==="SSR"?"🌟 SSR":r==="SR"?"💎 SR":"🔹 R"; }
+
     let defeatedEnemies = {};
     let totalCorrect = 0;
     let totalAnswered = 0;
@@ -1275,7 +1419,7 @@
     }
 
         function hasSavedGame(){
-        return !!localStorage.getItem('bunpou_save_v600');
+        return !!localStorage.getItem('bunpou_save_v801');
     }
     function hideTitleScreen(){
         const el=document.getElementById('title-screen');
@@ -1283,7 +1427,7 @@
     }
     function startNewGame(){
         if(hasSavedGame() && !confirm('現在のセーブデータを消して、最初から始めますか？')) return;
-        localStorage.removeItem('bunpou_save_v600');
+        localStorage.removeItem('bunpou_save_v801');
         // ページ再読み込みに頼らず、その場でゲーム状態を初期化する。
         heroName='リンク'; level=1; experience=0; skillPoints=0;
         skillStats={atk:0,def:0,hp:0,crit:0}; pendingRewardData=null; pendingLevelUps=0;
@@ -1294,6 +1438,9 @@
         worldDay=1; worldTimeIndex=0; worldWeatherIndex=0;
         defeatedEnemies={}; totalCorrect=0; totalAnswered=0;
         recentQuestionKeys=[]; storyChapter=0; seenStoryChapters={}; prologueSeen=false;
+        learnedSpells=["ファイア"]; skillPoints=0; maxMp=3; currentMp=3; gachaPoints=0;
+        companions=companionMaster.map(c=>({...c,owned:false})); gachaHistory=[]; battleCombo=0; wrongQuestionKeys=[]; topicStats={};
+        dailyGoals={date:"",correct:0,battles:0,categories:[],claimed:false,dirty:true}; ensureDailyGoals();
         weapons.forEach((w,i)=>{w.owned=i===0; w.storyUnlocked=i===0;});
         armors.forEach((a,i)=>a.owned=i===0);
         enemies.forEach(e=>e.defeated=false);
@@ -1315,7 +1462,7 @@
     }
 
 function loadGameData() {
-        let saved = localStorage.getItem('bunpou_save_v600');
+        let saved = localStorage.getItem('bunpou_save_v801');
         if (saved) {
             try {
                 let data = JSON.parse(saved);
@@ -1350,6 +1497,214 @@ function loadGameData() {
                 worldDay = Math.max(1, Number(data.worldDay) || 1);
                 worldTimeIndex = Math.max(0, Math.min(worldTimes.length-1, Number(data.worldTimeIndex) || 0));
                 worldWeatherIndex = Math.max(0, Math.min(worldWeathers.length-1, Number(data.worldWeatherIndex) || 0));
+                learnedSpells = Array.isArray(data.learnedSpells)&&data.learnedSpells.length ? data.learnedSpells : ["ファイア"];
+                maxMp = Math.max(3, Number(data.maxMp)||3); currentMp = Math.max(0, Number(data.currentMp ?? maxMp) || maxMp);
+                gachaPoints = Math.max(0, Number(data.gachaPoints)||0);
+                // ================================================================
+    // v900 ブラッシュアップ：属性・攻略感・解説・修行・実績・仲間スキル
+    // ================================================================
+    let achievements = {};
+    let trainingIndex = 0;
+    let trainingPool = [];
+    let companionSkillUsed = false;
+
+    const achievementMaster = [
+      ["first_battle","はじめの一歩","初めて戦闘に勝利する","⚔️"],
+      ["combo5","コンボ職人","5コンボ以上を達成する","🔥"],
+      ["perfect10","文法の達人","10問連続正解する","🧠"],
+      ["first_magic","魔法使い","初めて魔法を習得する","✨"],
+      ["all_magic","魔法コンプリート","全魔法を習得する","🌈"],
+      ["companion3","仲間が増えた","仲間を3体集める","🎴"],
+      ["companion10","仲間コレクター","仲間を10体集める","🏆"],
+      ["enemy10","十体討伐","10体の敵を倒す","👾"],
+      ["all_enemy","全敵討伐","20体すべてを倒す","👑"],
+      ["training","復習の達人","修行モードで10問正解する","📚"],
+      ["category3","文法探究者","3種類以上の文法分野で正解する","🔎"],
+      ["no_mistake","ノーミス","1回の戦闘で5問連続正解する","🌟"]
+    ];
+    function unlockAchievement(id){
+      if(!achievements[id]){
+        achievements[id]=Date.now();
+        const a=achievementMaster.find(x=>x[0]===id);
+        if(a) showToast(`${a[3]} 実績解除！「${a[1]}」`);
+        saveGameData();
+      }
+    }
+    function showToast(text){
+      let el=document.getElementById('v900-toast');
+      if(!el){el=document.createElement('div');el.id='v900-toast';document.body.appendChild(el);}
+      el.textContent=text; el.classList.add('show');
+      clearTimeout(showToast.t); showToast.t=setTimeout(()=>el.classList.remove('show'),2600);
+    }
+    function attributeText(e){
+      const d=ELEMENTS[e.element]||ELEMENTS["無"];
+      return `${d.icon} ${e.element}属性　｜　弱点 ${ELEMENTS[e.elementWeakness]?.icon||"✨"} ${e.elementWeakness}`;
+    }
+    function attributeMultiplier(spell,e){
+      if(!spell||!e)return 1;
+      if(spell.element===e.elementWeakness)return 1.65;
+      if(spell.element===e.elementResistance)return 0.55;
+      return 1;
+    }
+    function getMagicBonus(spell){
+      let b=1;
+      if(companions.find(c=>c.owned&&c.type==="magic")) b+=0.10;
+      if(spell.element==="炎" && companions.find(c=>c.owned&&c.type==="fire")) b+=0.10;
+      if(spell.element==="氷" && companions.find(c=>c.owned&&c.type==="ice")) b+=0.08;
+      return b;
+    }
+    function explainQuestion(q){
+      const cat=questionCategory(q), ans=(q&&q.choices&&q.choices[q.answer])||'';
+      const maps={
+        "活用":"活用形は、直後に続く語や文末の形に注目。未然・連用・終止・連体・仮定・命令のどれかを確認します。",
+        "品詞":"品詞は『自立して使えるか』『何を修飾するか』『活用するか』を手がかりに判定します。",
+        "助動詞":"助動詞は付属語。前にある語とのつながりと、受け身・可能・使役・推量などの意味を確認します。",
+        "敬語":"誰が誰に対してする動作かを考えると、尊敬語・謙譲語・丁寧語を判断しやすくなります。",
+        "助詞":"助詞は付属語。『が・を・に・へ』など、付く語との関係や文中の働きで種類を決めます。",
+        "文節・単語":"文節は意味のまとまり、単語はそれ以上分けにくい最小の言葉の単位です。",
+        "文の成分":"主語・述語・修飾語・接続語・独立語など、文中でどんな役割をしているかを確認します。"
+      };
+      return `<b>解説：</b>${maps[cat]||"選択肢を文法上の働きから比べましょう。"}${ans?`<br><span class="answer-hint">答え：${ans}</span>`:''}`;
+    }
+    function companionSkillFor(c){
+      const map={atk:["猛攻","次の物理攻撃ダメージ +35%"],exp:["学習応援","この戦闘の獲得EXP +30%"],def:["鉄壁","次の反撃ダメージを半減"],hp:["いやし","HPを20回復"],magic:["魔導支援","次の魔法ダメージ +35%"],physical:["闘志","次の物理攻撃ダメージ +25%"],gcoin:["幸運","今回の報酬G +100"],fire:["炎熱強化","次の炎魔法 +40%"],ice:["氷結強化","次の氷魔法 +40%"],crit:["集中","次の攻撃のCRI率 +20%"],counter:["守護反撃","次の反撃を半減"],heal:["回復術","HPを15回復"],mp:["魔力補給","MPを3回復"]};
+      return map[c.type]||["応援","次の攻撃ダメージ +15%"];
+    }
+    function useCompanionSkill(id){
+      if(companionSkillUsed)return;
+      const c=companions.find(x=>x.id===id&&x.owned); if(!c)return;
+      const [name,desc]=companionSkillFor(c); companionSkillUsed=true;
+      if(c.type==='hp'||c.type==='heal'){currentPlayerHp=Math.min(getMaxHp(),currentPlayerHp+(c.type==='hp'?20:15));}
+      else if(c.type==='mp'){currentMp=Math.min(getMaxMp(),currentMp+3);}
+      else {window.v900AttackBoost=(c.type==='atk'||c.type==='physical')?1.25:(c.type==='magic'||c.type==='fire'||c.type==='ice')?1.35:1.15; window.v900CritBoost=c.type==='crit'?20:0;}
+      showToast(`🎴 ${c.name}「${name}」：${desc}`); updateUI(); saveGameData();
+    }
+    function ensureV900Panel(){
+      if(document.getElementById('v900-tools'))return;
+      const target=document.getElementById('adventure-tab'); if(!target)return;
+      const box=document.createElement('div'); box.id='v900-tools'; box.className='v900-tools';
+      box.innerHTML=`<div><b>📊 学習・やり込み</b><small>間違いを復習して、実績を集めよう。</small></div><div class="v900-tool-buttons"><button onclick="openTrainingMode()">🏋️ 文法修行</button><button onclick="openWeaknessBoard()">📊 苦手分析</button><button onclick="openAchievementBoard()">🏆 実績</button></div>`;
+      target.insertBefore(box,target.firstChild);
+    }
+    function openModal(title,body){
+      let m=document.getElementById('v900-modal');
+      if(!m){m=document.createElement('div');m.id='v900-modal';m.innerHTML='<div class="v900-modal-inner"><button class="v900-close" onclick="closeV900Modal()">×</button><h3 id="v900-modal-title"></h3><div id="v900-modal-body"></div></div>';document.body.appendChild(m);}
+      document.getElementById('v900-modal-title').innerHTML=title; document.getElementById('v900-modal-body').innerHTML=body; m.style.display='flex';
+    }
+    function closeV900Modal(){const m=document.getElementById('v900-modal');if(m)m.style.display='none';}
+    function openWeaknessBoard(){
+      const entries=Object.entries(topicStats).map(([k,v])=>({k,...v,p:v.total?Math.round(v.correct/v.total*100):0})).sort((a,b)=>a.p-b.p);
+      const body=entries.length?entries.map(x=>`<div class="weak-row"><b>${x.k}</b><span>${x.correct}/${x.total}（${x.p}%）</span><div><i style="width:${x.p}%"></i></div></div>`).join(''):'<p>まだ問題を解いていません。戦闘を始めよう！</p>';
+      openModal('📊 苦手分野分析',`<p class="modal-note">正答率が低い分野ほど上に表示。</p>${body}`);
+    }
+    function openAchievementBoard(){
+      const got=achievementMaster.filter(a=>achievements[a[0]]).length;
+      openModal(`🏆 実績 ${got}/${achievementMaster.length}`,achievementMaster.map(a=>`<div class="achievement ${achievements[a[0]]?'got':''}"><span>${achievements[a[0]]?a[3]:'🔒'}</span><div><b>${a[1]}</b><small>${a[2]}</small></div></div>`).join(''));
+    }
+    function openTrainingMode(){
+      trainingPool=[...questionPool,...cleanEntranceExamQuestions].filter(q=>wrongQuestionKeys.includes(questionKey(q)));
+      if(!trainingPool.length){openModal('🏋️ 文法修行','<p>今は間違えた問題がありません！<br>まずは通常の冒険で問題を解いてみよう。</p>');return;}
+      trainingIndex=0; renderTrainingQuestion();
+    }
+    function renderTrainingQuestion(){
+      const q=trainingPool[trainingIndex%trainingPool.length]; const choices=q.choices.map((c,i)=>`<button class="training-choice" onclick="answerTraining(${i})">${i+1}. ${c}</button>`).join('');
+      openModal(`🏋️ 文法修行 <small>${trainingIndex+1}/${trainingPool.length}</small>`,`<div class="training-source">${q.sourceLabel||'復習問題'}</div><div class="training-question">${q.q.replace(/\n/g,'<br>')}</div><div>${choices}</div>`);
+    }
+    function answerTraining(i){
+      const q=trainingPool[trainingIndex%trainingPool.length]; if(i===q.answer){unlockAchievement('training'); trainingIndex++; totalCorrect++; recordQuestionStat(q,true); showToast('✅ 正解！ 苦手を1つ克服！'); if(trainingIndex>=trainingPool.length){closeV900Modal();showToast('🏋️ 修行完了！');}else renderTrainingQuestion();}else{recordQuestionStat(q,false);showToast('❌ もう一度考えてみよう');}}
+
+    const _v900RenderEnemies=renderEnemies;
+    renderEnemies=function(){
+      const box=document.getElementById('enemy-list-container'); if(!box)return;
+      box.innerHTML=enemies.map(e=>{const unlocked=enemyUnlocked(e.id),d=ELEMENTS[e.element]||ELEMENTS['無'];return `<div class="enemy-card ${unlocked?'':'locked-enemy'}" onclick="startBattle(${e.id})"><div class="sprite-sheet enemy-sprite sprite-${e.spriteIndex}"></div><div class="enemy-info"><b>${e.name}</b><div class="enemy-badge">${e.isBoss?'👑 BOSS':'⚔️ MONSTER'}　${d.icon} ${e.element}</div><div class="enemy-topic">📚 ${e.topic}</div><div class="enemy-weak">${enemyWeaknessText(e)}　｜　${ELEMENTS[e.elementWeakness]?.icon||'✨'} 属性弱点：${e.elementWeakness}</div><div>HP ${e.maxHp}　｜　特殊技：${e.special}</div><small>${unlocked?'▶ 挑戦可能':'🔒 前の敵を倒すと解放'}</small></div></div>`}).join('');
+    };
+    const _v900StartBattle=startBattle;
+    startBattle=function(enemyId){
+      companionSkillUsed=false; window.v900AttackBoost=1; window.v900CritBoost=0;
+      _v900StartBattle(enemyId);
+      const e=currentEnemy; if(!e)return;
+      const d=ELEMENTS[e.element]||ELEMENTS['無'];
+      const tag=document.getElementById('enemy-drop-tag'); if(tag)tag.innerHTML=`ドロップ: ${e.dropMaterials.join('・')}　｜　<span class="weakness-tag">${enemyWeaknessText(e)}</span><br><span class="element-tag">${d.icon} ${e.element}属性　｜　属性弱点：${ELEMENTS[e.elementWeakness]?.icon||'✨'} ${e.elementWeakness}${e.elementResistance?`　｜　耐性：${e.elementResistance}`:''}</span><br><span class="battle-topic">📚 ${e.topic}　｜　特殊技：${e.special}</span>`;
+      ensureCompanionSkillBattleUI();
+    };
+    function ensureCompanionSkillBattleUI(){
+      const panel=document.getElementById('action-panel'); if(!panel)return;
+      if(document.getElementById('companion-battle-skill'))return;
+      const wrap=document.createElement('div');wrap.id='companion-battle-skill';wrap.className='companion-battle-skill';
+      const owned=companions.filter(c=>c.owned).slice(0,6);
+      wrap.innerHTML=owned.length?`<b>🎴 仲間スキル（戦闘中1回）</b><div>${owned.map(c=>{const z=companionSkillFor(c);return `<button onclick="useCompanionSkill(${c.id})" ${companionSkillUsed?'disabled':''}>${c.name}<small>${z[0]}</small></button>`}).join('')}</div>`:'<small>仲間を集めると戦闘スキルを使える！</small>';
+      panel.appendChild(wrap);
+    }
+    const _v900ShowActionPanel=showActionPanel;
+    showActionPanel=function(){
+      _v900ShowActionPanel();
+      const p=document.getElementById('action-panel'); if(!p)return;
+      const e=currentEnemy,d=ELEMENTS[e.element]||ELEMENTS['無'];
+      const info=document.createElement('div');info.className='attribute-hint';
+      info.innerHTML=`${d.icon} <b>${e.element}属性</b>　属性弱点：<b>${ELEMENTS[e.elementWeakness]?.icon||'✨'} ${e.elementWeakness}</b>　｜　耐性：${e.elementResistance||'なし'}<br><small>属性弱点を突くと大ダメージ！ 耐性属性はダメージが減る。</small>`;
+      p.insertBefore(info,p.firstChild); ensureCompanionSkillBattleUI();
+    };
+    const _v900PerformPhysicalAttack=performPhysicalAttack;
+    performPhysicalAttack=function(){
+      window.v900PendingBoost=window.v900AttackBoost||1; _v900PerformPhysicalAttack(); window.v900PendingBoost=1;
+    };
+    const _v900PerformSpell=performSpell;
+    performSpell=function(name){
+      const s=spellMaster.find(x=>x.name===name); window.v900PendingBoost=(window.v900AttackBoost||1); window.v900ElementBoost=(s&&s.element)?attributeMultiplier(s,currentEnemy):1; _v900PerformSpell(name); window.v900PendingBoost=1; window.v900ElementBoost=1;
+    };
+    // 既存の攻撃計算へ倍率を安全に追加するため、最終ダメージ適用時に補正する。
+    const _v900ApplyPlayerDamage=applyPlayerDamage;
+    applyPlayerDamage=function(damage,label){
+      const boost=window.v900PendingBoost||1, attr=window.v900ElementBoost||1;
+      const finalDamage=damage*boost*attr;
+      let finalLabel=label;
+      if(attr>=1.6)finalLabel=`${label}　${ELEMENTS[currentEnemy.elementWeakness]?.icon||'✨'} 弱点属性！`;
+      else if(attr<=0.6)finalLabel=`${label}　🛡️ 属性耐性！`;
+      _v900ApplyPlayerDamage(finalDamage,finalLabel);
+    };
+    const _v900CheckAnswer=checkAnswer;
+    checkAnswer=function(selected,correct){
+      const before=totalCorrect; _v900CheckAnswer(selected,correct);
+      if(totalCorrect>before){
+        if(battleCombo>=5)unlockAchievement('combo5');
+        if(battleCombo>=5)unlockAchievement('no_mistake');
+        if(topicStats && Object.keys(topicStats).length>=3)unlockAchievement('category3');
+        if(totalCorrect>=10)unlockAchievement('perfect10');
+      }
+    };
+    const _v900LearnSpell=learnSpell;
+    learnSpell=function(name){const before=learnedSpells.length;_v900LearnSpell(name);if(learnedSpells.length>before){unlockAchievement('first_magic');if(learnedSpells.length===spellMaster.length)unlockAchievement('all_magic');}};
+    const _v900ShowRewardNotification=showRewardNotification;
+    showRewardNotification=function(reward,materialLine,xpGain,enemyName){
+      if(Object.values(defeatedEnemies).filter(Boolean).length>=1)unlockAchievement('first_battle');
+      if(Object.values(defeatedEnemies).filter(Boolean).length>=10)unlockAchievement('enemy10');
+      if(Object.values(defeatedEnemies).filter(Boolean).length>=20)unlockAchievement('all_enemy');
+      const owned=companions.filter(c=>c.owned).length;
+      if(owned>=3)unlockAchievement('companion3'); if(owned>=10)unlockAchievement('companion10');
+      _v900ShowRewardNotification(reward,materialLine,xpGain,enemyName);
+      setTimeout(()=>{const t=document.getElementById('reward-modal-text');if(t)t.innerHTML+=`<div class="drop-highlight">🎴 ガチャポイント +1　｜　属性を見極めて次の敵へ！</div>`;},30);
+    };
+    const _v900UpdateUI=updateUI;
+    updateUI=function(){_v900UpdateUI();ensureV900Panel();renderAchievementsMini();};
+    function renderAchievementsMini(){
+      const d=document.getElementById('dashboard'); if(!d)return;
+      let b=document.getElementById('v900-mini'); if(!b){b=document.createElement('div');b.id='v900-mini';d.appendChild(b);}
+      const got=achievementMaster.filter(a=>achievements[a[0]]).length;b.innerHTML=`🏆 実績 ${got}/${achievementMaster.length}　｜　📚 復習 ${wrongQuestionKeys.length}問　｜　🎴 仲間 ${companions.filter(c=>c.owned).length}/${companions.length}`;
+    }
+    // セーブ互換：新しいデータを追加するが、既存の問題・敵・仲間は絶対に捨てない。
+    const _v900SaveGameData=saveGameData;
+    saveGameData=function(){_v900SaveGameData();try{localStorage.setItem('bunpou_v900_extra',JSON.stringify({achievements,wrongQuestionKeys,topicStats}));}catch(e){}}
+    try{const ex=JSON.parse(localStorage.getItem('bunpou_v900_extra')||'null');if(ex){achievements=ex.achievements||{};wrongQuestionKeys=ex.wrongQuestionKeys||wrongQuestionKeys;topicStats=ex.topicStats||topicStats;}}catch(e){}
+
+    companions = companionMaster.map(c=>({...c,owned:false}));
+                if(Array.isArray(data.companions)) data.companions.forEach((c,i)=>{ if(companions[i]) companions[i].owned=!!c.owned; });
+                gachaHistory = Array.isArray(data.gachaHistory)?data.gachaHistory:[];
+                battleCombo = 0;
+                wrongQuestionKeys = Array.isArray(data.wrongQuestionKeys)?data.wrongQuestionKeys.slice(-120):[];
+                topicStats = data.topicStats||{};
+                dailyGoals = data.dailyGoals||{date:"",correct:0,battles:0,categories:[],claimed:false,dirty:true}; ensureDailyGoals();
+                // 新しい仕様ではレベルアップごとに3SP。旧セーブからの移行分を補正。
+                if(data.expansionVersion!==800){ skillPoints += Math.max(0,(level-1)*2); }
                 calculateWorldModifiers();
                 enemies.forEach(e => e.defeated = !!defeatedEnemies[e.id]);
             } catch(e) {}
@@ -1373,9 +1728,13 @@ function loadGameData() {
             recentQuestionKeys: recentQuestionKeys.slice(-RECENT_QUESTION_MEMORY),
             worldDay: worldDay,
             worldTimeIndex: worldTimeIndex,
-            worldWeatherIndex: worldWeatherIndex
+            worldWeatherIndex: worldWeatherIndex,
+            expansionVersion:800,
+            learnedSpells:learnedSpells, maxMp:maxMp, currentMp:currentMp,
+            gachaPoints:gachaPoints, companions:companions.map(c=>({id:c.id,owned:!!c.owned})), gachaHistory:gachaHistory.slice(-50),
+            wrongQuestionKeys:wrongQuestionKeys.slice(-120), topicStats:topicStats, dailyGoals:dailyGoals
         };
-        localStorage.setItem('bunpou_save_v600', JSON.stringify(data));
+        localStorage.setItem('bunpou_save_v801', JSON.stringify(data));
     }
 
     function activateCheatCode() {
@@ -1392,6 +1751,7 @@ function loadGameData() {
         experience = 0;
         skillPoints = 98;
         skillStats = {atk:0, def:0, hp:0, crit:0};
+        unlockAllExpansion();
         maxPlayerHp = getMaxHp();
         currentPlayerHp = maxPlayerHp;
         currentWeaponIndex = weapons.length - 1;
@@ -1412,7 +1772,7 @@ function loadGameData() {
 
     function resetSaveData() {
         if (confirm("⚠️ セーブデータをリセットしますか？")) {
-            localStorage.removeItem('bunpou_save_v600');
+            localStorage.removeItem('bunpou_save_v801');
             location.reload();
         }
     }
@@ -1426,7 +1786,7 @@ function loadGameData() {
             experience -= getExpToNextLevel();
             level++;
             gainedLevels++;
-            skillPoints++;
+            skillPoints += 3;
             maxPlayerHp = getMaxHp();
             currentPlayerHp = maxPlayerHp;
             if(autoSkillMode) autoAllocateSkillPoints();
@@ -1471,7 +1831,7 @@ function loadGameData() {
         document.getElementById('modal-text').innerHTML =
           `<div class="notice-icon">✨</div><div class="notice-title">LEVEL UP!</div>`+
           `<div class="notice-body">勇者のレベルが <b style="color:#fbbf24">Lv.${level}</b> になった！<br>`+
-          `💖 HP全回復！　⚡ スキルポイント +1！<br>`+
+          `💖 HP全回復！　⚡ スキルポイント +3！<br>`+
           `<div class="notice-xp">現在の経験値 <b>${experience} EXP</b> / ${getExpToNextLevel()} EXP</div></div>`;
         document.getElementById('level-up-modal').style.display='flex';
     }
@@ -1494,9 +1854,9 @@ function loadGameData() {
         return Math.max(1, Math.floor(base * (currentWorldModifiers.playerAtk || 1)));
     }
 
-    function getDefensePower() { return armors[currentArmorIndex].defense + skillStats.def; }
-    function getCriticalRate() { return Math.min(50, criticalRate + Math.floor(level / 5) + skillStats.crit + (currentWorldModifiers.critBonus || 0)); }
-    function getMaxHp() { return 3 + (level - 1) * 2 + skillStats.hp * 5; }
+    function getDefensePower() { return armors[currentArmorIndex].defense + skillStats.def + (companions.find(c=>c.owned&&c.type==="def")?3:0); }
+    function getCriticalRate() { return Math.min(50, criticalRate + Math.floor(level / 5) + skillStats.crit + (currentWorldModifiers.critBonus || 0) + getCompanionCritBonus()); }
+    function getMaxHp() { return 3 + (level - 1) * 2 + skillStats.hp * 5 + (companions.find(c=>c.owned&&c.type==="hp")?2:0); }
 
     function updateUI() {
         updateDashboard();
@@ -1525,9 +1885,14 @@ function loadGameData() {
         document.getElementById('armor-name').innerText = armors[currentArmorIndex].name;
         document.getElementById('coins').innerText = coins;
         document.getElementById('material-summary').innerText = Object.values(materials).reduce((a,b) => a + b, 0);
+        ensureDailyGoals();
+        maxMp=getMaxMp(); if(currentMp>maxMp) currentMp=maxMp;
+        const mpEl=document.getElementById('player-mp'), maxMpEl=document.getElementById('player-max-mp');
+        if(mpEl) mpEl.innerText=currentMp; if(maxMpEl) maxMpEl.innerText=maxMp;
 
         renderShop();
         renderEnemies();
+        renderCompanionUI();
         saveGameData();
     }
 
@@ -1536,11 +1901,13 @@ function loadGameData() {
         document.getElementById('story-tab').style.display = tabName==='story'?'block':'none';
         document.getElementById('shop-tab').style.display = tabName==='shop'?'block':'none';
         document.getElementById('collection-tab').style.display = tabName==='collection'?'block':'none';
+        document.getElementById('companions-tab').style.display = tabName==='companions'?'block':'none';
         document.querySelectorAll('#menu-tabs .tab-btn').forEach((b,i)=>{
-            b.className=((tabName==='adventure'&&i===0)||(tabName==='story'&&i===1)||(tabName==='shop'&&i===2)||(tabName==='collection'&&i===3))?'tab-btn active':'tab-btn';
+            b.className=((tabName==='adventure'&&i===0)||(tabName==='story'&&i===1)||(tabName==='shop'&&i===2)||(tabName==='collection'&&i===3)||(tabName==='companions'&&i===4))?'tab-btn active':'tab-btn';
         });
         if(tabName==='collection') renderCollection();
         if(tabName==='story') renderStoryArchive();
+        if(tabName==='companions') renderCompanionUI();
     }
 
     function closeStoryChart(){
@@ -1703,13 +2070,18 @@ function renderStoryArchive(){
     function renderEnemies() {
         let html = "";
         enemies.forEach(e => {
+            const unlocked=enemyUnlocked(e.id);
             let color = e.isBoss ? '#f87171' : '#fbbf24';
-            html += `<div class="enemy-card" onclick="startBattle(${e.id})">
+            html += `<div class="enemy-card ${unlocked?'':'locked-enemy'}" onclick="startBattle(${e.id})">
                 <div class="sprite-sheet enemy-sprite sprite-${e.spriteIndex}" aria-label="${e.name}"></div>
                 <div class="enemy-info">
                     <b style="color:${color};">${e.name}</b>
-                    <div style="font-size:11px; color:#38bdf8; margin-top:2px;">範囲: ${e.tierName}</div>
-                    <div style="font-size:11px; color:#cbd5e1; margin-top:2px;">体力: ${e.maxHp}</div><div style="font-size:10px;color:#a78bfa;margin-top:2px;">素材: ${e.dropMaterials.join("・")}${e.rareMaterial?`　✨${e.rareMaterial}`:""}</div>
+                    <div style="font-size:11px;color:#38bdf8;margin-top:2px;">範囲: ${e.tierName}</div>
+                    <div style="font-size:11px;color:#c4b5fd;margin-top:2px;">📚 ${e.topic}</div>
+                    <div style="font-size:11px;color:#fbbf24;margin-top:2px;">${enemyWeaknessText(e)}</div>
+                    <div style="font-size:11px;color:#cbd5e1;margin-top:2px;">体力: ${e.maxHp}</div>
+                    <div style="font-size:10px;color:#a78bfa;margin-top:2px;">素材: ${e.dropMaterials.join("・")}${e.rareMaterial?`　✨${e.rareMaterial}`:""}</div>
+                    <div style="font-size:10px;color:#94a3b8;margin-top:2px;">${unlocked?'▶ 挑戦可能':'🔒 前の敵を倒すと解放'}</div>
                 </div>
             </div>`;
         });
@@ -1836,12 +2208,14 @@ function renderStoryArchive(){
     }
 
     function startBattle(enemyId) {
+        if(!enemyUnlocked(enemyId)){ alert(`🔒 ${enemyId}番目の敵はまだ解放されていません。前の敵を倒してください。`); return; }
         currentEnemy = enemies[enemyId];
         calculateWorldModifiers();
         const t=worldTimes[worldTimeIndex], w=worldWeathers[worldWeatherIndex], moon=getMoonPhase();
         enemyMaxHp = Math.max(1, Math.round(currentEnemy.maxHp * currentWorldModifiers.enemyHp));
         enemyCurrentHp = enemyMaxHp;
         currentQuestionCount = 0;
+        currentQuestionObject=null; battleCombo=0; maxMp=getMaxMp(); currentMp=maxMp;
 
         let filtered = currentEnemy.id === 19 ? cleanEntranceExamQuestions : getProgressionQuestionPool(currentEnemy.id);
         // 毎回「山札を一度シャッフルして順番に出す」方式ではなく、履歴を見ながらランダム抽選する。
@@ -1854,7 +2228,7 @@ function renderStoryArchive(){
         enemySprite.className = `sprite-sheet battle-sprite sprite-${currentEnemy.spriteIndex}`;
         enemySprite.setAttribute('aria-label', currentEnemy.name);
         document.getElementById('enemy-range-tag').innerText = `出題範囲: ${currentEnemy.tierName}`;
-        document.getElementById('enemy-drop-tag').innerText = `ドロップ: ${currentEnemy.dropMaterials.join('・')}`;
+        document.getElementById('enemy-drop-tag').innerHTML = `ドロップ: ${currentEnemy.dropMaterials.join('・')}　｜　<span class="weakness-tag">${enemyWeaknessText(currentEnemy)}</span><br><span style="font-size:11px;color:#c4b5fd;">📚 ${currentEnemy.topic}　｜　特殊技：${currentEnemy.special}</span>`;
 
         const banner=document.getElementById('world-effect-banner');
         if(banner){
@@ -1976,6 +2350,9 @@ function renderStoryArchive(){
             let reward = Math.floor(currentEnemy.maxHp / 5);
             let materialGain = {};
             defeatedEnemies[currentEnemy.id] = true;
+            gachaPoints += 1;
+            dailyGoals.battles += 1;
+            dailyGoals.dirty = true;
             currentEnemy.dropMaterials.forEach((mat, dropIndex) => {
                 let amount = 1 + Math.floor(Math.random() * (currentEnemy.isBoss ? 4 : 3));
                 // 後半・ボスほどレア素材を多めに落とす
@@ -1986,7 +2363,7 @@ function renderStoryArchive(){
             coins += reward;
             const materialLine = Object.entries(materialGain).filter(([name])=>name!=="__rare").map(([name, amount]) => `${name} +${amount}`).join("　");
             const rareLine = materialGain.__rare ? `<br><span class="rare-drop">✨ レアドロップ！ ${materialGain.__rare} +1</span>` : "";
-            const xpGain = 20 + currentEnemy.id * 5 + Math.min(30, currentQuestionCount * 2);
+            const xpGain = Math.floor((20 + currentEnemy.id * 5 + Math.min(30, currentQuestionCount * 2)) * (1 + getCompanionExpBonus()));
             const levelUps = addExperience(xpGain);
             pendingLevelUps += levelUps;
             // 討伐後に世界の時間が進み、次の敵には新しいWORLD SIGNALが適用される。
@@ -2003,10 +2380,13 @@ function renderStoryArchive(){
 
         currentQuestionCount++;
         let bq = pickRandomQuestion(activeQuestionPool);
+        const reviewPool=[...questionPool,...cleanEntranceExamQuestions].filter(q=>wrongQuestionKeys.includes(questionKey(q)));
+        if(reviewPool.length && Math.random() < (companions.find(c=>c.owned&&c.type==="heal")?0.55:0.35)) bq=reviewPool[Math.floor(Math.random()*reviewPool.length)];
         if(!bq){
             // 念のため問題が取得できない場合は全問題から抽選
             bq = pickRandomQuestion(currentEnemy.id === 19 ? cleanEntranceExamQuestions : getProgressionQuestionPool(currentEnemy.id));
         }
+        currentQuestionObject = bq;
         let choicesArr = [...bq.choices].sort(() => Math.random() - 0.5);
         let newAnswerIndex = choicesArr.indexOf(bq.choices[bq.answer]);
         currentQuestionCorrectIndex = newAnswerIndex;
@@ -2139,49 +2519,201 @@ function renderStoryArchive(){
         if(answerLocked) return;
         answerLocked=true; stopQuestionTimer();
         let wasTimedOut=timedOut; timedOut=false;
-        let msg = document.getElementById('message');
-        let atk = getAttackPower();
-        let container = document.getElementById('main-container');
-
+        const q=currentQuestionObject;
+        const msg=document.getElementById('message'), container=document.getElementById('main-container');
         totalAnswered++;
-        if (selected === correct) {
-            totalCorrect++;
-            let damage = atk * 12;
-            let isCritical = Math.random()*100 < getCriticalRate();
-            if(isCritical) damage *= 2;
-            enemyCurrentHp = Math.max(0, enemyCurrentHp - damage);
-            msg.style.color = "#4ade80";
-            msg.className = isCritical ? "critical-text" : "";
-            msg.innerText = isCritical ? `💥✨ CRITICAL!! ${damage} の大ダメージ！` : `⚔️ 正解！ ${damage} のダメージを与えた！`;
-            container.classList.add('flash-green');
-            setTimeout(() => container.classList.remove('flash-green'), 300);
-        } else {
-            let counterDamage = Math.max(1, Math.ceil(currentEnemy.counterDmg * (currentWorldModifiers.enemyAtk || 1)) - Math.floor(getDefensePower() / 3));
-            currentPlayerHp = Math.max(0, currentPlayerHp - counterDamage);
-            msg.style.color = "#f87171";
-            msg.innerText = wasTimedOut ? `⏰ 時間切れ！反撃で ${counterDamage} のダメージ！` : `💥 不正解…反撃で ${counterDamage} のダメージ！`;
-            container.classList.add('flash');
-            setTimeout(() => container.classList.remove('flash'), 300);
-
-            if (currentPlayerHp <= 0) {
-                stopQuestionTimer(); answerLocked=true;
-                if(level > 1){ level--; skillPoints++; }
-                experience = 0;
-                // レベルダウン時も、直前の成長分をSPとして残す。
-                maxPlayerHp = getMaxHp();
-                currentPlayerHp = maxPlayerHp;
-                alert(`💀 力尽きてしまった……。レベルが 1 下がり Lv.${level} になった。`);
-                updateUI();
-                document.getElementById('quiz-screen').style.display = 'none';
-                document.getElementById('battle-field').style.display = 'none';
-                document.getElementById('config-screen').style.display = 'block';
-                return;
-            }
+        if(selected===correct){
+          totalCorrect++; recordQuestionStat(q,true); battleCombo++;
+          msg.style.color="#4ade80"; msg.className=""; msg.innerText=`✅ 正解！ コンボ ${battleCombo}`;
+          container.classList.add('flash-green'); setTimeout(()=>container.classList.remove('flash-green'),300);
+          updateUI(); showActionPanel();
+        }else{
+          recordQuestionStat(q,false);
+          let counterDamage=Math.max(1,Math.ceil(currentEnemy.counterDmg*(currentWorldModifiers.enemyAtk||1))-Math.floor(getDefensePower()/3));
+          if(currentEnemy.isBoss||currentQuestionCount%3===0) counterDamage=Math.ceil(counterDamage*1.22);
+          if(companions.find(c=>c.owned&&c.type==="counter")) counterDamage=Math.max(1,Math.floor(counterDamage*.95));
+          currentPlayerHp=Math.max(0,currentPlayerHp-counterDamage); battleCombo=0;
+          msg.style.color="#f87171"; msg.innerText=wasTimedOut?`⏰ 時間切れ！ ${currentEnemy.special} で ${counterDamage} ダメージ！`:`💥 不正解… ${currentEnemy.special}！ ${counterDamage} ダメージ！`;
+          container.classList.add('flash'); setTimeout(()=>container.classList.remove('flash'),300);
+          if(currentPlayerHp<=0){
+            stopQuestionTimer(); answerLocked=true; experience=0; maxPlayerHp=getMaxHp(); currentPlayerHp=maxPlayerHp;
+            alert(`💀 力尽きてしまった……。レベルは下がりません。HP全回復で拠点へ戻ります。`);
+            updateUI(); document.getElementById('quiz-screen').style.display='none'; document.getElementById('battle-field').style.display='none'; document.getElementById('config-screen').style.display='block'; return;
+          }
+          updateUI(); setTimeout(()=>{msg.innerText="";showRandomQuestion();},900);
         }
+    }
 
-        updateUI();
-        updateEnemyHpBar();
-        setTimeout(() => { msg.innerText = ""; msg.className=""; showRandomQuestion(); }, 900);
+function recordQuestionStat(q, correct){
+        if(!q) return;
+        const cat=questionCategory(q);
+        if(!topicStats[cat]) topicStats[cat]={correct:0,total:0};
+        topicStats[cat].total++;
+        if(correct) topicStats[cat].correct++;
+        ensureDailyGoals();
+        if(correct){
+            dailyGoals.correct++;
+            if(!dailyGoals.categories.includes(cat)) dailyGoals.categories.push(cat);
+        }else{
+            const k=questionKey(q); if(!wrongQuestionKeys.includes(k)) wrongQuestionKeys.push(k);
+            wrongQuestionKeys=wrongQuestionKeys.slice(-120);
+        }
+        dailyGoals.dirty=true;
+    }
+
+    function explainQuestion(q){
+        const cat=questionCategory(q);
+        const map={
+          "活用":"動詞・形容詞・形容動詞は、文中での働きによって活用形が変わります。直後の語や文末の形を手がかりに確認しましょう。",
+          "品詞":"まず、その語が何を表すか・文中でどんな働きをするかを確認すると品詞を判別しやすくなります。",
+          "助動詞":"助動詞は、用言などに付いて意味を加える付属語です。前の語とのつながりも確認しましょう。",
+          "敬語":"相手・話題の人物と自分の立場を考え、尊敬語・謙譲語・丁寧語を区別します。",
+          "助詞":"助詞は付属語で、格・接続・取り立て・文末など、付いている位置と働きで種類を判断します。",
+          "文節・単語":"文節は意味のまとまり、単語はそれ以上分けにくい最小の言葉の単位です。",
+          "文の成分":"主語・述語・修飾語・接続語・独立語など、文中での役割を確認します。",
+          "その他":"選択肢を文の意味だけでなく、文法上の働きから比べるのがポイントです。"
+        };
+        return map[cat]||map["その他"];
+    }
+
+    function showActionPanel(){
+        const p=document.getElementById('action-panel'), c=document.getElementById('choices-container');
+        if(!p) return;
+        c.style.display='none';
+        const weak=currentEnemy.weaknessType;
+        const fin=battleCombo>=5;
+        p.style.display='block';
+        p.innerHTML=`<div class="action-explain">✅ 正解！　${explainQuestion(currentQuestionObject)}<br><span style="color:#fbbf24;">${enemyWeaknessText(currentEnemy)}　｜　現在コンボ ${battleCombo}</span></div>
+          <div style="font-weight:900;margin-bottom:8px;">攻撃方法を選べ！</div>
+          <div class="action-grid">
+            <button class="action-btn" onclick="performPhysicalAttack()">⚔️ 通常攻撃<br><small>物理</small></button>
+            <button class="action-btn magic" onclick="openSpellChoices()">✨ 魔法攻撃<br><small>MP ${currentMp}/${getMaxMp()}</small></button>
+            ${fin?`<button class="action-btn finisher" onclick="performFinisher()">🌠 フィニッシャー<br><small>5コンボ以上・超威力</small></button>`:''}
+          </div>
+          <div id="spell-choice-area"></div>`;
+    }
+
+    function closeActionPanel(){
+        const p=document.getElementById('action-panel'), c=document.getElementById('choices-container');
+        if(p){p.style.display='none';p.innerHTML='';}
+        if(c)c.style.display='block';
+    }
+
+    function applyPlayerDamage(damage,label){
+        const container=document.getElementById('main-container'), msg=document.getElementById('message');
+        enemyCurrentHp=Math.max(0,enemyCurrentHp-Math.floor(damage));
+        msg.style.color="#4ade80"; msg.className="critical-text"; msg.innerText=`${label} ${Math.floor(damage)} ダメージ！`;
+        container.classList.add('flash-green'); setTimeout(()=>container.classList.remove('flash-green'),300);
+        updateUI(); updateEnemyHpBar();
+        currentQuestionObject=null;
+        closeActionPanel();
+        setTimeout(()=>{ msg.innerText=""; msg.className=""; showRandomQuestion(); },700);
+    }
+
+    function performPhysicalAttack(){
+        if(!currentQuestionObject||enemyCurrentHp<=0)return;
+        let damage=getAttackPower()*12*getPhysicalBonus();
+        if(currentEnemy.weaknessType==="physical") damage*=1.45; else damage*=0.82;
+        let critical=Math.random()*100<getCriticalRate();
+        if(critical)damage*=2;
+        battleCombo++;
+        applyPlayerDamage(damage,critical?"💥⚔️ CRITICAL!":"⚔️ 通常攻撃！");
+    }
+
+    function openSpellChoices(){
+        const area=document.getElementById('spell-choice-area'); if(!area)return;
+        area.innerHTML=`<div class="spell-list">${spellMaster.map(s=>{
+          const learned=learnedSpells.includes(s.name), enough=currentMp>=s.cost;
+          return `<button class="spell-btn" ${learned&&enough?'':'disabled'} onclick="performSpell('${s.name}')">${s.icon} <b>${s.name}</b>　MP ${s.cost}<br><small>${learned?(enough?s.desc:'MP不足'):`未習得：${s.sp}SPで習得`}</small></button>`;
+        }).join('')}</div>`;
+    }
+
+    function performSpell(name){
+        if(!currentQuestionObject||enemyCurrentHp<=0)return;
+        const s=spellMaster.find(x=>x.name===name);
+        if(!s||!learnedSpells.includes(name)||currentMp<s.cost)return;
+        currentMp-=s.cost;
+        let damage=getAttackPower()*12*s.power*getMagicBonus(s);
+        if(currentEnemy.weaknessType==="magic")damage*=1.55; else damage*=0.78;
+        let critical=Math.random()*100<getCriticalRate();
+        if(critical)damage*=1.6;
+        battleCombo++;
+        applyPlayerDamage(damage,critical?`💥✨ ${s.name} CRITICAL!`:`✨ ${s.name}！`);
+    }
+
+    function performFinisher(){
+        if(!currentQuestionObject||battleCombo<5||enemyCurrentHp<=0)return;
+        let damage=getAttackPower()*12*2.8;
+        battleCombo=0;
+        applyPlayerDamage(damage,"🌠 FINISHER！");
+    }
+
+    function learnSpell(name){
+        const s=spellMaster.find(x=>x.name===name);
+        if(!s||learnedSpells.includes(name)||skillPoints<s.sp)return;
+        skillPoints-=s.sp; learnedSpells.push(name); saveGameData(); updateUI();
+        alert(`✨ ${name} を習得した！`);
+    }
+
+    function renderSpellLearning(){
+        const box=document.getElementById('companions-tab');
+        if(!box)return;
+        let old=document.getElementById('spell-learning-box');
+        if(!old){
+          old=document.createElement('div'); old.id='spell-learning-box'; old.className='daily-goals';
+          box.insertBefore(old,box.querySelector('h4'));
+        }
+        old.innerHTML=`<b style="color:#c4b5fd;">✨ 魔法習得</b><div class="spell-list">${spellMaster.map(s=>{
+          const learned=learnedSpells.includes(s.name);
+          return `<button class="spell-btn" ${learned?'disabled':''} onclick="learnSpell('${s.name}')">${s.icon} ${s.name}　${learned?'習得済み':s.sp+'SP'}<br><small>MP ${s.cost} / 威力 ${s.power}</small></button>`;
+        }).join('')}</div>`;
+    }
+
+    function rollRarity(){
+        const r=Math.random(); if(r<companionRates.SSR)return"SSR"; if(r<companionRates.SSR+companionRates.SR)return"SR"; return"R";
+    }
+    function drawCompanion(){
+        if(gachaPoints<1){alert("ガチャポイントが足りません。戦闘に勝つと1ポイント獲得します。");return;}
+        gachaPoints--;
+        const owned=companions.filter(c=>c.owned);
+        const unowned=companions.filter(c=>!c.owned);
+        let pool=unowned;
+        let rarity=rollRarity();
+        let rarityPool=unowned.filter(c=>c.rarity===rarity);
+        if(!rarityPool.length) rarityPool=unowned;
+        if(!rarityPool.length){
+          const duplicatePool=companions.filter(c=>c.rarity===rarity);
+          pool=duplicatePool.length?duplicatePool:companions;
+        }else pool=rarityPool;
+        const got=pool[Math.floor(Math.random()*pool.length)];
+        const wasOwned=got.owned;
+        if(!wasOwned) got.owned=true; else coins+=120;
+        gachaHistory.push({id:got.id,rarity:got.rarity,duplicate:wasOwned,date:new Date().toISOString()});
+        document.getElementById('gacha-result').style.display='block';
+        document.getElementById('gacha-result').innerHTML=`<div style="font-size:12px;color:#cbd5e1;">ガチャ結果（確定）</div><div style="font-size:26px;margin:5px;">${rarityLabel(got.rarity)}</div><div class="companion-sheet" style="width:130px;height:130px;background-image:url('${COMPANION_SHEET_DATA}');background-position:${(got.sheetIndex%4)*100/3}% ${Math.floor(got.sheetIndex/4)*100/4}%"></div><div style="font-size:20px;font-weight:900;">${got.name}</div><div style="color:#67e8f9;">${got.effect}</div>${wasOwned?'<div style="color:#fbbf24;margin-top:5px;">重複！ 120Gに変換</div>':'<div style="color:#4ade80;margin-top:5px;">新しい仲間が図鑑に登録された！</div>'}`;
+        saveGameData(); renderCompanionUI(); updateUI();
+    }
+
+    function renderCompanionUI(){
+      const box=document.getElementById('companion-list'); if(!box)return;
+      ensureDailyGoals();
+      document.getElementById('gacha-summary').innerHTML=`<span class="gacha-point">🎴 ${gachaPoints} pt</span><span>所持仲間 ${companions.filter(c=>c.owned).length} / ${companions.length}</span><span>勝利するたび +1pt</span>`;
+      const goals=[
+        [dailyGoals.correct>=5,`正解 ${dailyGoals.correct}/5`],
+        [dailyGoals.battles>=1,`戦闘勝利 ${dailyGoals.battles}/1`],
+        [dailyGoals.categories.length>=3,`3種類の文法を正解 ${Math.min(3,dailyGoals.categories.length)}/3`]
+      ];
+      if(!dailyGoals.claimed && goals.every(x=>x[0])){dailyGoals.claimed=true;gachaPoints++;coins+=300;}
+      document.getElementById('daily-goals-box').innerHTML=`<b>📅 今日の目標</b><br>${goals.map(x=>`<div class="${x[0]?'daily-goal done':''}">${x[0]?'✅':'⬜'} ${x[1]}</div>`).join('')}${dailyGoals.claimed?'<div style="color:#4ade80;">🎁 達成報酬：ガチャpt +1 / 300G</div>':''}`;
+      box.innerHTML=companions.map((c)=>`<div class="companion-card ${c.owned?'owned':'locked'}">
+        <div class="companion-sheet" style="background-image:url('${COMPANION_SHEET_DATA}');background-position:${(c.sheetIndex%4)*100/3}% ${Math.floor(c.sheetIndex/4)*100/4}%"></div>
+        <div class="companion-name">${c.owned?'✨ ': '🔒 '}${c.name}</div><div class="companion-rarity">${rarityLabel(c.rarity)}</div><div class="companion-effect">${c.effect}</div>
+      </div>`).join('');
+      renderSpellLearning();
+    }
+
+    function unlockAllExpansion(){
+      learnedSpells=spellMaster.map(s=>s.name); gachaPoints=99; companions.forEach(c=>c.owned=true);
     }
 
     // ホーム画面で「2206」とキーボード入力すると隠しコードが発動
@@ -2210,12 +2742,16 @@ function renderStoryArchive(){
         }
     });
 
+    companions = companionMaster.map(c=>({...c,owned:false}));
+    ensureDailyGoals();
     loadGameData();
+    ensureV900Panel();
     calculateWorldModifiers();
     updateUI();
     updateDashboard();
     renderCollection();
     renderStoryArchive();
+    renderCompanionUI();
     const titleNote=document.getElementById('title-save-note');
     const continueBtn=document.getElementById('continue-btn');
     if(hasSavedGame()){
@@ -2230,7 +2766,546 @@ function renderStoryArchive(){
     document.getElementById('quiz-screen').style.display='none';
     document.getElementById('title-screen').style.display='flex';
     renderEnemies();
+/* v1000 runtime */
+const V1000_SAVE_KEY='bunpou_save_v1000_extra';
+const v1000State={player:{burn:0,paralyze:0,freeze:0},enemy:{burn:0,paralyze:0,freeze:0},activeCompanionId:1,companionXp:{},companionLevel:{},streak:0,best:{bossRush:0,timeAttack:0,noMiss:0},trainingCorrect:0};
+const V1000_STATUS={burn:{icon:'🔥',name:'やけど',cls:'status-burn'},paralyze:{icon:'⚡',name:'まひ',cls:'status-paralyze'},freeze:{icon:'❄️',name:'凍結',cls:'status-freeze'}};
+function v1000Load(){try{const d=JSON.parse(localStorage.getItem(V1000_SAVE_KEY)||'{}');Object.assign(v1000State,d);v1000State.player=d.player||v1000State.player;v1000State.enemy=d.enemy||v1000State.enemy;v1000State.companionXp=d.companionXp||{};v1000State.companionLevel=d.companionLevel||{};v1000State.best=d.best||v1000State.best;v1000State.trainingCorrect=d.trainingCorrect||0}catch(e){}}
+function v1000Save(){try{localStorage.setItem(V1000_SAVE_KEY,JSON.stringify(v1000State))}catch(e){}}
+function v1000StatusHTML(who){const st=v1000State[who]||{};return Object.keys(V1000_STATUS).filter(k=>(st[k]||0)>0).map(k=>{const x=V1000_STATUS[k];return `<span class="status-badge ${x.cls}">${x.icon} ${x.name} ${st[k]}T</span>`}).join('')||'<span style="color:#94a3b8;font-size:12px">状態異常なし</span>'}
+function v1000RenderStatus(){const a=document.getElementById('v1000-status-area');if(a)a.innerHTML=`<div class="status-strip"><b>勇者</b>${v1000StatusHTML('player')}</div><div class="status-strip"><b>敵</b>${v1000StatusHTML('enemy')}</div>`}
+function v1000Float(t){const d=document.createElement('div');d.className='v1000-float';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),800)}
+function v1000Inflict(who,type,turns){const st=v1000State[who];if(!st)return;st[type]=Math.max(st[type]||0,turns);v1000Float(`${V1000_STATUS[type].icon} ${V1000_STATUS[type].name}！`);v1000RenderStatus();v1000Save()}
+function v1000TickPlayer(){const st=v1000State.player;if(st.burn>0){const dmg=Math.max(1,Math.ceil(maxPlayerHp*.04));currentPlayerHp=Math.max(1,currentPlayerHp-dmg);v1000Float(`🔥 やけど -${dmg}`);st.burn--}if(st.paralyze>0)st.paralyze--;if(st.freeze>0)st.freeze--;v1000RenderStatus()}
+function v1000TickEnemy(){const st=v1000State.enemy;if(st.burn>0){const dmg=Math.max(1,Math.ceil(enemyCurrentHp*.06));enemyCurrentHp=Math.max(0,enemyCurrentHp-dmg);v1000Float(`🔥 敵に ${dmg} ダメージ`);st.burn--}if(st.paralyze>0)st.paralyze--;if(st.freeze>0)st.freeze--;v1000RenderStatus()}
+function v1000TryEnemyStatus(){if(!currentEnemy)return;const type=currentEnemy.element==='炎'?'burn':currentEnemy.element==='雷'?'paralyze':currentEnemy.element==='氷'?'freeze':null;if(type&&Math.random()<(currentEnemy.isBoss?.30:.18))v1000Inflict('player',type,currentEnemy.isBoss?3:2)}
+function v1000TrySpellStatus(spell){const type={炎:'burn',雷:'paralyze',氷:'freeze'}[spell?.element];if(type&&Math.random()<.16)v1000Inflict('enemy',type,2)}
+function v1000Comp(id){return companions.find(c=>c.id===id&&c.owned)}function v1000Lv(id){return Math.max(1,Number(v1000State.companionLevel[id]||1))}function v1000Xp(id){return Number(v1000State.companionXp[id]||0)}function v1000Need(lv){return 10+(lv-1)*5}
+function v1000GainCompXp(n=1){const c=v1000Comp(v1000State.activeCompanionId);if(!c)return;let lv=v1000Lv(c.id),xp=v1000Xp(c.id)+n;while(lv<20&&xp>=v1000Need(lv)){xp-=v1000Need(lv);lv++;v1000Float(`✨ ${c.name} Lv.${lv}！`)}v1000State.companionXp[c.id]=xp;v1000State.companionLevel[c.id]=lv;v1000Save()}
+function selectCompanion(id){if(!v1000Comp(id))return;v1000State.activeCompanionId=id;v1000Save();renderCompanionUI()}
+function v1000CompUI(){document.querySelectorAll('.companion-card').forEach((el,i)=>{const c=companions[i];if(!c?.owned)return;el.classList.toggle('companion-active',c.id===v1000State.activeCompanionId);let d=el.querySelector('.companion-growth');if(d)d.remove();d=document.createElement('div');d.className='companion-growth';d.innerHTML=`Lv.${v1000Lv(c.id)}　XP ${v1000Xp(c.id)}/${v1000Need(v1000Lv(c.id))}`;el.appendChild(d);const b=document.createElement('button');b.className='companion-take';b.textContent=c.id===v1000State.activeCompanionId?'✓ 連れている':'🤝 連れていく';b.onclick=()=>selectCompanion(c.id);el.appendChild(b)})}
+const _v1000RC=renderCompanionUI;renderCompanionUI=function(){_v1000RC();v1000CompUI()};
+const _v1000S=saveGameData;saveGameData=function(){_v1000S();v1000Save()};
+const _v1000U=updateUI;updateUI=function(){_v1000U();v1000RenderStatus();v1000CompUI()};
+const _v1000SA=showActionPanel;showActionPanel=function(){if(v1000State.player.paralyze>0){const p=document.getElementById('action-panel');if(p){document.getElementById('choices-container').style.display='none';p.style.display='block';p.innerHTML='<div class="action-explain">⚡ <b>まひ状態！</b><br>行動できない……</div>';setTimeout(()=>{closeActionPanel();currentQuestionObject=null;showRandomQuestion()},900)}return}_v1000SA();v1000RenderStatus()};
+const _v1000PA=performPhysicalAttack;performPhysicalAttack=function(){let frozen=v1000State.enemy.freeze>0;_v1000PA();if(frozen)v1000Float('❄️ 凍結中の敵には追加効果！');v1000TickEnemy();v1000RenderStatus()};
+const _v1000PS=performSpell;performSpell=function(name){const sp=spellMaster.find(x=>x.name===name);_v1000PS(name);if(sp&&enemyCurrentHp>0)v1000TrySpellStatus(sp);v1000TickEnemy();v1000RenderStatus()};
+const _v1000PF=performFinisher;performFinisher=function(){_v1000PF();v1000TickEnemy();v1000RenderStatus()};
+const _v1000CA=checkAnswer;checkAnswer=function(selected,correct){_v1000CA(selected,correct);if(selected===correct){v1000State.streak++;v1000GainCompXp(1)}else{v1000State.streak=0;v1000TryEnemyStatus()}v1000Save();v1000RenderStatus()};
+function v1000BuildTools(){if(document.getElementById('v1000-tools'))return;const h=document.getElementById('config-screen');if(!h)return;const d=document.createElement('div');d.id='v1000-tools';d.className='v1000-backup';d.innerHTML=`<b>📱 v1000 セーブ・学習ツール</b><div class="v1000-mobile-tools"><button onclick="v1000Export()">💾 書き出し</button><button onclick="document.getElementById('v1000-import').click()">📥 読み込み</button><button onclick="v1000Backup()">🛡️ バックアップ</button><button onclick="v1000Report()">📊 学習レポート</button></div><input id="v1000-import" type="file" accept="application/json" style="display:none" onchange="v1000Import(this)"><small>※セーブはこの端末のブラウザに保存されます。</small>`;h.appendChild(d)}
+function v1000Export(){const data={game:localStorage.getItem('bunpou_save_v801'),extra:localStorage.getItem(V1000_SAVE_KEY),version:'v1000'};const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));a.download='bunpou-quest-save-v1000.json';a.click()}
+function v1000Import(i){const f=i.files?.[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(d.game)localStorage.setItem('bunpou_save_v801',d.game);if(d.extra)localStorage.setItem(V1000_SAVE_KEY,d.extra);location.reload()}catch(e){alert('セーブファイルが不正です。')}};r.readAsText(f)}
+function v1000Backup(){localStorage.setItem('bunpou_save_v801_backup',localStorage.getItem('bunpou_save_v801')||'');localStorage.setItem(V1000_SAVE_KEY+'_backup',localStorage.getItem(V1000_SAVE_KEY)||'');v1000Float('🛡️ バックアップ完了')}
+function v1000Report(){const cats=Object.entries(topicStats||{}).map(([k,v])=>`${k}: ${v.correct||0}/${v.total||0}`).join('\n');alert(`📊 学習レポート\n\n正解 ${totalCorrect} / ${totalAnswered}（${totalAnswered?Math.round(totalCorrect/totalAnswered*100):0}%）\n\n${cats||'まだデータがありません'}`)}
+function v1000StatusArea(){if(document.getElementById('v1000-status-area'))return;const b=document.getElementById('battle-field');if(!b)return;const d=document.createElement('div');d.id='v1000-status-area';b.insertBefore(d,b.firstChild);v1000RenderStatus()}
+const _v1000SR=showRandomQuestion;showRandomQuestion=function(){v1000TickPlayer();v1000StatusArea();_v1000SR();v1000RenderStatus()};
+(function(){v1000Load();document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{v1000BuildTools();v1000StatusArea();v1000CompUI()},200))})();
+
+
+/* ============================================================
+   v1100 COMPLETE FIX
+   - Direct event binding for learning/achievement/challenge tools
+   - Story skip
+   - Companion active skill: reliable event binding + real effects
+   - Challenge / replay hub with persistent records
+   ============================================================ */
+(function(){
+  const V11='bunpou_save_v1100_complete';
+  const v11={trainingCorrect:0, challenge:{timeAttackBest:null,noMissBest:0,bossRushBest:0,entranceBest:0,collection:[]}, companionUsed:false};
+  try{Object.assign(v11,JSON.parse(localStorage.getItem(V11)||'{}'));}catch(e){}
+  v11.challenge=v11.challenge||{timeAttackBest:null,noMissBest:0,bossRushBest:0,entranceBest:0,collection:[]};
+  v11.challenge.collection=Array.isArray(v11.challenge.collection)?v11.challenge.collection:[];
+
+  function v11save(){try{localStorage.setItem(V11,JSON.stringify(v11));}catch(e){}}
+  function esc11(x){return String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+
+  /* ---------- robust modal ---------- */
+  function modal11(title,body,buttons=''){
+    let m=document.getElementById('v1100-modal');
+    if(!m){
+      m=document.createElement('div'); m.id='v1100-modal';
+      m.innerHTML='<div class="v1100-inner"><div class="v1100-head"><b id="v1100-title"></b><button id="v1100-x">×</button></div><div id="v1100-body"></div><div id="v1100-actions"></div></div>';
+      document.body.appendChild(m);
+      document.getElementById('v1100-x').onclick=()=>m.style.display='none';
+    }
+    document.getElementById('v1100-title').innerHTML=title;
+    document.getElementById('v1100-body').innerHTML=body;
+    document.getElementById('v1100-actions').innerHTML=buttons;
+    m.style.display='flex';
+    return m;
+  }
+  function close11(){const m=document.getElementById('v1100-modal');if(m)m.style.display='none';}
+
+  /* ---------- learning analysis ---------- */
+  window.v1100OpenWeakness=function(){
+    const cats=["文節・単語","文の成分","助詞","活用","品詞","助動詞","敬語","その他"];
+    const rows=cats.map(k=>{
+      const v=(typeof topicStats!=='undefined'&&topicStats[k])?topicStats[k]:{correct:0,total:0};
+      const total=Number(v.total)||0, correct=Number(v.correct)||0, p=total?Math.round(correct/total*100):0;
+      return {k,total,correct,p};
+    });
+    const sorted=rows.slice().sort((a,b)=>(a.total? a.p:101)-(b.total?b.p:101));
+    const body=`<p class="v11-note">正答率が低い順。まだ解いていない分野も表示します。</p>`+
+      sorted.map(x=>`<div class="v11-row"><div><b>${esc11(x.k)}</b><span>${x.total?`${x.correct}/${x.total}（${x.p}%）`:'未学習'}</span></div><div class="v11-bar"><i style="width:${x.p}%"></i></div></div>`).join('');
+    modal11('📊 苦手分析',body,'<button class="v11-primary" onclick="v1100OpenTraining()">🏋️ 苦手を練習</button>');
+  };
+
+  /* ---------- achievements ---------- */
+  window.v1100OpenAchievements=function(){
+    const master=(typeof achievementMaster!=='undefined'?achievementMaster:[]);
+    const got=master.filter(a=>achievements&&achievements[a[0]]).length;
+    const body=`<div class="v11-ach-summary">🏆 ${got} / ${master.length} 達成</div>`+
+      master.map(a=>{const ok=!!(achievements&&achievements[a[0]]);return `<div class="v11-ach ${ok?'got':''}"><span>${ok?a[3]:'🔒'}</span><div><b>${esc11(a[1])}</b><small>${esc11(a[2])}</small></div></div>`}).join('');
+    modal11(`🏆 実績 <small>${got}/${master.length}</small>`,body,'<button class="v11-primary" onclick="v1100OpenChallenges()">🎯 やりこみ</button>');
+  };
+
+  /* ---------- training: always usable; wrong first, then pool ---------- */
+  let tpool=[], ti=0;
+  function buildTrainingPool(){
+    const all=[...(typeof questionPool!=='undefined'?questionPool:[]),...(typeof cleanEntranceExamQuestions!=='undefined'?cleanEntranceExamQuestions:[])];
+    const wrongSet=new Set(typeof wrongQuestionKeys!=='undefined'?wrongQuestionKeys:[]);
+    const wrong=all.filter(q=>wrongSet.has(questionKey(q)));
+    const rest=all.filter(q=>!wrongSet.has(questionKey(q)));
+    // If there are no wrong answers, training still works.
+    return [...wrong,...rest].slice(0,80);
+  }
+  window.v1100OpenTraining=function(){
+    tpool=buildTrainingPool(); ti=0;
+    if(!tpool.length){modal11('🏋️ 文法修行','<p>問題データが読み込めていません。通常の冒険を開始してからもう一度開いてください。</p>');return;}
+    renderTraining11();
+  };
+  function renderTraining11(){
+    const q=tpool[ti%tpool.length];
+    const choices=(q.choices||[]).map((c,i)=>`<button class="v11-choice" data-ti="${i}">${i+1}. ${esc11(c)}</button>`).join('');
+    modal11(`🏋️ 文法修行 <small>${ti+1}/${tpool.length}</small>`,
+      `<div class="v11-source">${esc11(q.sourceLabel||'復習問題')}</div><div class="v11-q">${String(q.q||'').replace(/\n/g,'<br>')}</div><div id="v11-training-choices">${choices}</div><div id="v11-training-msg"></div>`);
+    document.querySelectorAll('#v11-training-choices .v11-choice').forEach(b=>b.onclick=()=>{
+      const i=Number(b.dataset.ti), ok=i===q.answer;
+      if(ok){
+        v11.trainingCorrect++; 
+        try{recordQuestionStat(q,true);}catch(e){}
+        if(typeof totalCorrect!=='undefined') totalCorrect++;
+        if(v11.trainingCorrect>=10 && typeof unlockAchievement==='function') unlockAchievement('training');
+        document.getElementById('v11-training-msg').innerHTML='<div class="v11-ok">✅ 正解！</div>'+ (typeof explainQuestion==='function'?explainQuestion(q):'');
+        document.querySelectorAll('#v11-training-choices .v11-choice').forEach(x=>x.disabled=true);
+        v11save(); setTimeout(()=>{ti++;renderTraining11();},650);
+      }else{
+        try{recordQuestionStat(q,false);}catch(e){}
+        document.getElementById('v11-training-msg').innerHTML='<div class="v11-ng">❌ もう一度考えよう</div>';
+      }
+    });
+  }
+
+  /* ---------- challenge hub ---------- */
+  let challengeMode=null, cpool=[], ci=0, ccorrect=0, cstart=0, ctimer=null, cstreak=0;
+  function challengePool(mode){
+    const normal=(typeof questionPool!=='undefined'?questionPool:[]);
+    const entrance=(typeof cleanEntranceExamQuestions!=='undefined'?cleanEntranceExamQuestions:[]);
+    if(mode==='entrance') return entrance.length?entrance:normal;
+    if(mode==='collection') return [...normal,...entrance];
+    return normal.length?normal:entrance;
+  }
+  window.v1100OpenChallenges=function(){
+    const b=`<div class="v11-ch-grid">
+      <button data-mode="time">⏱️ <b>タイムアタック</b><small>60秒で何問正解できる？</small></button>
+      <button data-mode="nomiss">🌟 <b>ノーミス10</b><small>10問連続正解を目指す</small></button>
+      <button data-mode="boss">👑 <b>ボスラッシュ</b><small>5ステージ×3問</small></button>
+      <button data-mode="entrance">🎓 <b>入試チャレンジ</b><small>入試レベル10問</small></button>
+      <button data-mode="collection">📚 <b>問題コレクション</b><small>正解した問題を記録</small></button>
+    </div>
+    <div class="v11-record">自己記録：タイム ${v11.challenge.timeAttackBest??'—'}問 / ノーミス ${v11.challenge.noMissBest}問 / ボスラッシュ ${v11.challenge.bossRushBest}問 / 入試 ${v11.challenge.entranceBest}問</div>`;
+    modal11('🎯 やりこみ',b);
+    document.querySelectorAll('#v11-body .v11-ch-grid button').forEach(x=>x.onclick=()=>startChallenge11(x.dataset.mode));
+  };
+  function startChallenge11(mode){
+    challengeMode=mode; cpool=challengePool(mode); ci=0; ccorrect=0; cstreak=0; cstart=Date.now(); clearInterval(ctimer);
+    if(!cpool.length){modal11('🎯 やりこみ','<p>問題データがありません。</p>');return;}
+    if(mode==='collection'){showCollection11();return;}
+    renderChallengeQ11();
+  }
+  function showCollection11(){
+    const body=`<p>これまでに正解した問題：<b>${v11.challenge.collection.length}</b>問</p>`+
+      (v11.challenge.collection.length?v11.challenge.collection.map((x,i)=>`<div class="v11-col"><b>${i+1}.</b> ${esc11(x)}</div>`).join(''):'<p class="v11-note">まだありません。問題に正解すると登録されます。</p>');
+    modal11('📚 問題コレクション',body,'<button class="v11-primary" onclick="v1100OpenChallenges()">← やりこみに戻る</button>');
+  }
+  function renderChallengeQ11(){
+    const q=cpool[ci%cpool.length], limit=challengeMode==='time'?60:challengeMode==='boss'?15:10;
+    const label=challengeMode==='time'?'⏱️ 60秒':challengeMode==='boss'?`👑 ${Math.floor(ci/3)+1}/5`:`${ci+1}/${limit}`;
+    const body=`<div class="v11-ch-status">${label}　正解 ${ccorrect}</div><div class="v11-q">${String(q.q||'').replace(/\n/g,'<br>')}</div><div id="v11-cchoices">${(q.choices||[]).map((c,i)=>`<button class="v11-choice" data-i="${i}">${i+1}. ${esc11(c)}</button>`).join('')}</div><div id="v11-cmsg"></div>`;
+    modal11(`🎯 ${challengeMode==='time'?'タイムアタック':challengeMode==='nomiss'?'ノーミス10':challengeMode==='boss'?'ボスラッシュ':'入試チャレンジ'}`,body);
+    document.querySelectorAll('#v11-cchoices .v11-choice').forEach(b=>b.onclick=()=>answerChallenge11(q,Number(b.dataset.i)));
+    if(challengeMode==='time'){
+      let end=cstart+60000;
+      ctimer=setInterval(()=>{const sec=Math.max(0,Math.ceil((end-Date.now())/1000));const el=document.querySelector('.v11-ch-status');if(el)el.textContent=`⏱️ 残り ${sec}秒　正解 ${ccorrect}`;if(sec<=0){clearInterval(ctimer);finishChallenge11();}},250);
+    }
+  }
+  function answerChallenge11(q,i){
+    const ok=i===q.answer;
+    document.querySelectorAll('#v11-cchoices .v11-choice').forEach(b=>b.disabled=true);
+    if(ok){
+      ccorrect++;cstreak++;
+      if(!v11.challenge.collection.includes(questionKey(q)))v11.challenge.collection.push(questionKey(q));
+      if(typeof recordQuestionStat==='function')try{recordQuestionStat(q,true)}catch(e){}
+      if(typeof totalCorrect!=='undefined')totalCorrect++;
+      document.getElementById('v11-cmsg').innerHTML='<div class="v11-ok">✅ 正解！</div>';
+      v11save();
+      const done=(challengeMode==='time'?false:challengeMode==='boss'?ci>=14:ci>=9);
+      setTimeout(()=>{if(done)finishChallenge11();else{ci++;renderChallengeQ11();}},300);
+    }else{
+      cstreak=0;
+      if(typeof recordQuestionStat==='function')try{recordQuestionStat(q,false)}catch(e){}
+      document.getElementById('v11-cmsg').innerHTML='<div class="v11-ng">❌ 不正解</div>'+ (typeof explainQuestion==='function'?explainQuestion(q):'');
+      if(challengeMode==='nomiss'){setTimeout(finishChallenge11,450);}
+      else setTimeout(()=>{ci++;renderChallengeQ11();},500);
+    }
+  }
+  function finishChallenge11(){
+    clearInterval(ctimer);
+    if(challengeMode==='time'){
+      if(v11.challenge.timeAttackBest===null||ccorrect>v11.challenge.timeAttackBest)v11.challenge.timeAttackBest=ccorrect;
+    } else if(challengeMode==='nomiss'){
+      if(ccorrect>v11.challenge.noMissBest)v11.challenge.noMissBest=ccorrect;
+    } else if(challengeMode==='boss'){
+      if(ccorrect>v11.challenge.bossRushBest)v11.challenge.bossRushBest=ccorrect;
+    } else if(challengeMode==='entrance'){
+      if(ccorrect>v11.challenge.entranceBest)v11.challenge.entranceBest=ccorrect;
+    }
+    v11save();
+    const title=challengeMode==='time'?'タイムアタック':challengeMode==='nomiss'?'ノーミス10':challengeMode==='boss'?'ボスラッシュ':'入試チャレンジ';
+    modal11(`🎉 ${title} 結果`,`<div class="v11-result"><b>${ccorrect}問 正解</b><br><small>自己記録を保存しました。</small></div>`,
+      '<button class="v11-primary" onclick="v1100OpenChallenges()">🎯 やりこみに戻る</button>');
+  }
+
+  /* ---------- replace old tool panel and bind both old/new buttons ---------- */
+  function installTools11(){
+    const old=document.getElementById('v900-tools'); if(old)old.remove();
+    let box=document.getElementById('v1100-tools');
+    if(!box){
+      const target=document.getElementById('adventure-tab'); if(!target)return;
+      box=document.createElement('div');box.id='v1100-tools';box.className='v11-tools';
+      box.innerHTML=`<div><b>📚 学習・やりこみ</b><small>復習・苦手分析・実績・特別チャレンジ</small></div>
+      <div class="v11-tool-grid">
+        <button id="v11-training">🏋️ 文法修行</button><button id="v11-weak">📊 苦手分析</button>
+        <button id="v11-ach">🏆 実績</button><button id="v11-challenge">🎯 やりこみ</button>
+      </div>`;
+      target.insertBefore(box,target.firstChild);
+    }
+    document.getElementById('v11-training').onclick=window.v1100OpenTraining;
+    document.getElementById('v11-weak').onclick=window.v1100OpenWeakness;
+    document.getElementById('v11-ach').onclick=window.v1100OpenAchievements;
+    document.getElementById('v11-challenge').onclick=window.v1100OpenChallenges;
+  }
+
+  /* ---------- companion skill: real clickable UI ---------- */
+  function bindCompanion11(){
+    const panel=document.getElementById('companion-battle-skill'); if(!panel)return;
+    panel.querySelectorAll('button[data-comp-id]').forEach(b=>b.onclick=()=>window.v1100UseCompanionSkill(Number(b.dataset.compId)));
+  }
+  window.v1100UseCompanionSkill=function(id){
+    if(v11.companionUsed){if(typeof showToast==='function')showToast('🎴 この戦闘では仲間スキルをもう使えません');return;}
+    const c=companions.find(x=>x.id===id&&x.owned);if(!c)return;
+    const type=c.type;
+    v11.companionUsed=true;
+    window.v900AttackBoost=1;window.v900CritBoost=0;
+    if(type==='hp'||type==='heal') currentPlayerHp=Math.min(getMaxHp(),currentPlayerHp+(type==='hp'?20:15));
+    else if(type==='mp') currentMp=Math.min(getMaxMp(),currentMp+3);
+    else if(type==='atk'||type==='physical') window.v900AttackBoost=type==='atk'?1.35:1.25;
+    else if(type==='magic'||type==='fire'||type==='ice') window.v900AttackBoost=1.35;
+    else if(type==='crit') window.v900CritBoost=20;
+    else if(type==='gcoin') window.v1100GoldBoost=100;
+    else if(type==='def'||type==='counter') window.v1100Guard=true;
+    else if(type==='exp') window.v1100ExpBoost=1.3;
+    else window.v900AttackBoost=1.15;
+    const sk=typeof companionSkillFor==='function'?companionSkillFor(c):['応援','次の攻撃を強化'];
+    if(typeof showToast==='function')showToast(`🎴 ${c.name}「${sk[0]}」発動！`);
+    updateUI();v11save();renderCompanionSkill11();
+  };
+  function renderCompanionSkill11(){
+    const panel=document.getElementById('companion-battle-skill');if(!panel)return;
+    const owned=companions.filter(c=>c.owned).slice(0,6);
+    panel.innerHTML=`<b>🎴 仲間スキル（戦闘中1回）</b><div>${owned.map(c=>{const sk=companionSkillFor(c);return `<button data-comp-id="${c.id}" ${v11.companionUsed?'disabled':''}>${esc11(c.name)}<small>${esc11(sk[0])}</small></button>`}).join('')}</div>`;
+    bindCompanion11();
+  }
+  /* Override the old renderer so the buttons never depend on inline onclick. */
+  function refreshCompanionSkill11(){const p=document.getElementById('companion-battle-skill');if(p)renderCompanionSkill11();}
+  const oldShowAction=window.showActionPanel;
+  window.showActionPanel=function(){
+    oldShowAction();
+    const p=document.getElementById('companion-battle-skill');
+    if(p)renderCompanionSkill11();
+  };
+  const oldStart=window.startBattle;
+  window.startBattle=function(id){v11.companionUsed=false;window.v1100GoldBoost=0;window.v1100Guard=false;window.v1100ExpBoost=1;oldStart(id);setTimeout(refreshCompanionSkill11,30);};
+
+  /* ---------- story skip ---------- */
+  window.v1100SkipStory=function(){
+    clearInterval(window.v1100StoryTimer);
+    if(typeof storyQueue!=='undefined' && storyQueue.length){
+      storyIndex=storyQueue.length-1;
+      if(typeof renderStoryLine==='function')renderStoryLine();
+    }
+    const m=document.getElementById('story-modal');if(m)m.style.display='none';
+    try{
+      if(typeof storyPlayingPrologue!=='undefined'&&storyPlayingPrologue){if(typeof finishPrologue==='function')finishPrologue();}
+      else if(typeof saveGameData==='function')saveGameData();
+    }catch(e){}
+  };
+  function installStorySkip(){
+    const c=document.querySelector('.story-controls');if(!c)return;
+    if(!document.getElementById('story-skip-btn')){
+      const b=document.createElement('button');b.id='story-skip-btn';b.className='story-skip';b.textContent='⏭ スキップ';b.onclick=window.v1100SkipStory;c.appendChild(b);
+    }
+    const next=document.getElementById('story-next-btn');if(next)next.onclick=()=>{if(typeof nextStory==='function')nextStory();};
+  }
+
+  /* ---------- CSS ---------- */
+  const css=document.createElement('style');css.textContent=`
+#v1100-modal{position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:10000;display:none;align-items:center;justify-content:center;padding:14px;box-sizing:border-box}
+.v1100-inner{width:min(760px,96vw);max-height:90vh;overflow:auto;background:#17212b;border:3px solid #38bdf8;border-radius:14px;box-shadow:0 15px 50px rgba(0,0,0,.6);padding:0;color:#f1f5f9}
+.v1100-head{position:sticky;top:0;background:#17212b;border-bottom:1px solid #334155;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;z-index:2}
+.v1100-head b{font-size:20px}.v1100-head button{font-size:24px;background:none;color:#fff;border:0;cursor:pointer}
+#v1100-body{padding:16px}.v11-note{color:#94a3b8;font-size:12px}.v11-row{margin:12px 0}.v11-row>div:first-child{display:flex;justify-content:space-between}.v11-row span{color:#cbd5e1;font-size:13px}.v11-bar{height:10px;background:#0f172a;border-radius:99px;overflow:hidden;margin-top:5px}.v11-bar i{display:block;height:100%;background:#38bdf8}
+.v11-ach-summary{text-align:center;font-size:20px;padding:8px}.v11-ach{display:flex;gap:12px;align-items:center;padding:10px;border-bottom:1px solid #334155;opacity:.55}.v11-ach.got{opacity:1}.v11-ach>span{font-size:24px}.v11-ach small{display:block;color:#94a3b8;margin-top:2px}
+.v11-choice{display:block;width:100%;margin:8px 0;padding:12px;text-align:left;border:2px solid #334155;border-radius:8px;background:#0f172a;color:#fff;cursor:pointer}.v11-choice:hover{border-color:#38bdf8}.v11-choice:disabled{opacity:.65;cursor:default}
+.v11-q{font-size:18px;line-height:1.7;padding:12px 0}.v11-source{font-size:12px;color:#67e8f9}.v11-ok{padding:10px;color:#4ade80;font-weight:bold}.v11-ng{padding:10px;color:#f87171;font-weight:bold}
+.v11-tools{background:#0f172a;border:2px solid #334155;border-radius:10px;padding:14px;margin-bottom:14px}.v11-tools small{display:block;color:#94a3b8;margin-top:3px}.v11-tool-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}.v11-tool-grid button,.v11-primary{padding:11px 8px;border:2px solid #38bdf8;background:#0b2b44;color:#fff;border-radius:8px;font-weight:bold;cursor:pointer}.v11-tool-grid button:hover,.v11-primary:hover{background:#164e70}
+.v11-ch-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.v11-ch-grid button{padding:16px;text-align:left;background:#0f172a;color:#fff;border:2px solid #334155;border-radius:9px;cursor:pointer}.v11-ch-grid button:hover{border-color:#fbbf24}.v11-ch-grid small{display:block;color:#94a3b8;margin-top:4px}.v11-record{font-size:12px;color:#94a3b8;margin-top:12px}.v11-result{text-align:center;font-size:28px;padding:25px}.v11-result small{font-size:13px;color:#94a3b8}.v11-col{padding:8px;border-bottom:1px solid #334155;font-size:13px}.story-skip{margin-left:8px;border:2px solid #fbbf24;background:#3a2a0b;color:#fff;padding:9px 18px;border-radius:8px;cursor:pointer;font-weight:bold}.story-skip:hover{background:#59400e}
+@media(max-width:650px){.v11-tool-grid{grid-template-columns:repeat(2,1fr)}.v11-ch-grid{grid-template-columns:1fr}.v1100-inner{max-height:94vh}.v11-q{font-size:16px}}
+`;
+  document.head.appendChild(css);
+
+  /* Hook after DOM exists and after base initialization. */
+  function boot11(){
+    installTools11();installStorySkip();v11save();
+    // Make old inline buttons safe too.
+    document.querySelectorAll('#v900-tools button').forEach(b=>{
+      const t=b.textContent||'';
+      if(t.includes('文法修行'))b.onclick=window.v1100OpenTraining;
+      if(t.includes('苦手分析'))b.onclick=window.v1100OpenWeakness;
+      if(t.includes('実績'))b.onclick=window.v1100OpenAchievements;
+    });
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(boot11,250));
+  else setTimeout(boot11,250);
+
+  /* Re-install tools when returning to adventure / UI redraws. */
+  const baseUpdate=window.updateUI;
+  window.updateUI=function(){baseUpdate();setTimeout(()=>{installTools11();installStorySkip();refreshCompanionSkill11()},0);};
+
+  /* Expose a visible version marker for debugging. */
+  window.__bunpouQuestVersion='v1100-complete';
+})();
+
 </script>
 
+
+<script>
+/* ================================================================
+   v1200 FINAL POLISH PATCH
+   - 「はじめから」即時開始の安定化
+   - 「続きから」セーブ有無の明確化
+   - 苦手分析 / 文法修行 / 実績を常時再バインド
+   - 仲間スキルを実際の戦闘アクションとして使用可能に
+   - ストーリースキップを確実に終了させる
+   - 既存の埋め込み画像・問題バンク・ストーリーを保持
+   ================================================================ */
+(function(){
+  'use strict';
+  const V1200_KEY='bunpou_v1200_extra';
+  let v12={companionUsed:false,trainingIndex:0};
+  try{Object.assign(v12,JSON.parse(localStorage.getItem(V1200_KEY)||'{}'));}catch(e){}
+  function save12(){try{localStorage.setItem(V1200_KEY,JSON.stringify(v12));}catch(e){}}
+  function toast12(t){
+    if(typeof showToast==='function'){showToast(t);return;}
+    let x=document.getElementById('v12-toast');
+    if(!x){x=document.createElement('div');x.id='v12-toast';document.body.appendChild(x)}
+    x.textContent=t;x.classList.add('show');setTimeout(()=>x.classList.remove('show'),2200);
+  }
+  function modal12(title,html){
+    let m=document.getElementById('v1200-modal');
+    if(!m){
+      m=document.createElement('div');m.id='v1200-modal';
+      m.innerHTML='<div class="v12-inner"><div class="v12-head"><b id="v12-title"></b><button id="v12-close">×</button></div><div id="v12-body"></div></div>';
+      document.body.appendChild(m);m.querySelector('#v12-close').onclick=()=>m.style.display='none';
+    }
+    m.querySelector('#v12-title').innerHTML=title;m.querySelector('#v12-body').innerHTML=html;m.style.display='flex';
+  }
+  function close12(){const m=document.getElementById('v1200-modal');if(m)m.style.display='none'}
+
+  /* ---------- title / start ---------- */
+  function hardStartNewGame(){
+    try{
+      if(typeof hasSavedGame==='function' && hasSavedGame() && !confirm('現在のセーブデータを消して、最初から始めますか？')) return;
+      localStorage.removeItem('bunpou_save_v801');
+      ['v1000_save_v1000_extra','bunpou_v11_extra','bunpou_v1200_extra'].forEach(k=>{if(k!==V1200_KEY)localStorage.removeItem(k)});
+      if(typeof startNewGame==='function' && !window.__v1200OriginalStart){
+        window.__v1200OriginalStart=window.startNewGame;
+      }
+      // Base initializer is already battle-tested; call it, then force the correct screen state.
+      if(window.__v1200OriginalStart) window.__v1200OriginalStart();
+      setTimeout(()=>{
+        const t=document.getElementById('title-screen');if(t)t.style.display='none';
+        const b=document.getElementById('battle-field');if(b)b.style.display='none';
+        const q=document.getElementById('quiz-screen');if(q)q.style.display='none';
+        const c=document.getElementById('config-screen');if(c && typeof prologueSeen!=='undefined' && prologueSeen)c.style.display='block';
+        if(typeof updateUI==='function')updateUI();
+        if(typeof renderEnemies==='function')renderEnemies();
+      },60);
+    }catch(e){console.error(e);toast12('開始処理でエラーが発生しました。ページを再読み込みしてください。')}
+  }
+  function hardContinue(){
+    try{
+      const t=document.getElementById('title-screen');if(t)t.style.display='none';
+      if(typeof loadGameData==='function')loadGameData();
+      if(typeof prologueSeen!=='undefined' && !prologueSeen){
+        if(typeof playPrologue==='function')playPrologue();
+      }else{
+        const c=document.getElementById('config-screen');if(c)c.style.display='block';
+        const b=document.getElementById('battle-field');if(b)b.style.display='none';
+        const q=document.getElementById('quiz-screen');if(q)q.style.display='none';
+        if(typeof renderEnemies==='function')renderEnemies();
+      }
+    }catch(e){console.error(e)}
+  }
+  window.v1200StartNewGame=hardStartNewGame;
+  window.v1200Continue=hardContinue;
+
+  /* ---------- study tools ---------- */
+  function allWrong(){return Array.isArray(window.wrongQuestionKeys)?window.wrongQuestionKeys:[]}
+  function qKey(q){try{return typeof questionKey==='function'?questionKey(q):String(q.q||q.question||'')}catch(e){return String(q.q||'')}}
+  function cat(q){try{return typeof questionCategory==='function'?questionCategory(q):'その他'}catch(e){return q.category||'その他'}}
+  function getTraining(){
+    const wrong=new Set(allWrong());
+    const pool=(Array.isArray(window.questionPool)?window.questionPool:[]).concat(Array.isArray(window.cleanEntranceExamQuestions)?window.cleanEntranceExamQuestions:[]);
+    return pool.filter(q=>wrong.has(qKey(q)));
+  }
+  function openWeak12(){
+    const stats=window.topicStats||{};
+    const rows=Object.entries(stats).filter(([,v])=>v&&v.total).map(([k,v])=>({k,total:Number(v.total)||0,correct:Number(v.correct)||0}));
+    rows.sort((a,b)=>(a.correct/a.total)-(b.correct/b.total));
+    let body='<p class="v12-note">これまでに解いた問題を分野別に集計しています。</p>';
+    if(!rows.length) body+='<div class="v12-empty">まだ問題データがありません。敵との戦闘で問題を解くと、ここに反映されます。</div>';
+    else body+=rows.map(r=>{const p=Math.round(r.correct/r.total*100);return `<div class="v12-stat"><b>${r.k}</b><span>${r.correct}/${r.total}（${p}%）</span><div><i style="width:${p}%"></i></div></div>`}).join('');
+    modal12('📊 苦手分析',body);
+  }
+  function openAch12(){
+    const list=Array.isArray(window.achievementMaster)?window.achievementMaster:[];const got=window.achievements||{};
+    const n=list.filter(a=>got[a[0]]).length;
+    modal12(`🏆 実績 ${n}/${list.length}`,list.map(a=>`<div class="v12-ach ${got[a[0]]?'got':''}"><span>${got[a[0]]?a[3]:'🔒'}</span><div><b>${a[1]}</b><small>${a[2]}</small></div></div>`).join(''));
+  }
+  function showTrainingQuestion(){
+    const pool=getTraining();
+    if(!pool.length){modal12('🏋️ 文法修行','<div class="v12-empty">現在、復習対象のまちがい問題はありません。戦闘で間違えた問題がここに集まります。</div>');return;}
+    const q=pool[Math.floor(Math.random()*pool.length)];
+    const choices=Array.isArray(q.choices)?q.choices:[];
+    modal12('🏋️ 文法修行',`<div class="v12-q">${q.q||q.question||''}</div><div class="v12-source">${q.sourceLabel||'すらすら基本文法ベース'}</div>${choices.map((c,i)=>`<button class="v12-choice" data-i="${i}">${c}</button>`).join('')}`);
+    document.querySelectorAll('#v1200-modal .v12-choice').forEach(b=>b.onclick=()=>{
+      const ok=Number(b.dataset.i)===Number(q.answer);document.querySelectorAll('#v1200-modal .v12-choice').forEach(x=>x.disabled=true);
+      const note=document.createElement('div');note.className=ok?'v12-ok':'v12-ng';note.textContent=ok?'✅ 正解！':'❌ 不正解。正解：'+(choices[q.answer]||'');document.getElementById('v12-body').appendChild(note);
+      if(ok && typeof unlockAchievement==='function')unlockAchievement('training');
+      const next=document.createElement('button');next.className='v12-primary';next.textContent='次の問題';next.onclick=showTrainingQuestion;document.getElementById('v12-body').appendChild(next);
+    });
+  }
+  function openTraining12(){showTrainingQuestion()}
+  function installTools12(){
+    const target=document.getElementById('adventure-tab');if(!target)return;
+    let box=document.getElementById('v1200-tools');
+    if(!box){
+      box=document.createElement('div');box.id='v1200-tools';box.className='v12-tools';
+      box.innerHTML='<div><b>📚 学習・やりこみ</b><small>間違えた問題を復習し、学習の記録を確認できます。</small></div><div class="v12-tool-grid"><button id="v12-training">🏋️ 文法修行</button><button id="v12-weak">📊 苦手分析</button><button id="v12-ach">🏆 実績</button></div>';
+      target.insertBefore(box,target.firstChild);
+    }
+    box.querySelector('#v12-training').onclick=openTraining12;box.querySelector('#v12-weak').onclick=openWeak12;box.querySelector('#v12-ach').onclick=openAch12;
+  }
+
+  /* ---------- companion battle skill ---------- */
+  function companionList(){return (Array.isArray(window.companions)?window.companions:[]).filter(c=>c&&c.owned)}
+  function useCompanion12(id){
+    if(v12.companionUsed){toast12('🎴 この戦闘では仲間スキルをもう使えません');return}
+    const c=companionList().find(x=>Number(x.id)===Number(id));if(!c){toast12('仲間を選べません');return}
+    if(typeof currentEnemy==='undefined'||!currentEnemy||typeof enemyCurrentHp==='undefined'||enemyCurrentHp<=0){toast12('今は戦闘中ではありません');return}
+    v12.companionUsed=true;
+    const type=c.type||'physical';
+    let dmg=Math.max(5,Math.round((typeof getAttackPower==='function'?getAttackPower():10)*8));
+    if(['magic','fire','ice','atk','physical'].includes(type)) dmg=Math.round(dmg*(type==='magic'?1.25:1.1));
+    if(type==='hp'||type==='heal'){
+      if(typeof getMaxHp==='function') currentPlayerHp=Math.min(getMaxHp(),currentPlayerHp+20); else currentPlayerHp+=20;
+      toast12(`💚 ${c.name}の援護！ HPを回復した！`);
+    }else if(type==='mp'){
+      if(typeof getMaxMp==='function')currentMp=Math.min(getMaxMp(),currentMp+4);else currentMp+=4;
+      toast12(`✨ ${c.name}の援護！ MPを回復した！`);
+    }else{
+      enemyCurrentHp=Math.max(0,enemyCurrentHp-dmg);
+      const msg=document.getElementById('message');if(msg){msg.textContent=`🎴 ${c.name}の攻撃！ ${dmg} ダメージ！`;msg.style.color='#fbbf24'}
+      if(typeof updateUI==='function')updateUI();if(typeof updateEnemyHpBar==='function')updateEnemyHpBar();
+      if(enemyCurrentHp<=0 && typeof finishBattle==='function'){ try{finishBattle()}catch(e){console.error(e)}}
+    }
+    save12();
+    const p=document.getElementById('companion-battle-skill');if(p)p.querySelectorAll('button').forEach(b=>b.disabled=true);
+  }
+  window.v1200UseCompanion=useCompanion12;
+  function installCompanion12(){
+    const panel=document.getElementById('companion-battle-skill');if(!panel)return;
+    const owned=companionList().slice(0,6);if(!owned.length){panel.style.display='none';return}
+    panel.style.display='block';panel.innerHTML='<b>🎴 仲間アクション（戦闘中1回）</b><div class="v12-comp-row">'+owned.map(c=>`<button class="v12-comp" data-id="${c.id}" ${v12.companionUsed?'disabled':''}>⚔️ ${c.name}<small>${c.type==='hp'||c.type==='heal'?'HP回復':c.type==='mp'?'MP回復':'援護攻撃'}</small></button>`).join('')+'</div>';
+    panel.querySelectorAll('.v12-comp').forEach(b=>b.onclick=()=>useCompanion12(b.dataset.id));
+  }
+
+  /* ---------- story skip ---------- */
+  function skipStory12(){
+    try{
+      if(typeof clearInterval==='function' && window.v1100StoryTimer)clearInterval(window.v1100StoryTimer);
+      const m=document.getElementById('story-modal');
+      if(typeof storyPlayingPrologue!=='undefined' && storyPlayingPrologue){
+        if(typeof finishPrologue==='function')finishPrologue();
+        else {window.storyPlayingPrologue=false;window.prologueSeen=true;if(typeof saveGameData==='function')saveGameData();if(document.getElementById('config-screen'))document.getElementById('config-screen').style.display='block'}
+      }else{
+        if(typeof storyQueue!=='undefined' && Array.isArray(storyQueue) && storyQueue.length){
+          if(typeof storyIndex!=='undefined')storyIndex=storyQueue.length-1;
+          if(typeof renderStoryLine==='function')renderStoryLine();
+        }
+        if(m)m.style.display='none';
+        if(typeof quizScreen!=='undefined')quizScreen.style.display='none';
+        const q=document.getElementById('quiz-screen');if(q)q.style.display='none';
+        const b=document.getElementById('battle-field');if(b)b.style.display='none';
+        const c=document.getElementById('config-screen');if(c)c.style.display='block';
+        if(typeof saveGameData==='function')saveGameData();
+      }
+    }catch(e){console.error(e);const m=document.getElementById('story-modal');if(m)m.style.display='none'}
+  }
+  window.v1200SkipStory=skipStory12;
+  function installSkip12(){
+    const c=document.querySelector('.story-controls');if(!c)return;
+    let b=document.getElementById('story-skip-btn');if(!b){b=document.createElement('button');b.id='story-skip-btn';b.className='story-skip';b.textContent='⏭ スキップ';c.appendChild(b)}b.onclick=skipStory12;
+  }
+
+  /* ---------- hard-bind buttons after every redraw ---------- */
+  function bindTitle12(){
+    const a=document.querySelector('#title-screen .title-btn.primary');if(a){a.onclick=(e)=>{e.preventDefault();hardStartNewGame()};a.removeAttribute('disabled')}
+    const c=document.getElementById('continue-btn');if(c)c.onclick=(e)=>{e.preventDefault();hardContinue()};
+  }
+  function boot12(){
+    bindTitle12();installTools12();installSkip12();installCompanion12();save12();
+    const note=document.getElementById('title-save-note'),cb=document.getElementById('continue-btn');
+    if(typeof hasSavedGame==='function' && hasSavedGame()){if(note)note.textContent='セーブデータがあります。';if(cb){cb.disabled=false;cb.style.opacity='1'}}
+    else{if(note)note.textContent='はじめての冒険です。';if(cb){cb.disabled=true;cb.style.opacity='.45'}}
+  }
+  const oldUpdate12=window.updateUI;
+  if(oldUpdate12 && !window.__v1200Wrapped){
+    window.updateUI=function(){oldUpdate12.apply(this,arguments);setTimeout(()=>{bindTitle12();installTools12();installSkip12();installCompanion12()},0)};
+    window.__v1200Wrapped=true;
+  }
+  const oldStartBattle12=window.startBattle;
+  if(oldStartBattle12 && !window.__v1200BattleWrapped){
+    window.startBattle=function(){v12.companionUsed=false;save12();const r=oldStartBattle12.apply(this,arguments);setTimeout(installCompanion12,40);return r};window.__v1200BattleWrapped=true;
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(boot12,350));else setTimeout(boot12,350);
+  window.__bunpouQuestVersion='v1200-final-polish';
+})();
+</script>
+<style>
+#v1200-modal{position:fixed;inset:0;z-index:30000;background:rgba(0,0,0,.78);display:none;align-items:center;justify-content:center;padding:14px;box-sizing:border-box}
+.v12-inner{width:min(760px,96vw);max-height:90vh;overflow:auto;background:#111827;border:3px solid #38bdf8;border-radius:14px;box-shadow:0 20px 70px rgba(0,0,0,.7);color:#f8fafc}.v12-head{position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:#111827;border-bottom:1px solid #334155}.v12-head b{font-size:20px}.v12-head button{font-size:26px;background:none;border:0;color:#fff;cursor:pointer}.v12-inner #v12-body{padding:16px}.v12-note{color:#94a3b8}.v12-empty{padding:18px;border:1px dashed #475569;border-radius:10px;color:#cbd5e1}.v12-stat{margin:14px 0}.v12-stat>span{float:right;color:#cbd5e1}.v12-stat>div{clear:both;height:10px;background:#0f172a;border-radius:99px;overflow:hidden;margin-top:6px}.v12-stat i{display:block;height:100%;background:#38bdf8}.v12-ach{display:flex;gap:12px;align-items:center;padding:11px;border-bottom:1px solid #334155;opacity:.5}.v12-ach.got{opacity:1}.v12-ach>span{font-size:24px}.v12-ach small{display:block;color:#94a3b8;margin-top:3px}.v12-q{font-size:19px;line-height:1.75;margin-bottom:6px}.v12-source{font-size:12px;color:#67e8f9;margin-bottom:12px}.v12-choice{display:block;width:100%;margin:8px 0;padding:12px;border:2px solid #334155;border-radius:8px;background:#0f172a;color:#fff;text-align:left;cursor:pointer}.v12-choice:hover{border-color:#38bdf8}.v12-choice:disabled{opacity:.6}.v12-ok{color:#4ade80;font-weight:800;margin-top:12px}.v12-ng{color:#f87171;font-weight:800;margin-top:12px}.v12-primary{margin-top:12px;padding:11px 18px;border:2px solid #38bdf8;border-radius:8px;background:#0b2b44;color:#fff;font-weight:800;cursor:pointer}.v12-tools{background:#0b1220;border:2px solid #334155;border-radius:10px;padding:14px;margin-bottom:14px}.v12-tools small{display:block;color:#94a3b8;margin-top:3px}.v12-tool-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.v12-tool-grid button{padding:11px 8px;border:2px solid #38bdf8;background:#0b2b44;color:#fff;border-radius:8px;font-weight:800;cursor:pointer}.v12-comp-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:9px}.v12-comp{flex:1 1 160px;padding:10px;border:2px solid #fbbf24;background:#241a05;color:#fff;border-radius:8px;cursor:pointer;font-weight:800}.v12-comp small{display:block;color:#fcd34d;margin-top:3px}.v12-comp:disabled{opacity:.5;cursor:default}@media(max-width:650px){.v12-tool-grid{grid-template-columns:1fr}.v12-comp{flex-basis:100%}}
+</style>
 </body>
 </html>
