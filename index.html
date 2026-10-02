@@ -690,6 +690,7 @@ html body #title-screen.v2317-static-title{position:fixed!important;inset:0!impo
 <div class="chat-log" id="story-chat"></div>
 <div class="story-controls">
 <button class="story-next" id="story-next-btn" onclick="nextStory()">▶ 次へ</button>
+<button class="story-skip" id="story-skip-btn" type="button" onclick="skipCurrentStory()" title="このストーリーを最後までスキップします">⏭ スキップ</button>
 </div>
 </div>
 </div>
@@ -2817,6 +2818,7 @@ function loadGameData() {
     }
     function showStoryChart(){ document.getElementById('story-chart-modal').style.display='flex'; }
         function playPrologue(){
+        window.__bqStoryReplay=true;
         const c=prologueStory;
         storyQueue=c.lines; storyIndex=0;
         document.getElementById('story-chat').innerHTML='';
@@ -2869,6 +2871,7 @@ function renderStoryArchive(){
 
     function replayStory(idx){
         const c=storyChapters[idx]; if(!c) return;
+        window.__bqStoryReplay=true;
         storyPlayingPrologue=false;
         storyQueue=c.lines||[]; storyIndex=0;
         document.getElementById('story-chat').innerHTML='';
@@ -3396,6 +3399,7 @@ function renderStoryArchive(){
 
 
     function openStory(enemyId, reward, materialLine){
+        window.__bqStoryReplay=false;
         const chapter = storyChapters[Math.min(enemyId, storyChapters.length-1)];
         storyChapter = Math.max(storyChapter, enemyId + 1);
         seenStoryChapters[enemyId] = true;
@@ -4026,25 +4030,49 @@ const _v1000SR=showRandomQuestion;showRandomQuestion=function(){v1000TickPlayer(
   const oldStart=window.startBattle;
   window.startBattle=function(id){v11.companionUsed=false;window.v1100GoldBoost=0;window.v1100Guard=false;window.v1100ExpBoost=1;oldStart(id);setTimeout(refreshCompanionSkill11,30);};
 
-  /* ---------- story skip ---------- */
-  window.v1100SkipStory=function(){
-    clearInterval(window.v1100StoryTimer);
-    if(typeof storyQueue!=='undefined' && storyQueue.length){
-      storyIndex=storyQueue.length-1;
-      if(typeof renderStoryLine==='function')renderStoryLine();
-    }
-    const m=document.getElementById('story-modal');if(m)m.style.display='none';
+  /* ---------- story skip: v2780 stable ---------- */
+  window.skipCurrentStory=function(){
     try{
-      if(typeof storyPlayingPrologue!=='undefined'&&storyPlayingPrologue){if(typeof finishPrologue==='function')finishPrologue();}
-      else if(typeof saveGameData==='function')saveGameData();
-    }catch(e){}
-  };
-  function installStorySkip(){
-    const c=document.querySelector('.story-controls');if(!c)return;
-    if(!document.getElementById('story-skip-btn')){
-      const b=document.createElement('button');b.id='story-skip-btn';b.className='story-skip';b.textContent='⏭ スキップ';b.onclick=window.v1100SkipStory;c.appendChild(b);
+      const c2=document.getElementById('bq-ch2-modal');
+      if(c2 && getComputedStyle(c2).display!=='none' && typeof window.bqCh2Skip==='function'){
+        window.bqCh2Skip();
+        return;
+      }
+      const modal=document.getElementById('story-modal');
+      if(!modal || getComputedStyle(modal).display==='none') return;
+      if(window.__bqStorySkipBusy) return;
+      window.__bqStorySkipBusy=true;
+      if(typeof window.v1100StoryTimer!=='undefined') clearInterval(window.v1100StoryTimer);
+      if(typeof window.storyTimer!=='undefined') clearInterval(window.storyTimer);
+      if(typeof storyPlayingPrologue!=='undefined' && storyPlayingPrologue){
+        if(typeof finishPrologue==='function') finishPrologue();
+        return;
+      }
+      if(typeof storyQueue!=='undefined' && Array.isArray(storyQueue) && storyQueue.length){
+        storyIndex=storyQueue.length-1;
+        if(typeof renderStoryLine==='function') renderStoryLine();
+        if(window.__bqStoryReplay===true){
+          modal.style.display='none';
+          modal.style.visibility='hidden';
+          try{switchTab('story');}catch(e){}
+          try{if(typeof renderStoryArchive==='function')renderStoryArchive();}catch(e){}
+        }else if(typeof nextStory==='function'){
+          nextStory();
+        }
+      }
+      try{if(typeof saveGameData==='function')saveGameData();}catch(e){}
+    }catch(e){
+      console.error('[BunPouQuest] story skip failed',e);
+    }finally{
+      setTimeout(()=>{window.__bqStorySkipBusy=false;},250);
     }
-    const next=document.getElementById('story-next-btn');if(next)next.onclick=()=>{if(typeof nextStory==='function')nextStory();};
+  };
+  window.v1100SkipStory=window.skipCurrentStory;
+  function installStorySkip(){
+    const b=document.getElementById('story-skip-btn');
+    if(b){b.onclick=window.skipCurrentStory;b.type='button';}
+    const next=document.getElementById('story-next-btn');
+    if(next)next.onclick=()=>{if(typeof nextStory==='function')nextStory();};
   }
 
   /* ---------- CSS ---------- */
@@ -4058,7 +4086,7 @@ const _v1000SR=showRandomQuestion;showRandomQuestion=function(){v1000TickPlayer(
 .v11-choice{display:block;width:100%;margin:8px 0;padding:12px;text-align:left;border:2px solid #334155;border-radius:8px;background:#0f172a;color:#fff;cursor:pointer}.v11-choice:hover{border-color:#38bdf8}.v11-choice:disabled{opacity:.65;cursor:default}
 .v11-q{font-size:18px;line-height:1.7;padding:12px 0}.v11-source{font-size:12px;color:#67e8f9}.v11-ok{padding:10px;color:#4ade80;font-weight:bold}.v11-ng{padding:10px;color:#f87171;font-weight:bold}
 .v11-tools{background:#0f172a;border:2px solid #334155;border-radius:10px;padding:14px;margin-bottom:14px}.v11-tools small{display:block;color:#94a3b8;margin-top:3px}.v11-tool-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}.v11-tool-grid button,.v11-primary{padding:11px 8px;border:2px solid #38bdf8;background:#0b2b44;color:#fff;border-radius:8px;font-weight:bold;cursor:pointer}.v11-tool-grid button:hover,.v11-primary:hover{background:#164e70}
-.v11-ch-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.v11-ch-grid button{padding:16px;text-align:left;background:#0f172a;color:#fff;border:2px solid #334155;border-radius:9px;cursor:pointer}.v11-ch-grid button:hover{border-color:#fbbf24}.v11-ch-grid small{display:block;color:#94a3b8;margin-top:4px}.v11-record{font-size:12px;color:#94a3b8;margin-top:12px}.v11-result{text-align:center;font-size:28px;padding:25px}.v11-result small{font-size:13px;color:#94a3b8}.v11-col{padding:8px;border-bottom:1px solid #334155;font-size:13px}.story-skip{margin-left:8px;border:2px solid #fbbf24;background:#3a2a0b;color:#fff;padding:9px 18px;border-radius:8px;cursor:pointer;font-weight:bold}.story-skip:hover{background:#59400e}
+.v11-ch-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.v11-ch-grid button{padding:16px;text-align:left;background:#0f172a;color:#fff;border:2px solid #334155;border-radius:9px;cursor:pointer}.v11-ch-grid button:hover{border-color:#fbbf24}.v11-ch-grid small{display:block;color:#94a3b8;margin-top:4px}.v11-record{font-size:12px;color:#94a3b8;margin-top:12px}.v11-result{text-align:center;font-size:28px;padding:25px}.v11-result small{font-size:13px;color:#94a3b8}.v11-col{padding:8px;border-bottom:1px solid #334155;font-size:13px}.story-skip{margin-left:8px;border:2px solid #fbbf24;background:#3a2a0b;color:#fff;padding:9px 18px;border-radius:8px;cursor:pointer;font-weight:bold}.story-skip:hover{background:#59400e}.bq-ch2-skip{border:2px solid #fbbf24!important;background:#3a2a0b!important;color:#fff;border-radius:8px;padding:9px 14px;font-weight:900;cursor:pointer}.bq-ch2-skip:hover{background:#59400e!important}
 @media(max-width:650px){.v11-tool-grid{grid-template-columns:repeat(2,1fr)}.v11-ch-grid{grid-template-columns:1fr}.v1100-inner{max-height:94vh}.v11-q{font-size:16px}}
 `;
   document.head.appendChild(css);
@@ -4206,24 +4234,10 @@ if(typeof oldSwitchTab==='function'){
 }
 
 // v1100のスキップを「次の画面まで確実に進む」形に再実装
-window.v1200SkipStory=function(){
- try{
-   if(typeof storyQueue!=='undefined' && Array.isArray(storyQueue) && storyQueue.length){
-     storyIndex=storyQueue.length-1;
-   }
-   if(typeof storyPlayingPrologue!=='undefined' && storyPlayingPrologue){
-     if(typeof finishPrologue==='function')finishPrologue();
-   }else if(typeof nextStory==='function'){
-     nextStory();
-   }
-   if(typeof saveGameData==='function')saveGameData();
- }catch(e){
-   const m=document.getElementById('story-modal');if(m)m.style.display='none';
- }
-};
+window.v1200SkipStory=function(){if(typeof window.skipCurrentStory==='function')window.skipCurrentStory();};
 function installSkip(){
  const b=document.getElementById('story-skip-btn');
- if(b)b.onclick=window.v1200SkipStory;
+ if(b)b.onclick=(typeof window.skipCurrentStory==='function'?window.skipCurrentStory:window.v1200SkipStory);
 }
 
 // 初期表示・UI再描画後にもアートを復元
@@ -4908,6 +4922,9 @@ body{background:radial-gradient(circle at 50% -10%,rgba(29,78,216,.20),transpare
   };
 
   const obs=new MutationObserver(()=>{
+    // 第二章戦闘中は、全DOM監視による旧UI修復を停止。
+    // 戦闘中のHP・問題・ボタン更新だけで大量の再描画が発生するため。
+    if(window.__bqC2BattlePerf) return;
     clearTimeout(obs._t);
     obs._t=setTimeout(killOldLearning,0);
   });
@@ -5018,7 +5035,10 @@ body{background:radial-gradient(circle at 50% -10%,rgba(29,78,216,.20),transpare
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',()=>setTimeout(apply,50));
   else setTimeout(apply,50);
-  new MutationObserver(()=>apply()).observe(document.body,{childList:true,subtree:true});
+  new MutationObserver(()=>{
+    if(window.__bqC2BattlePerf) return;
+    apply();
+  }).observe(document.body,{childList:true,subtree:true});
   window.__bunpouQuestVersion='v2000-mobile-final';
 })();
 </script>
@@ -5387,7 +5407,10 @@ body{background:radial-gradient(circle at 50% -10%,rgba(29,78,216,.20),transpare
         if(/戦闘中(?:1|一)回使用できる/.test(t) && !btn.classList.contains('v2200-skill-main')) btn.remove();
       });
     }
-    const mo=new MutationObserver(cleanLegacySkillButtons); mo.observe(document.body,{subtree:true,childList:true}); cleanLegacySkillButtons();
+    const mo=new MutationObserver(()=>{
+      if(window.__bqC2BattlePerf) return;
+      cleanLegacySkillButtons();
+    }); mo.observe(document.body,{subtree:true,childList:true}); cleanLegacySkillButtons();
     if(typeof questionPool!=='undefined' && Array.isArray(questionPool)){
       const seen=new Set();
       questionPool=questionPool.filter(q=>{
@@ -5875,7 +5898,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 <div id="bq-ch2-top"><div><div id="bq-ch2-kicker">CHAPTER II · 言葉の迷宮</div><div id="bq-ch2-title">第1話　雨の日の事件</div></div><button id="bq-ch2-close" onclick="bqCh2Close()" type="button">閉じる ✕</button></div>
 <div id="bq-ch2-stage"><img alt="登場人物" id="bq-ch2-portrait"/><div id="bq-ch2-scene"><div id="bq-ch2-location"></div><div id="bq-ch2-speaker"></div><div id="bq-ch2-text"></div></div></div>
 <div id="bq-ch2-picker"><h3>第二章　ストーリーアーカイブ</h3><div id="bq-ch2-grid"></div></div>
-<div id="bq-ch2-bottom"><div id="bq-ch2-meter"><span id="bq-ch2-counter">1 / 5</span><span id="bq-ch2-unlock-note"></span></div><div id="bq-ch2-bar"><span></span></div><div id="bq-ch2-actions"><button onclick="bqCh2ShowPicker()" type="button">話数一覧</button><button onclick="bqCh2Restart()" type="button">この話を最初から</button><button id="bq-ch2-next" onclick="bqCh2Next()" type="button">次へ ▶</button></div></div>
+<div id="bq-ch2-bottom"><div id="bq-ch2-meter"><span id="bq-ch2-counter">1 / 5</span><span id="bq-ch2-unlock-note"></span></div><div id="bq-ch2-bar"><span></span></div><div id="bq-ch2-actions"><button onclick="bqCh2ShowPicker()" type="button">話数一覧</button><button onclick="bqCh2Restart()" type="button">この話を最初から</button><button id="bq-ch2-next" onclick="bqCh2Next()" type="button">次へ ▶</button><button id="bq-ch2-skip" class="bq-ch2-skip" onclick="bqCh2Skip()" type="button" title="この話を最後までスキップ">⏭ スキップ</button></div></div>
 </div>
 </div>
 <script id="bq-chapter2-script">
@@ -5919,6 +5942,12 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
  window.bqCh2ShowPicker=function(){view='picker';$('bq-ch2-stage').style.display='none';$('bq-ch2-picker').style.display='block';renderPicker();$('bq-ch2-next').textContent='話数一覧';$('bq-ch2-next').onclick=bqCh2ShowPicker;};
  window.bqCh2Play=function(i){if(!Number.isInteger(i)||i<0||i>=20)return;if(!unlocked()&&i>=progress()){alert('この話はまだ解放されていません。前の話を読み進めるか、ホーム画面で隠しコード 2206 を入力してください。');return;}episode=i;line=0;view='story';$('bq-ch2-modal').style.display='flex';$('bq-ch2-picker').style.display='none';$('bq-ch2-stage').style.display='block';$('bq-ch2-next').onclick=bqCh2Next;render();};
  window.bqCh2Restart=function(){line=0;$('bq-ch2-next').onclick=bqCh2Next;render();};
+ window.bqCh2Skip=function(){
+   if(view!=='story'||window.__bqC2SkipBusy)return;
+   window.__bqC2SkipBusy=true;
+   try{const e=EP[episode];if(!e)return;line=e.lines.length-1;render();bqCh2Next();}
+   finally{setTimeout(()=>{window.__bqC2SkipBusy=false;},250);}
+ };
  window.bqCh2Next=function(){
    if(view==='picker'){bqCh2ShowPicker();return;}
    const e=EP[episode];
@@ -6182,6 +6211,8 @@ window.bqCh2ShowBattleSelect=showC2Select;
 window.bqCh2BackToChapter1=hideC2Select;
 window.bqCh2StartBattle=function(i){
  if(!Number.isInteger(i)||!C2ENEMIES[i]||!c2CanFight(i))return;
+ // 第二章戦闘中は全体DOM監視・装飾監視を停止し、戦闘UIだけを更新する。
+ window.__bqC2BattlePerf=true;
  c2Battle=true;currentEnemy=C2ENEMIES[i];
  calculateWorldModifiers();enemyMaxHp=Math.max(1,Math.round(currentEnemy.maxHp*currentWorldModifiers.enemyHp));enemyCurrentHp=enemyMaxHp;currentQuestionCount=0;currentQuestionObject=null;battleCombo=0;maxMp=getMaxMp();currentMp=maxMp;
  activeQuestionPool=c2QuestionPool(i).slice();currentPoolIndex=0;
@@ -6236,8 +6267,10 @@ function finishC2Battle(){
  saveGameData();
  showRewardNotification(reward,pendingRewardData.materialLine,xpGain,currentEnemy.name);
  try{if(typeof window.v2200ResetCompanionSkill==='function')window.v2200ResetCompanionSkill();}catch(e){}
+ // 報酬表示まで終えたら通常のUI監視へ戻す。
+ window.__bqC2BattlePerf=false;
 }
-const originalStartBattle=window.startBattle; window.startBattle=function(id){ c2Battle=false; return originalStartBattle.apply(this,arguments); };
+const originalStartBattle=window.startBattle; window.startBattle=function(id){ c2Battle=false; window.__bqC2BattlePerf=false; return originalStartBattle.apply(this,arguments); };
 const originalShowRandomQuestion=window.showRandomQuestion;
 window.showRandomQuestion=function(){
  if(c2Battle&&currentEnemy&&currentEnemy.id>=20&&enemyCurrentHp<=0){finishC2Battle();return;}
@@ -6809,6 +6842,7 @@ window.addEventListener('storage',()=>setTimeout(render,0));
   // Low-frequency repaint is retained only for companion skills / armor lore; weapon levels use base rendering.
   let lastUiSignature='';
   setInterval(()=>{
+    if(window.__bqC2BattlePerf) return;
     const battleEl=document.getElementById('battle-field');
     const shopEl=document.getElementById('shop-screen') || document.getElementById('shop');
     const collectionEl=document.getElementById('collection-screen') || document.getElementById('collection');
@@ -6942,6 +6976,82 @@ window.addEventListener('storage',()=>setTimeout(render,0));
     const out=[...groups.values()]; return {pool:out,removed:pool.length-out.length};
   }
 
+  // v2750: 文節問題の安全弁。
+  // 文節の区切りは単なる文字列一致ではなく、日本語として検証済みの区切りだけを出題する。
+  // 未検証の自動生成問題を残すと「なん／か」のような不自然な区切りが正答になるため、
+  // 文節分割・文節数については検証済みセンテンス以外を問題バンクから除外する。
+  const verifiedBunsetsu = new Map([
+    ['空が青い。','空が／青い。'],
+    ['鳥が飛ぶ。','鳥が／飛ぶ。'],
+    ['私は本を読む。','私は／本を／読む。'],
+    ['朝の空気は気持ちいい。','朝の／空気は／気持ちいい。'],
+    ['今日は晴れた。','今日は／晴れた。'],
+    ['今日は買い物に行く。','今日は／買い物に／行く。'],
+    ['犬が庭を走る。','犬が／庭を／走る。'],
+    ['私は本を読んだ。','私は／本を／読んだ。'],
+    ['私は毎朝公園で走る。','私は／毎朝／公園で／走る。'],
+    ['弟は図書館で本を読む。','弟は／図書館で／本を／読む。'],
+    ['明日は早く学校へ行こう。','明日は／早く／学校へ／行こう。'],
+    ['先生が黒板に問題を書いた。','先生が／黒板に／問題を／書いた。'],
+    ['窓を開けると風が入った。','窓を／開けると／風が／入った。'],
+    ['雨が降ったので試合は中止になった。','雨が／降ったので／試合は／中止に／なった。'],
+    ['友達と駅まで歩いて帰った。','友達と／駅まで／歩いて／帰った。'],
+    ['青い空を鳥が飛んでいる。','青い／空を／鳥が／飛んで／いる。'],
+    ['青い空が見える。','青い／空が／見える。'],
+    ['大きな木が立っている。','大きな／木が／立って／いる。'],
+    ['花が庭に咲く。','花が／庭に／咲く。'],
+    ['私は学校へ行った。','私は／学校へ／行った。'],
+    ['兄は速く走る。','兄は／速く／走る。'],
+    ['今日は学校で勉強する。','今日は／学校で／勉強する。'],
+    ['明日は友だちと遊ぶ。','明日は／友だちと／遊ぶ。'],
+    ['父は毎朝新聞を読む。','父は／毎朝／新聞を／読む。'],
+    ['彼女の兄は野球選手だ。','彼女の／兄は／野球選手だ。'],
+    ['毎日二時間も勉強する。','毎日／二時間も／勉強する。'],
+    ['明日はおそらく晴れるだろう。','明日は／おそらく／晴れるだろう。'],
+    ['彼は次々と新記録を出した。','彼は／次々と／新記録を／出した。'],
+    ['この春から中学一年生になる。','この春から／中学一年生に／なる。'],
+    ['猫が庭で眠る。','猫が／庭で／眠る。'],
+    ['今日はとても暑い。','今日は／とても／暑い。'],
+    ['妹は元気に笑う。','妹は／元気に／笑う。'],
+    ['父は車を洗う。','父は／車を／洗う。'],
+    ['先生が来た。','先生が／来た。'],
+    ['花が咲く。','花が／咲く。'],
+    ['大きな犬が走る。','大きな／犬が／走る。'],
+    ['とても速く走る。','とても／速く／走る。'],
+    ['先生が教室に来た。','先生が／教室に／来た。'],
+    ['花がきれいに咲く。','花が／きれいに／咲く。']
+  ]);
+  const bunsetsuSentenceKey = t => {
+    const m=String(t||'').match(/[「『]([^「『」』]+。?)[」』]/);
+    return m ? norm(m[1]) : '';
+  };
+  function filterUnsafeBunsetsu(pool){
+    if(!Array.isArray(pool)) return {before:0,after:0,removed:0};
+    const before=pool.length;
+    const out=pool.filter(q=>{
+      const t=String(q?.q||'');
+      if(!/文節/.test(t)) return true;
+      if(!/(文節に区切|文節の区切|文節数|いくつの文節|文節に分け)/.test(t)) return true;
+      const sent=bunsetsuSentenceKey(t);
+      // 「文節の数」など、設問中の文を引用している場合だけ安全弁を適用。
+      if(!sent) return true;
+      const expected=verifiedBunsetsu.get(sent);
+      if(!expected) return false;
+      if(/文節に区切|文節の区切|文節に分け/.test(t)){
+        const idx=(q.choices||[]).findIndex(c=>norm(c)===norm(expected));
+        return idx>=0 && Number(q.answer)===idx;
+      }
+      if(/文節数|いくつの文節/.test(t)){
+        const count=expected.split('／').length;
+        const idx=(q.choices||[]).findIndex(c=>norm(c)===String(count));
+        return idx>=0 && Number(q.answer)===idx;
+      }
+      return true;
+    });
+    pool.length=0; out.forEach(q=>pool.push(q));
+    return {before,after:pool.length,removed:before-pool.length};
+  }
+  const bunsetsuSafetyReports=[];
   const reports=[];
   function runPool(name,pool){
     if(!Array.isArray(pool)) return;
@@ -6956,10 +7066,10 @@ window.addEventListener('storage',()=>setTimeout(render,0));
     }
     reports.push({name,before,after:pool.length,removed:d.removed,errors});
   }
-  try{runPool('questionPool',questionPool);}catch(e){reports.push({name:'questionPool',error:String(e)});}
-  try{runPool('bluePururinQuestionBank',bluePururinQuestionBank);}catch(e){reports.push({name:'bluePururinQuestionBank',error:String(e)});}
-  try{runPool('introEasyQuestions',introEasyQuestions);}catch(e){}
-  try{runPool('bluePururinAdditionalQuestions',bluePururinAdditionalQuestions);}catch(e){}
+  try{bunsetsuSafetyReports.push(['questionPool',filterUnsafeBunsetsu(questionPool)]);runPool('questionPool',questionPool);}catch(e){reports.push({name:'questionPool',error:String(e)});}
+  try{bunsetsuSafetyReports.push(['bluePururinQuestionBank',filterUnsafeBunsetsu(bluePururinQuestionBank)]);runPool('bluePururinQuestionBank',bluePururinQuestionBank);}catch(e){reports.push({name:'bluePururinQuestionBank',error:String(e)});}
+  try{bunsetsuSafetyReports.push(['introEasyQuestions',filterUnsafeBunsetsu(introEasyQuestions)]);runPool('introEasyQuestions',introEasyQuestions);}catch(e){}
+  try{bunsetsuSafetyReports.push(['bluePururinAdditionalQuestions',filterUnsafeBunsetsu(bluePururinAdditionalQuestions)]);runPool('bluePururinAdditionalQuestions',bluePururinAdditionalQuestions);}catch(e){}
 
   // 青ぷるりんは専用バンクだけを使用し、重複を除去した状態を維持。
   try{
@@ -6969,12 +7079,482 @@ window.addEventListener('storage',()=>setTimeout(render,0));
   }catch(e){}
 
   window.__v2744PdfQuestionQA={
-    version:'v2744',basis:'すらすら基本文法 スキャンPDF P.2–11',reports,
+    version:'v2751',basis:'すらすら基本文法 スキャンPDF P.2–11',reports,
     segmentationChecked:segmentation.size,countChecked:counts.size,relationRules:relationRules.length,
+    bunsetsuSafetyReports,
     ok:reports.every(r=>!r.error&&(!r.errors||!r.errors.length))
   };
 })();
 </script>
+
+<script id="bq-v2749-companion-tab-confusion-flow-fix">
+(()=>{
+  'use strict';
+
+  /* v2749 FINAL:
+     1) 旧「仲間スキル」パネルを完全撤去。
+        現行の仲間スキルUIは v2200 の「仲間スキル」ボタンだけを正本とする。
+     2) 第二章の混乱ミス時は、攻撃失敗→反撃→次の問題、までを
+        通常攻撃と同じ後処理で確実に完了させる。
+  */
+  function removeLegacyCompanionSkillUI(root){
+    const base=root||document;
+    base.querySelectorAll('#companion-battle-skill,#v1800-companion-skill-main,#v1800-companion-skill-area,.v1800-comp-skill-choice')
+      .forEach(el=>el.remove());
+  }
+
+  function nextQuestionAfterMiss(message){
+    try{
+      const panel=document.getElementById('action-panel');
+      if(panel) panel.style.display='none';
+      if(typeof closeActionPanel==='function') closeActionPanel();
+    }catch(e){}
+    try{ currentQuestionObject=null; }catch(e){}
+    try{ updateEnemyHpBar(); }catch(e){}
+    if(message) notify(message);
+    setTimeout(()=>{
+      try{
+        if(Number(currentPlayerHp)<=0)return;
+        /* 混乱ミス後は「次の問題」へ完全に復帰させる。
+           旧処理で action-panel が閉じたあとも、選択肢コンテナを必ず再表示する。 */
+        const choices=document.getElementById('choices-container');
+        if(choices) choices.style.display='block';
+        window.showRandomQuestion();
+        /* showRandomQuestion は選択肢を再生成するだけで display を保証しないため、
+           次問生成直後にも明示的に表示状態を確認する。 */
+        const nextChoices=document.getElementById('choices-container');
+        if(nextChoices) nextChoices.style.display='block';
+        const nextPanel=document.getElementById('action-panel');
+        if(nextPanel){nextPanel.style.display='none';nextPanel.innerHTML='';}
+      }catch(e){ console.warn('[v2749] next question after miss failed',e); }
+    },700);
+  }
+  window.__bq2749NextQuestionAfterMiss=nextQuestionAfterMiss;
+
+  /* 最終的な showActionPanel の後にも旧パネルが残らないようにする。 */
+  const oldShow=window.showActionPanel;
+  if(typeof oldShow==='function' && !oldShow.__v2749LegacySkillClean){
+    const wrapped=function(){
+      const r=oldShow.apply(this,arguments);
+      removeLegacyCompanionSkillUI();
+      setTimeout(removeLegacyCompanionSkillUI,0);
+      setTimeout(removeLegacyCompanionSkillUI,50);
+      return r;
+    };
+    wrapped.__v2749LegacySkillClean=true;
+    window.showActionPanel=wrapped;
+  }
+
+  /* startBattle / 第二章開始時にも旧パネルを残さない。 */
+  ['startBattle','bqCh2StartBattle'].forEach(name=>{
+    const fn=window[name];
+    if(typeof fn!=='function')return;
+    if(fn.__v2749LegacySkillClean) return;
+    const wrapped=function(){
+      const r=fn.apply(this,arguments);
+      removeLegacyCompanionSkillUI();
+      setTimeout(removeLegacyCompanionSkillUI,0);
+      setTimeout(removeLegacyCompanionSkillUI,50);
+      return r;
+    };
+    wrapped.__v2749LegacySkillClean=true;
+    window[name]=wrapped;
+  });
+
+  /* 既存の再描画処理は showActionPanel/startBattle の出口で撤去する。
+     全DOM監視は第二章の処理落ち対策と相反するため、ここでは追加しない。 */
+  removeLegacyCompanionSkillUI();
+
+  /* 混乱の戦闘処理は v2751 の最終入口で一元管理する。
+     旧「攻撃が外れる→敵が反撃」処理はここでは実行しない。 */
+
+  /* 画面に旧パネルが残らないための保険。 */
+  const style=document.createElement('style');
+  style.id='bq-v2749-legacy-skill-hide';
+  style.textContent='#companion-battle-skill,#v1800-companion-skill-main,#v1800-companion-skill-area,.v1800-comp-skill-choice{display:none!important;}';
+  document.head.appendChild(style);
+})();
+</script>
+
+<script id="bq-v2751-confusion-self-attack-final">
+(()=>{
+  'use strict';
+  /* v2751 FINAL: 混乱時の処理を完全入れ替え。
+     第二章で攻撃系行動を選択した際、一定確率で「自分を攻撃」する。
+     ダメージは主人公の現在の攻撃力の1/10。
+     旧「攻撃が外れる」「敵が反撃する」処理は使用しない。
+     旧 v2749/v2750 の混乱入口を上書きして、処理の二重発火を防ぐ。 */
+  const status=()=>window.__bq2740Status||null;
+  const isC2Now=()=>{try{return !!(currentEnemy&&Number(currentEnemy.id)>=20&&Number(currentEnemy.id)<=39);}catch(e){return false;}};
+  const active=()=>{const st=status();return !!(st&&st.started&&st.active&&Number(st.active.confusion)>0);};
+
+  function confusionSelfAttack(kind){
+    let damage=1;
+    try{ damage=Math.max(1,Math.ceil(Number(getAttackPower())/10)); }catch(e){ damage=1; }
+    currentPlayerHp=Math.max(0,Number(currentPlayerHp)-damage);
+    battleCombo=0;
+    try{stopQuestionTimer();}catch(e){}
+    try{currentQuestionObject=null;}catch(e){}
+    const panel=document.getElementById('action-panel');
+    if(panel){panel.style.display='none';panel.innerHTML='';}
+    const choices=document.getElementById('choices-container');
+    if(choices)choices.style.display='block';
+    notify(`🌀 混乱して${kind}が自分に命中！ 自分に ${damage} ダメージ`);
+    if(Number(currentPlayerHp)<=0){
+      try{answerLocked=true;}catch(e){}
+      const q=document.getElementById('quiz-screen'), b=document.getElementById('battle-field'), c=document.getElementById('config-screen');
+      if(q)q.style.display='none';
+      if(b)b.style.display='none';
+      if(c)c.style.display='block';
+      return true;
+    }
+    setTimeout(()=>{
+      try{
+        const nextChoices=document.getElementById('choices-container');
+        if(nextChoices)nextChoices.style.display='block';
+        const nextPanel=document.getElementById('action-panel');
+        if(nextPanel){nextPanel.style.display='none';nextPanel.innerHTML='';}
+        window.showRandomQuestion();
+        const afterChoices=document.getElementById('choices-container');
+        if(afterChoices)afterChoices.style.display='block';
+      }catch(e){console.error('[v2751] next question failed',e);}
+    },700);
+    return true;
+  }
+  window.__bq2751ConfusionSelfAttack=confusionSelfAttack;
+
+  function patch(name,kind){
+    const base=window[name];
+    if(typeof base!=='function')return;
+    if(base.__v2751ConfusionFinal)return;
+    const wrapped=function(){
+      const st=status();
+      if(isC2Now() && st && st.started && st.active && Number(st.active.hardening)>0 && name==='performPhysicalAttack'){
+        const panel=document.getElementById('action-panel');
+        if(panel){panel.style.display='none';panel.innerHTML='';}
+        notify('🛡️ 硬化中で通常攻撃を使えない！');
+        setTimeout(()=>{if(Number(currentPlayerHp)>0)window.showRandomQuestion();},700);
+        return true;
+      }
+      if(isC2Now() && active() && Math.random()<.55){
+        return confusionSelfAttack(kind);
+      }
+      return base.apply(this,arguments);
+    };
+    wrapped.__v2751ConfusionFinal=true;
+    wrapped.__v2751Base=base;
+    window[name]=wrapped;
+  }
+  patch('performPhysicalAttack','攻撃');
+  patch('performSpell','魔法');
+  patch('performFinisher','フィニッシャー');
+
+  window.__bq2751ConfusionQA={
+    version:'v2751',
+    rule:'第二章・混乱時は攻撃力の1/10を自分に与える',
+    oldMissCounterattackRemoved:true,
+    patched:['performPhysicalAttack','performSpell','performFinisher']
+  };
+})();
+</script>
+
+<script id="bq-v2751-static-qa">
+(()=>{
+ 'use strict';
+ const html=document.documentElement.innerHTML;
+ const forbidden=[/混乱して(?:攻撃|魔法|フィニッシャー)が外れた！/g,/混乱して.*敵の反撃/g];
+ window.__bq2751StaticQA={
+   syntaxReady:true,
+   forbiddenConfusionStringsFound:forbidden.filter(re=>re.test(html)),
+   selfAttackRule:'Math.ceil(getAttackPower()/10)',
+   bunsetsuSafety:'verified-only'
+ };
+})();
+</script>
+<script id="v2760-pdf-strict-question-gate">
+(()=>{
+  'use strict';
+  /* v2760: 「すらすら基本文法」準拠の厳格出題ゲート。
+     - 自動生成(generatedPattern)の問題は通常戦から除外。
+     - 文節問題で、区切り記号(/／|｜)だけを変えた選択肢は除外。
+     - 「○○の意味」のような単語単体の意味問題は、例文がないものを除外。
+     - 文節問題は既存のPDF検証済み安全弁も再通過させる。
+  */
+  const cleanText=s=>String(s??'').replace(/[\s　]+/g,'');
+  const hasMeaningWithoutExample=q=>{
+    const t=String(q?.q||'');
+    if(!/意味/.test(t)) return false;
+    // Example/context is required. A quoted sentence with punctuation is accepted;
+    // two quoted parts (e.g. 「語」の「働き/意味」) are also accepted.
+    const quoted=[...t.matchAll(/[「『]([^「『」』]*)[」』]/g)].map(m=>m[1]);
+    if(quoted.length>=2) return false;
+    if(quoted.length===1 && /[。！？]/.test(quoted[0])) return false;
+    // Questions such as 「ず」の意味。 / 「けり」の意味。 have no usable example.
+    return /[「『][^「『」』]{1,20}[」』].*意味/.test(t);
+  };
+  const separatorEquivalentChoices=q=>{
+    if(!/文節/.test(String(q?.q||'')) || !Array.isArray(q?.choices)) return false;
+    const normSeg=x=>cleanText(x).replace(/[\/／|｜]/g,'');
+    const seen=new Set();
+    for(const c of q.choices){
+      const n=normSeg(c);
+      if(seen.has(n)) return true;
+      seen.add(n);
+    }
+    return false;
+  };
+  const bad=q=>!!(q?.generatedPattern) || hasMeaningWithoutExample(q) || separatorEquivalentChoices(q);
+  function cleanArray(arr){
+    if(!Array.isArray(arr)) return {before:0,after:0,removed:0};
+    const before=arr.length;
+    const out=arr.filter(q=>!bad(q));
+    arr.length=0;out.forEach(q=>arr.push(q));
+    return {before,after:arr.length,removed:before-arr.length};
+  }
+  const reports={};
+  try{reports.questionPool=cleanArray(questionPool);}catch(e){reports.questionPool={error:String(e)};}
+  try{reports.introEasyQuestions=cleanArray(introEasyQuestions);}catch(e){reports.introEasyQuestions={error:String(e)};}
+  try{reports.bluePururinIntroQuestions=cleanArray(bluePururinIntroQuestions);}catch(e){reports.bluePururinIntroQuestions={error:String(e)};}
+  try{reports.bluePururinAdditionalQuestions=cleanArray(bluePururinAdditionalQuestions);}catch(e){reports.bluePururinAdditionalQuestions={error:String(e)};}
+  try{reports.bluePururinQuestionBank=cleanArray(bluePururinQuestionBank);}catch(e){reports.bluePururinQuestionBank={error:String(e)};}
+  window.__v2760QuestionGate={version:'v2760',reports,generatedPatternRemoved:true,separatorOnlySegmentationRemoved:true,meaningWithoutExampleRemoved:true};
+})();
+</script>
+<style id="v2770-battle-side-info-css">
+#bq2770-side-info{position:fixed;right:14px;top:112px;width:252px;z-index:1200;box-sizing:border-box;padding:12px;border:1px solid rgba(56,189,248,.42);border-radius:12px;background:rgba(7,15,30,.94);box-shadow:0 10px 30px rgba(0,0,0,.35);color:#e5e7eb;font-size:12px;line-height:1.55;backdrop-filter:blur(6px)}
+#bq2770-side-info[hidden]{display:none!important}
+#bq2770-side-info .bq2770-head{font-weight:900;color:#7dd3fc;font-size:14px;margin-bottom:6px}
+#bq2770-side-info .bq2770-active{padding:7px 8px;margin:6px 0;border-radius:8px;background:rgba(30,41,59,.8);border-left:3px solid #38bdf8}
+#bq2770-side-info .bq2770-none{color:#94a3b8}
+#bq2770-side-info .bq2770-update{margin-top:10px;padding-top:9px;border-top:1px solid rgba(148,163,184,.22)}
+#bq2770-side-info .bq2770-update-title{font-weight:900;color:#fbbf24;margin-bottom:4px}
+@media(max-width:1100px){#bq2770-side-info{position:relative;right:auto;top:auto;width:min(100%,760px);margin:10px auto;z-index:20}}
+</style>
+<script id="v2770-final-battle-ui-and-story-stability">
+(()=>{
+ 'use strict';
+ const VERSION='v2770';
+ const STATUS={
+  poison:['☠️ 毒','毎ターンHPに継続ダメージ。'],
+  burn:['🔥 炎上','毎ターンHPに継続ダメージ。反撃も少し強化。'],
+  paralysis:['⚡ 麻痺','2ターンに1回、正解しても攻撃不能。そのターンは反撃を受ける。'],
+  confusion:['🌀 混乱','攻撃系行動が一定確率で自分への攻撃になる。ダメージは攻撃力の1/10。'],
+  silence:['🔇 沈黙','魔法攻撃を選択できない。'],
+  hardening:['🛡️ 硬化','通常攻撃を選択できない。通常攻撃ボタン自体が表示されない。'],
+  bleed:['🩸 出血','毎ターンHPに継続ダメージ。'],
+  seal:['⛓️ 呪縛','フィニッシャーを使用できない。']
+ };
+ const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+ function isC2(){try{return !!(currentEnemy&&Number(currentEnemy.id)>=20&&Number(currentEnemy.id)<=39)}catch(e){return false}}
+ function activeStatuses(){
+  try{
+   const st=window.__bq2740Status;
+   if(!st||!st.active)return [];
+   return Object.keys(st.active).filter(k=>Number(st.active[k])>0 && STATUS[k]);
+  }catch(e){return []}
+ }
+ function ensureSide(){
+  let box=document.getElementById('bq2770-side-info');
+  if(!box){
+   box=document.createElement('aside');box.id='bq2770-side-info';box.hidden=true;
+   box.innerHTML='<div class="bq2770-head">⚔️ 状態異常・アップデート</div><div id="bq2770-active"></div><div class="bq2770-update"><div class="bq2770-update-title">🆕 今回のアップデート</div><div id="bq2770-update-text"></div></div>';
+   document.body.appendChild(box);
+  }
+  return box;
+ }
+ function renderSide(){
+  const box=ensureSide();
+  const active=activeStatuses();
+  const activeBox=box.querySelector('#bq2770-active');
+  activeBox.innerHTML=active.length
+   ? active.map(k=>{const [label,desc]=STATUS[k];const turns=Number(window.__bq2740Status?.active?.[k]||0);return `<div class="bq2770-active"><b>${esc(label)}　${turns}T</b><br><span>${esc(desc)}</span></div>`}).join('')
+   : '<div class="bq2770-none">現在、主人公に有効な状態異常はありません。</div>';
+  box.querySelector('#bq2770-update-text').innerHTML='• 硬化中は通常攻撃ボタンを表示しない<br>• 暗黙を廃止し、硬化へ統一<br>• 状態異常の効果を右側で確認可能<br>• ストーリー復帰・はじめから処理を安定化';
+  const battleVisible=document.getElementById('battle-field')?.style.display!=='none' && document.getElementById('battle-field')?.offsetParent!==null;
+  box.hidden=!battleVisible;
+ }
+ function hardeningNow(){return activeStatuses().includes('hardening')}
+ function removePhysicalButton(){
+  const p=document.getElementById('action-panel');if(!p)return;
+  p.querySelectorAll('button').forEach(b=>{
+   const oc=b.getAttribute('onclick')||'';
+   const txt=(b.textContent||'').replace(/\s/g,'');
+   if(/performPhysicalAttack\s*\(/.test(oc) || txt.includes('通常攻撃')) b.remove();
+  });
+ }
+ function patchActionPanel(){
+  const base=window.showActionPanel;
+  if(typeof base!=='function'||base.__v2770)return;
+  const wrapped=function(){
+   const r=base.apply(this,arguments);
+   setTimeout(()=>{if(hardeningNow())removePhysicalButton();renderSide()},0);
+   return r;
+  };
+  wrapped.__v2770=true;wrapped.__v2770Base=base;window.showActionPanel=wrapped;
+ }
+ function patchPhysical(){
+  const base=window.performPhysicalAttack;
+  if(typeof base!=='function'||base.__v2770)return;
+  const wrapped=function(){
+   if(hardeningNow()){
+    removePhysicalButton();
+    try{if(typeof notify==='function')notify('🛡️ 硬化中は通常攻撃を使用できません。')}catch(e){}
+    return false;
+   }
+   return base.apply(this,arguments);
+  };
+  wrapped.__v2770=true;wrapped.__v2770Base=base;window.performPhysicalAttack=wrapped;
+ }
+ function safeStoryReturn(){
+  try{window.__bq2770StoryReturning=true;}catch(e){}
+  try{document.querySelectorAll('#story-modal').forEach(x=>{x.style.display='none';x.style.visibility='hidden'});}catch(e){}
+  try{document.getElementById('quiz-screen').style.display='none';}catch(e){}
+  try{document.getElementById('battle-field').style.display='none';}catch(e){}
+  try{document.getElementById('reward-modal').style.display='none';}catch(e){}
+  try{document.getElementById('level-up-modal').style.display='none';}catch(e){}
+  try{document.getElementById('config-screen').style.display='block';}catch(e){}
+  try{if(typeof renderEnemies==='function')renderEnemies();}catch(e){console.error('[v2770] renderEnemies',e)}
+  try{if(typeof saveGameData==='function')saveGameData();}catch(e){}
+  setTimeout(()=>{try{const m=document.getElementById('story-modal');if(m){m.style.display='none';m.style.visibility='hidden'}}catch(e){}},0);
+ }
+ function bindStoryButton(){
+  if(document.documentElement.dataset.v2770StoryGuard==='1') return;
+  const b=document.getElementById('story-next-btn');
+  if(!b) return;
+  document.documentElement.dataset.v2770StoryGuard='1';
+  document.addEventListener('click',e=>{
+   const t=e.target?.closest?.('#story-next-btn');
+   if(!t)return;
+   const label=(t.textContent||'').replace(/\s/g,'');
+   if(label.includes('冒険に戻る')){
+    e.preventDefault();e.stopImmediatePropagation();safeStoryReturn();
+   }
+  },true);
+ }
+ function cleanStoryBeforeNewGame(){
+  const modal=document.getElementById('story-modal');
+  if(modal){modal.style.visibility='hidden';modal.style.display='none';}
+  ['story-chat','story-reward'].forEach(id=>{const x=document.getElementById(id);if(x)x.innerHTML='';});
+  ['story-enemy-sprite'].forEach(id=>{const x=document.getElementById(id);if(x){x.className='sprite-sheet battle-sprite';x.style.backgroundImage='none';x.style.opacity='0';x.style.transform='none';}});
+  document.querySelectorAll('#story-modal .hero-sprite').forEach(x=>{x.style.opacity='0';x.style.backgroundImage='none';x.style.transform='none';});
+ }
+ function restoreStoryAfterNewGame(){
+  const modal=document.getElementById('story-modal');
+  if(!modal)return;
+  const show=()=>{modal.style.visibility='visible';modal.style.display='flex';document.querySelectorAll('#story-modal .hero-sprite,#story-modal #story-enemy-sprite').forEach(x=>x.style.opacity='1');};
+  requestAnimationFrame(()=>setTimeout(show,120));
+ }
+ function patchNewGame(){
+  const base=window.startNewGame;
+  if(typeof base!=='function'||base.__v2770)return;
+  const wrapped=function(){cleanStoryBeforeNewGame();const r=base.apply(this,arguments);restoreStoryAfterNewGame();return r;};
+  wrapped.__v2770=true;wrapped.__v2770Base=base;window.startNewGame=wrapped;
+ }
+ function tick(){patchActionPanel();patchPhysical();patchNewGame();bindStoryButton();renderSide();}
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(tick,0),{once:true});else setTimeout(tick,0);
+ setTimeout(tick,100);setTimeout(tick,350);setTimeout(tick,800);
+ setInterval(()=>{try{patchActionPanel();patchPhysical();patchNewGame();bindStoryButton();renderSide()}catch(e){}},500);
+ window.__bq2770={version:VERSION,hardeningHidesPhysical:true,storyReturnGuard:true,newGamePortraitCleanup:true,storySkipStable:true};
+})();
+</script>
+\n<script id="v2790-story-skip-hardened">
+(function(){
+  'use strict';
+  // v2790: ストーリースキップを「現在行を末尾へ送る」方式から
+  // 「終了条件に到達するまで既存の正規遷移関数を実行する」方式へ変更。
+  // これにより、章ごとの終了処理・プロローグ終了処理・再生終了処理を確実に通す。
+  function isShown(el){
+    if(!el) return false;
+    const cs=getComputedStyle(el);
+    return cs.display!=='none' && cs.visibility!=='hidden' && cs.opacity!=='0';
+  }
+  function hideMainStoryIfStillOpen(){
+    const m=document.getElementById('story-modal');
+    if(m && isShown(m)){
+      m.style.display='none';
+      m.style.visibility='hidden';
+    }
+  }
+  function hardSkipMainStory(){
+    if(window.__v2790SkipBusy) return;
+    const modal=document.getElementById('story-modal');
+    if(!isShown(modal)) return;
+    window.__v2790SkipBusy=true;
+    try{
+      if(window.v1100StoryTimer) clearInterval(window.v1100StoryTimer);
+      if(window.storyTimer) clearInterval(window.storyTimer);
+      // プロローグは専用終了関数を必ず通す。
+      try{
+        if(typeof storyPlayingPrologue!=='undefined' && storyPlayingPrologue && typeof finishPrologue==='function'){
+          finishPrologue();
+          return;
+        }
+      }catch(e){}
+      // 通常ストーリー／再生ストーリーは nextStory() を正規ルートとして使用。
+      // 1話あたり最大600回まで。無限ループ防止の安全弁。
+      let guard=0;
+      while(isShown(modal) && guard++<600 && typeof nextStory==='function'){
+        nextStory();
+      }
+      // 万一、既存終了処理が何らかの理由で止まった場合だけ最終安全弁。
+      if(isShown(modal)) hideMainStoryIfStillOpen();
+      try{ if(typeof saveGameData==='function') saveGameData(); }catch(e){}
+      try{ if(typeof renderEnemies==='function') renderEnemies(); }catch(e){}
+    }catch(e){
+      console.error('[BunPouQuest] hardened story skip failed',e);
+      hideMainStoryIfStillOpen();
+    }finally{
+      setTimeout(()=>{window.__v2790SkipBusy=false;},150);
+    }
+  }
+  function hardSkipChapter2(){
+    const m=document.getElementById('bq-ch2-modal');
+    if(!isShown(m) || typeof window.bqCh2Skip!=='function') return;
+    window.bqCh2Skip();
+  }
+  function bind(){
+    const b=document.getElementById('story-skip-btn');
+    if(b){
+      // inline onclick と旧インストーラの競合を防ぐ。
+      b.onclick=null;
+      b.removeAttribute('onclick');
+      b.type='button';
+      b.disabled=false;
+      b.style.pointerEvents='auto';
+      b.style.position='relative';
+      b.style.zIndex='20';
+      b.addEventListener('click',function(ev){
+        ev.preventDefault(); ev.stopPropagation();
+        hardSkipMainStory();
+      },{capture:true});
+    }
+    const c=document.getElementById('bq-ch2-skip');
+    if(c){
+      c.disabled=false;
+      c.style.pointerEvents='auto';
+      c.style.position='relative';
+      c.style.zIndex='20';
+      // 第二章は既存の bqCh2Skip を使う。onclick の多重登録は避ける。
+      c.onclick=null;
+      c.removeAttribute('onclick');
+      c.addEventListener('click',function(ev){
+        ev.preventDefault(); ev.stopPropagation();
+        hardSkipChapter2();
+      },{capture:true});
+    }
+  }
+  // 外部からの呼び出しも一本化。
+  window.skipCurrentStory=hardSkipMainStory;
+  window.v1200SkipStory=hardSkipMainStory;
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',bind,{once:true});
+  else bind();
+  setTimeout(bind,50); setTimeout(bind,300); setTimeout(bind,1000);
+})();
+</script>
+<style id="v2790-story-skip-style">
+#story-skip-btn,.bq-ch2-skip{position:relative!important;z-index:50!important;pointer-events:auto!important;}
+#story-skip-btn:disabled,.bq-ch2-skip:disabled{opacity:1!important;cursor:pointer!important;}
+</style>
 </body>
 <style id="v2320-gacha-stability-css">
 #v2320-gacha-overlay{position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 48%,rgba(15,55,115,.72),rgba(1,5,18,.985) 78%);opacity:0;pointer-events:none;transition:opacity .55s ease}
@@ -7138,7 +7718,7 @@ function scrubSkillButtons(){
    if(!c||c.owned!==true){btn.disabled=true;btn.remove();}
  });
 }
-setInterval(scrubSkillButtons,800);
+setInterval(()=>{if(!window.__bqC2BattlePerf)scrubSkillButtons();},800);
 })();
 </script>
 <style id="v1500-final-fix">
@@ -7429,8 +8009,10 @@ setInterval(scrubSkillButtons,800);
 
   const root=document.getElementById('main-container')||document.body;
   const obs=new MutationObserver(()=>{
+    if(window.__bqC2BattlePerf) return;
     clearTimeout(obs._t);
     obs._t=setTimeout(()=>{
+      if(window.__bqC2BattlePerf) return;
       repairEquipmentArt();
       injectSkillChoice();
     },30);
@@ -7711,6 +8293,7 @@ const SCHOOL_CHAR_ART={"hero_full": "data:image/webp;base64,UklGRvY4AwBXRUJQVlA4
 
   // 旧処理が後からA.heroを適用するケースを監視して再統一。
   const mo=new MutationObserver(()=>{
+    if(window.__bqC2BattlePerf) return;
     repairHomeHero();
   });
   mo.observe(document.body,{childList:true,subtree:true});
@@ -8125,15 +8708,15 @@ setTimeout(install,750);setTimeout(install,1200);setTimeout(()=>{const r=window.
     paralysis:{label:'麻痺',icon:'⚡',color:'#fde047'},
     confusion:{label:'混乱',icon:'🌀',color:'#c4b5fd'},
     silence:{label:'沈黙',icon:'🔇',color:'#93c5fd'},
-    blackout:{label:'暗黙',icon:'🌑',color:'#cbd5e1'},
+    hardening:{label:'硬化',icon:'🌑',color:'#cbd5e1'},
     bleed:{label:'出血',icon:'🩸',color:'#f87171'},
     seal:{label:'呪縛',icon:'⛓️',color:'#a78bfa'}
   };
   const C2_STATUS=[
-    ['poison'],['burn'],['paralysis'],['confusion'],['blackout'],
-    ['poison','paralysis'],['confusion','blackout'],['silence'],['blackout','confusion'],['burn','poison'],
-    ['silence','blackout'],['paralysis','poison'],['silence','paralysis'],['confusion','silence'],['paralysis','blackout'],
-    ['silence','confusion'],['poison','blackout'],['silence','burn'],['blackout','paralysis'],['poison','burn','silence']
+    ['poison'],['burn'],['paralysis'],['confusion'],['hardening'],
+    ['poison','paralysis'],['confusion','hardening'],['silence'],['hardening','confusion'],['burn','poison'],
+    ['silence','hardening'],['paralysis','poison'],['silence','paralysis'],['confusion','silence'],['paralysis','hardening'],
+    ['silence','confusion'],['poison','hardening'],['silence','burn'],['hardening','paralysis'],['poison','burn','silence']
   ];
   // 第二章は第一章クリア後の挑戦を前提に、基礎データ自体を一段引き上げる。
   try{
@@ -8151,34 +8734,34 @@ setTimeout(install,750);setTimeout(install,1200);setTimeout(()=>{const r=window.
     paralysis:'2ターンに1回、正解しても攻撃不能。そのターンは敵の反撃を受ける。',
     confusion:'正解しても攻撃が外れることがある。',
     silence:'魔法攻撃を選択できない。',
-    blackout:'問題文・選択肢の一部が隠される。',
+    hardening:'通常攻撃を選択できない。',
     bleed:'毎ターンHPに継続ダメージ。',
     seal:'フィニッシャーが封印される。'
   };
   const ARMOR_RES=[
     {},
-    {blackout:1},
+    {hardening:1},
     {confusion:1},
     {paralysis:1},
     {silence:1},
-    {silence:.7,blackout:.5},
+    {silence:.7,hardening:.5},
     {paralysis:1,bleed:.6},
     {poison:1},
     {silence:1,confusion:.5},
-    {poison:.8,blackout:.8},
+    {poison:.8,hardening:.8},
     {burn:1},
     {confusion:.7,paralysis:.5},
-    {blackout:1,silence:.7},
+    {hardening:1,silence:.7},
     {poison:1,seal:.5},
     {silence:.8,confusion:.6},
-    {poison:.5,burn:.5,paralysis:.5,confusion:.5,silence:.5,blackout:.5,bleed:.5,seal:.5},
+    {poison:.5,burn:.5,paralysis:.5,confusion:.5,silence:.5,hardening:.5,bleed:.5,seal:.5},
     {bleed:1,paralysis:.6},
     {burn:1,poison:.5},
     {burn:1,silence:.5},
     {}
   ];
   const ARMOR_STATUS_TEXT=[
-    '状態異常耐性：なし','暗黙無効','混乱無効','麻痺無効','沈黙無効','沈黙70%・暗黙50%耐性','麻痺無効・出血60%耐性','毒無効','沈黙無効・混乱50%耐性','毒80%・暗黙80%耐性','炎上無効','混乱70%・麻痺50%耐性','暗黙無効・沈黙70%耐性','毒無効・呪縛50%耐性','沈黙80%・混乱60%耐性','全状態異常50%耐性','出血無効・麻痺60%耐性','炎上無効・毒50%耐性','炎上無効・沈黙50%耐性','状態異常耐性：なし・毎ターンCRI率+5%'];
+    '状態異常耐性：なし','硬化無効','混乱無効','麻痺無効','沈黙無効','沈黙70%・硬化50%耐性','麻痺無効・出血60%耐性','毒無効','沈黙無効・混乱50%耐性','毒80%・硬化80%耐性','炎上無効','混乱70%・麻痺50%耐性','硬化無効・沈黙70%耐性','毒無効・呪縛50%耐性','沈黙80%・混乱60%耐性','全状態異常50%耐性','出血無効・麻痺60%耐性','炎上無効・毒50%耐性','炎上無効・沈黙50%耐性','状態異常耐性：なし・毎ターンCRI率+5%'];
   const state={active:{},turn:0,started:false,paralyzeSkip:false,hidden:false};
   window.__bq2740Status=state;
   function isC2(){return !!(currentEnemy && Number(currentEnemy.id)>=20 && Number(currentEnemy.id)<=39);}
@@ -8219,17 +8802,7 @@ setTimeout(install,750);setTimeout(install,1200);setTimeout(()=>{const r=window.
     if(q)q.style.filter='';
     if(c){c.style.filter='';c.querySelectorAll('.choice-btn').forEach(b=>{b.style.visibility='';});}
   }
-  function applyQuestionMask(){
-    clearQuestionMask();
-    if(!isC2()||!state.active.blackout)return;
-    const q=document.getElementById('question-text');
-    const c=document.getElementById('choices-container');
-    if(q)q.style.filter='blur(5px)';
-    if(c){
-      const buttons=[...c.querySelectorAll('.choice-btn')];
-      buttons.forEach((b,i)=>{if(i%2===1)b.style.visibility='hidden';});
-    }
-  }
+  function applyQuestionMask(){ clearQuestionMask(); }
   function tick(){
     if(!isC2()||!state.started)return true;
     state.turn++;
@@ -8296,7 +8869,7 @@ setTimeout(install,750);setTimeout(install,1200);setTimeout(()=>{const r=window.
     wrapped.__v2740=true;wrapped.__v2740Base=baseStart;window.bqCh2StartBattle=wrapped;
   }
 
-  // 問題表示のたびに状態異常ダメージと暗黙マスクを処理する。
+  // 問題表示のたびに状態異常ダメージと硬化マスクを処理する。
   const baseShow=window.showRandomQuestion;
   if(typeof baseShow==='function'&&!baseShow.__v2740){
     const wrapped=function(){
@@ -8345,10 +8918,9 @@ setTimeout(install,750);setTimeout(install,1200);setTimeout(()=>{const r=window.
         setTimeout(()=>{if(currentPlayerHp>0)window.showRandomQuestion();},700);
         return;
       }
-      if(state.active.confusion && Math.random()<.55){
-        const d=Math.max(1,Math.ceil((Number(currentEnemy?.counterDmg)||5)*.9));
-        currentPlayerHp=Math.max(0,Number(currentPlayerHp)-d);
-        notify(`🌀 混乱して攻撃が外れた！ 敵の反撃 ${d} ダメージ`);
+      if(state.active.hardening){
+        notify('🛡️ 硬化中で通常攻撃を使えない！');
+        const panel=document.getElementById('action-panel');if(panel){panel.style.display='none';panel.innerHTML='';}
         setTimeout(()=>{if(currentPlayerHp>0)window.showRandomQuestion();},700);
         return;
       }
@@ -8368,13 +8940,6 @@ setTimeout(install,750);setTimeout(install,1200);setTimeout(()=>{const r=window.
         setTimeout(()=>{if(currentPlayerHp>0)window.showRandomQuestion();},700);
         return;
       }
-      if(state.active.confusion && Math.random()<.55){
-        const d=Math.max(1,Math.ceil((Number(currentEnemy?.counterDmg)||5)*.9));
-        currentPlayerHp=Math.max(0,Number(currentPlayerHp)-d);
-        notify(`🌀 混乱して魔法が外れた！ 敵の反撃 ${d} ダメージ`);
-        setTimeout(()=>{if(currentPlayerHp>0)window.showRandomQuestion();},700);
-        return;
-      }
       return baseSpell.apply(this,arguments);
     };
     wrapped.__v2740=true;wrapped.__v2740Base=baseSpell;window.performSpell=wrapped;
@@ -8388,13 +8953,6 @@ setTimeout(install,750);setTimeout(install,1200);setTimeout(()=>{const r=window.
         const d=Math.max(1,Math.ceil((Number(currentEnemy?.counterDmg)||5)*1.1));
         currentPlayerHp=Math.max(0,Number(currentPlayerHp)-d);
         notify(`⚡ 麻痺で動けない！ 敵の反撃 ${d} ダメージ`);
-        setTimeout(()=>{if(currentPlayerHp>0)window.showRandomQuestion();},700);
-        return;
-      }
-      if(state.active.confusion && Math.random()<.55){
-        const d=Math.max(1,Math.ceil((Number(currentEnemy?.counterDmg)||5)*.9));
-        currentPlayerHp=Math.max(0,Number(currentPlayerHp)-d);
-        notify(`🌀 混乱してフィニッシャーが外れた！ 敵の反撃 ${d} ダメージ`);
         setTimeout(()=>{if(currentPlayerHp>0)window.showRandomQuestion();},700);
         return;
       }
@@ -8418,10 +8976,16 @@ setTimeout(install,750);setTimeout(install,1200);setTimeout(()=>{const r=window.
       if(!p.querySelector('.bq2740-paralysis-note')){const n=document.createElement('div');n.className='bq2740-paralysis-note';n.style.cssText='padding:8px;margin:6px 0;color:#fde047;font-weight:900;text-align:center';n.textContent='⚡ 麻痺：このターンは行動できない';p.prepend(n);}
     }
     if(state.active.confusion){
-      if(!p.querySelector('.bq2740-confusion-note')){const n=document.createElement('div');n.className='bq2740-confusion-note';n.style.cssText='padding:6px;color:#c4b5fd;font-weight:800;text-align:center';n.textContent='🌀 混乱：攻撃が外れる可能性あり';p.prepend(n);}
+      if(!p.querySelector('.bq2740-confusion-note')){const n=document.createElement('div');n.className='bq2740-confusion-note';n.style.cssText='padding:6px;color:#c4b5fd;font-weight:800;text-align:center';n.textContent='🌀 混乱：攻撃系行動で自分を攻撃する可能性あり';p.prepend(n);}
+    }
+    if(state.active.hardening){
+      p.querySelectorAll('.action-btn').forEach(b=>{
+        if(/通常攻撃/.test(String(b.textContent||''))){b.disabled=true;b.innerHTML='🛡️ 通常攻撃封印<br><small>硬化中</small>';}
+      });
+      if(!p.querySelector('.bq2740-hardening-note')){const n=document.createElement('div');n.className='bq2740-hardening-note';n.style.cssText='padding:6px;color:#fbbf24;font-weight:900;text-align:center';n.textContent='🛡️ 硬化：通常攻撃は使用できない';p.prepend(n);}
     }
   }
-  const obs=new MutationObserver(()=>{if(isC2())patchActionPanel();});
+  const obs=new MutationObserver(()=>{if(window.__bqC2BattlePerf)return;if(isC2())patchActionPanel();});
   obs.observe(document.body,{subtree:true,childList:true});
 
   // 防具の状態異常耐性を鍛冶屋・防具帳に表示。
@@ -8468,7 +9032,7 @@ setTimeout(install,750);setTimeout(install,1200);setTimeout(()=>{const r=window.
   window.bq2740RenderBestiary=renderLockedBestiary;
 
   // 軽量監視：既存のUI更新を上書きせず、表示だけ整える。
-  setInterval(()=>{try{decorateArmor();if(document.getElementById('ch2-main-bestiary')?.style.display!=='none')renderLockedBestiary();if(isC2()&&state.started){applyQuestionMask();renderStatus();}}catch(e){}},1000);
+  setInterval(()=>{try{if(window.__bqC2BattlePerf)return;decorateArmor();if(document.getElementById('ch2-main-bestiary')?.style.display!=='none')renderLockedBestiary();if(isC2()&&state.started){applyQuestionMask();renderStatus();}}catch(e){}},1000);
 
   const style=document.createElement('style');style.id='v2740-status-css';style.textContent=`
     #bq2740-status-box{box-shadow:0 0 12px rgba(248,113,113,.08)}
