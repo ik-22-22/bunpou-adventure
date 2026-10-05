@@ -822,6 +822,9 @@ html body #title-screen.v2317-static-title{position:fixed!important;inset:0!impo
 <h4 style="color:#67e8f9;">【 仲間図鑑 】</h4>
 <div class="companion-grid" id="companion-list"></div>
 </div>
+<div class="box" id="learning-tab" style="display:none;">
+  <div id="bq-learning-mount"></div>
+</div>
 <div class="box" id="shop-tab" style="display:none;">
 <h3 style="color: #fbbf24; margin-top:0;">🔨 鍛冶屋＆よろず屋</h3>
 <p style="font-size: 13px; color: #94a3b8;">敵を倒して素材を集め、Gと素材を使って武器を作ろう！ 作った武器は自由に装備できます。</p>
@@ -2356,49 +2359,12 @@ function loadGameData() {
                 maxMp = Math.max(3, Number(data.maxMp)||3); currentMp = Math.max(0, Number(data.currentMp ?? maxMp) || maxMp);
                 gachaPoints = Math.max(0, Number(data.gachaPoints)||0);
                 // ================================================================
-    // v900 ブラッシュアップ：属性・攻略感・解説・修行・実績・仲間スキル
-    // ================================================================
-    let achievements = {};
+    // v900 ブラッシュアップ：属性・攻略感・解説・修行・仲間スキル
+    // 実績機能はここには持たせず、末尾の新・実績エンジンへ完全分離。
     let trainingIndex = 0;
     let trainingPool = [];
     let companionSkillUsed = false;
 
-    const achievementMaster = [
-      ["first_battle","初陣","初めて戦闘に勝利する","⚔️"],
-      ["first_correct","はじめの一歩","最初の一問に正解する","🌱"],
-      ["combo5","コンボ職人","5コンボ以上を達成する","🔥"],
-      ["perfect10","文法の達人","10問連続正解する","🧠"],
-      ["first_magic","魔法使い","初めて魔法を習得する","✨"],
-      ["all_magic","魔法コンプリート","全魔法を習得する","🌈"],
-      ["companion3","仲間が増えた","仲間を3体集める","🎴"],
-      ["companion10","仲間コレクター","仲間を10体集める","🏆"],
-      ["enemy10","十体討伐","10体の敵を倒す","👾"],
-      ["all_enemy","全敵討伐","20体すべてを倒す","👑"],
-      ["training","復習の達人","修行モードで10問正解する","📚"],
-      ["category3","文法探究者","3種類以上の文法分野で正解する","🔎"],
-      ["no_mistake","ノーミス","1回の戦闘で5問連続正解する","🌟"]
-    ];
-    try{
-      const raw=localStorage.getItem('bunpou_save_v801');
-      if(raw){
-        const d=JSON.parse(raw);
-        if(d && d.achievements && typeof d.achievements==='object') achievements=Object.assign({},achievements,d.achievements);
-      }
-      const legacy=localStorage.getItem('bunpou_v2317_achievements');
-      if(legacy){
-        const x=JSON.parse(legacy);
-        if(x && typeof x==='object') achievements=Object.assign({},achievements,x);
-      }
-    }catch(e){}
-
-    function unlockAchievement(id){
-      if(!achievements[id]){
-        achievements[id]=Date.now();
-        const a=achievementMaster.find(x=>x[0]===id);
-        if(a) showToast(`${a[3]} 実績解除！「${a[1]}」`);
-        saveGameData();
-      }
-    }
     function showToast(text){
       let el=document.getElementById('v900-toast');
       if(!el){el=document.createElement('div');el.id='v900-toast';document.body.appendChild(el);}
@@ -2449,7 +2415,7 @@ function loadGameData() {
       if(document.getElementById('v900-tools'))return;
       const target=document.getElementById('adventure-tab'); if(!target)return;
       const box=document.createElement('div'); box.id='v900-tools'; box.className='v900-tools';
-      box.innerHTML=`<div><b>📊 学習・やり込み</b><small>間違いを復習して、実績を集めよう。</small></div><div class="v900-tool-buttons"><button onclick="openTrainingMode()">🏋️ 文法修行</button><button onclick="openWeaknessBoard()">📊 苦手分析</button><button onclick="openAchievementBoard()">🏆 実績</button></div>`;
+      box.innerHTML=`<div><b>📚 学習・やり込み</b><small>間違えた問題の復習と苦手分野を確認できます。</small></div><div class="v900-tool-buttons"><button onclick="openTrainingMode()">🏋️ 文法修行</button><button onclick="openWeaknessBoard()">📊 苦手分析</button></div>`;
       target.insertBefore(box,target.firstChild);
     }
     function openModal(title,body){
@@ -2462,10 +2428,6 @@ function loadGameData() {
       const entries=Object.entries(topicStats).map(([k,v])=>({k,...v,p:v.total?Math.round(v.correct/v.total*100):0})).sort((a,b)=>a.p-b.p);
       const body=entries.length?entries.map(x=>`<div class="weak-row"><b>${x.k}</b><span>${x.correct}/${x.total}（${x.p}%）</span><div><i style="width:${x.p}%"></i></div></div>`).join(''):'<p>まだ問題を解いていません。戦闘を始めよう！</p>';
       openModal('📊 苦手分野分析',`<p class="modal-note">正答率が低い分野ほど上に表示。</p>${body}`);
-    }
-    function openAchievementBoard(){
-      const got=achievementMaster.filter(a=>achievements[a[0]]).length;
-      openModal(`🏆 実績 ${got}/${achievementMaster.length}`,achievementMaster.map(a=>`<div class="achievement ${achievements[a[0]]?'got':''}"><span>${achievements[a[0]]?a[3]:'🔒'}</span><div><b>${a[1]}</b><small>${a[2]}</small></div></div>`).join(''));
     }
     function openTrainingMode(){
       trainingPool=[...questionPool,...cleanEntranceExamQuestions].filter(q=>wrongQuestionKeys.includes(questionKey(q)));
@@ -2530,40 +2492,21 @@ function loadGameData() {
     };
     const _v900CheckAnswer=checkAnswer;
     checkAnswer=function(selected,correct){
-      const before=totalCorrect; _v900CheckAnswer(selected,correct);
-      if(totalCorrect>before){
-        // v2748: 最初の一問正解で「はじめの一歩」を解除。
-        // totalCorrect が実際に増えた場合だけ発火するため、誤答では解除しない。
-        unlockAchievement('first_correct');
-        if(battleCombo>=5)unlockAchievement('combo5');
-        if(battleCombo>=5)unlockAchievement('no_mistake');
-        if(topicStats && Object.keys(topicStats).length>=3)unlockAchievement('category3');
-        if(battleCombo>=10)unlockAchievement('perfect10');
-      }
+      _v900CheckAnswer(selected,correct);
     };
     const _v900LearnSpell=learnSpell;
-    learnSpell=function(name){const before=learnedSpells.length;_v900LearnSpell(name);if(learnedSpells.length>before){unlockAchievement('first_magic');if(learnedSpells.length===spellMaster.length)unlockAchievement('all_magic');}};
+    learnSpell=function(name){_v900LearnSpell(name);};
     const _v900ShowRewardNotification=showRewardNotification;
     showRewardNotification=function(reward,materialLine,xpGain,enemyName){
-      if(Object.values(defeatedEnemies).filter(Boolean).length>=1)unlockAchievement('first_battle');
-      if(Object.values(defeatedEnemies).filter(Boolean).length>=10)unlockAchievement('enemy10');
-      if(Object.values(defeatedEnemies).filter(Boolean).length>=20)unlockAchievement('all_enemy');
-      const owned=companions.filter(c=>c.owned).length;
-      if(owned>=3)unlockAchievement('companion3'); if(owned>=10)unlockAchievement('companion10');
       _v900ShowRewardNotification(reward,materialLine,xpGain,enemyName);
       setTimeout(()=>{const t=document.getElementById('reward-modal-text');if(t)t.innerHTML+=`<div class="drop-highlight">🎴 ガチャポイント +1　｜　属性を見極めて次の敵へ！</div>`;},30);
     };
     const _v900UpdateUI=updateUI;
-    updateUI=function(){_v900UpdateUI();ensureV900Panel();renderAchievementsMini();};
-    function renderAchievementsMini(){
-      const d=document.getElementById('dashboard'); if(!d)return;
-      let b=document.getElementById('v900-mini'); if(!b){b=document.createElement('div');b.id='v900-mini';d.appendChild(b);}
-      const got=achievementMaster.filter(a=>achievements[a[0]]).length;b.innerHTML=`🏆 実績 ${got}/${achievementMaster.length}　｜　📚 復習 ${wrongQuestionKeys.length}問　｜　🎴 仲間 ${companions.filter(c=>c.owned).length}/${companions.length}`;
-    }
-    // セーブ互換：新しいデータを追加するが、既存の問題・敵・仲間は絶対に捨てない。
+    updateUI=function(){_v900UpdateUI();ensureV900Panel();};
+    // セーブ互換：復習データと苦手分析だけを従来キーへ保存する。実績は別キーで管理。
     const _v900SaveGameData=saveGameData;
-    saveGameData=function(){_v900SaveGameData();try{localStorage.setItem('bunpou_v900_extra',JSON.stringify({achievements,wrongQuestionKeys,topicStats}));}catch(e){}}
-    try{const ex=JSON.parse(localStorage.getItem('bunpou_v900_extra')||'null');if(ex){achievements=ex.achievements||{};wrongQuestionKeys=ex.wrongQuestionKeys||wrongQuestionKeys;topicStats=ex.topicStats||topicStats;}}catch(e){}
+    saveGameData=function(){_v900SaveGameData();try{localStorage.setItem('bunpou_v900_extra',JSON.stringify({wrongQuestionKeys,topicStats}));}catch(e){}}
+    try{const ex=JSON.parse(localStorage.getItem('bunpou_v900_extra')||'null');if(ex){wrongQuestionKeys=ex.wrongQuestionKeys||wrongQuestionKeys;topicStats=ex.topicStats||topicStats;}}catch(e){}
 
     companions = (window.__bqCompanionMaster || []).map(c=>({...c,owned:false}));
                 if(Array.isArray(data.companions)) data.companions.forEach((c,i)=>{ if(companions[i]) companions[i].owned=!!c.owned; });
@@ -2571,9 +2514,6 @@ function loadGameData() {
                 battleCombo = 0;
                 wrongQuestionKeys = Array.isArray(data.wrongQuestionKeys)?data.wrongQuestionKeys.slice(-120):[];
                 topicStats = data.topicStats||{};
-                if(typeof achievements !== 'undefined' && data.achievements && typeof data.achievements === 'object'){
-                    achievements = Object.assign({}, achievements, data.achievements);
-                }
                 dailyGoals = data.dailyGoals||{date:"",correct:0,battles:0,categories:[],claimed:false,dirty:true}; ensureDailyGoals();
                 // 新しい仕様ではレベルアップごとに3SP。旧セーブからの移行分を補正。
                 if(data.expansionVersion!==800){ skillPoints += Math.max(0,(level-1)*2); }
@@ -2604,8 +2544,7 @@ function loadGameData() {
             expansionVersion:800,
             learnedSpells:learnedSpells, maxMp:maxMp, currentMp:currentMp,
             gachaPoints:gachaPoints, companions:companions.map(c=>({id:c.id,owned:!!c.owned})), gachaHistory:gachaHistory.slice(-50),
-            wrongQuestionKeys:wrongQuestionKeys.slice(-120), topicStats:topicStats, dailyGoals:dailyGoals,
-            achievements: (typeof achievements !== 'undefined' && achievements && typeof achievements === 'object') ? achievements : {}
+            wrongQuestionKeys:wrongQuestionKeys.slice(-120), topicStats:topicStats, dailyGoals:dailyGoals
         };
         localStorage.setItem('bunpou_save_v801', JSON.stringify(data));
     }
@@ -2620,7 +2559,6 @@ function loadGameData() {
         weapons.forEach(w => { w.owned = true; w.storyUnlocked = true; });
         armors.forEach(a => { a.owned = true; });
         Object.keys(materials).forEach(k => materials[k] = 99);
-        if (typeof achievementMaster !== 'undefined' && typeof achievements !== 'undefined') achievementMaster.forEach(a => { achievements[a[0]] = Date.now(); });
         coins = 99999;
         potions = 99;
         level = 99;
@@ -2802,8 +2740,12 @@ function loadGameData() {
         document.getElementById('shop-tab').style.display = tabName==='shop'?'block':'none';
         document.getElementById('collection-tab').style.display = tabName==='collection'?'block':'none';
         document.getElementById('companions-tab').style.display = tabName==='companions'?'block':'none';
+        const learningTab=document.getElementById('learning-tab');
+        if(learningTab) learningTab.style.display = tabName==='learning'?'block':'none';
         document.querySelectorAll('#menu-tabs .tab-btn').forEach((b,i)=>{
-            b.className=((tabName==='adventure'&&i===0)||(tabName==='story'&&i===1)||(tabName==='shop'&&i===2)||(tabName==='collection'&&i===3)||(tabName==='companions'&&i===4))?'tab-btn active':'tab-btn';
+            const learning=(b.id==='learning-tab-btn');
+            const active=((tabName==='adventure'&&i===0)||(tabName==='story'&&i===1)||(tabName==='shop'&&i===2)||(tabName==='collection'&&i===3)||(tabName==='companions'&&i===4)||(tabName==='learning'&&learning));
+            b.className=active?'tab-btn active':'tab-btn';
         });
         if(tabName==='collection') renderCollection();
         if(tabName==='story') renderStoryArchive();
@@ -3843,14 +3785,6 @@ const _v1000SR=showRandomQuestion;showRandomQuestion=function(){v1000TickPlayer(
     modal11('📊 苦手分析',body,'<button class="v11-primary" onclick="v1100OpenTraining()">🏋️ 苦手を練習</button>');
   };
 
-  /* ---------- achievements ---------- */
-  window.v1100OpenAchievements=function(){
-    const master=(typeof achievementMaster!=='undefined'?achievementMaster:[]);
-    const got=master.filter(a=>achievements&&achievements[a[0]]).length;
-    const body=`<div class="v11-ach-summary">🏆 ${got} / ${master.length} 達成</div>`+
-      master.map(a=>{const ok=!!(achievements&&achievements[a[0]]);return `<div class="v11-ach ${ok?'got':''}"><span>${ok?a[3]:'🔒'}</span><div><b>${esc11(a[1])}</b><small>${esc11(a[2])}</small></div></div>`}).join('');
-    modal11(`🏆 実績 <small>${got}/${master.length}</small>`,body,'<button class="v11-primary" onclick="v1100OpenChallenges()">🎯 やりこみ</button>');
-  };
 
   /* ---------- training: always usable; wrong first, then pool ---------- */
   let tpool=[], ti=0;
@@ -3878,7 +3812,6 @@ const _v1000SR=showRandomQuestion;showRandomQuestion=function(){v1000TickPlayer(
         v11.trainingCorrect++; 
         try{recordQuestionStat(q,true);}catch(e){}
         if(typeof totalCorrect!=='undefined') totalCorrect++;
-        if(v11.trainingCorrect>=10 && typeof unlockAchievement==='function') unlockAchievement('training');
         document.getElementById('v11-training-msg').innerHTML='<div class="v11-ok">✅ 正解！</div>'+ (typeof explainQuestion==='function'?explainQuestion(q):'');
         document.querySelectorAll('#v11-training-choices .v11-choice').forEach(x=>x.disabled=true);
         v11save(); setTimeout(()=>{ti++;renderTraining11();},650);
@@ -3969,24 +3902,10 @@ const _v1000SR=showRandomQuestion;showRandomQuestion=function(){v1000TickPlayer(
       '<button class="v11-primary" onclick="v1100OpenChallenges()">🎯 やりこみに戻る</button>');
   }
 
-  /* ---------- replace old tool panel and bind both old/new buttons ---------- */
+  /* ---------- legacy tool panel disabled ---------- */
   function installTools11(){
-    const old=document.getElementById('v900-tools'); if(old)old.remove();
-    let box=document.getElementById('v1100-tools');
-    if(!box){
-      const target=document.getElementById('adventure-tab'); if(!target)return;
-      box=document.createElement('div');box.id='v1100-tools';box.className='v11-tools';
-      box.innerHTML=`<div><b>📚 学習・やりこみ</b><small>復習・苦手分析・実績・特別チャレンジ</small></div>
-      <div class="v11-tool-grid">
-        <button id="v11-training">🏋️ 文法修行</button><button id="v11-weak">📊 苦手分析</button>
-        <button id="v11-ach">🏆 実績</button><button id="v11-challenge">🎯 やりこみ</button>
-      </div>`;
-      target.insertBefore(box,target.firstChild);
-    }
-    document.getElementById('v11-training').onclick=window.v1100OpenTraining;
-    document.getElementById('v11-weak').onclick=window.v1100OpenWeakness;
-    document.getElementById('v11-ach').onclick=window.v1100OpenAchievements;
-    document.getElementById('v11-challenge').onclick=window.v1100OpenChallenges;
+    const old=document.getElementById('v1100-tools'); if(old)old.remove();
+    const legacy=document.getElementById('v900-tools'); if(legacy)legacy.remove();
   }
 
   /* ---------- companion skill: real clickable UI ---------- */
@@ -4082,7 +4001,6 @@ const _v1000SR=showRandomQuestion;showRandomQuestion=function(){v1000TickPlayer(
 .v1100-head{position:sticky;top:0;background:#17212b;border-bottom:1px solid #334155;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;z-index:2}
 .v1100-head b{font-size:20px}.v1100-head button{font-size:24px;background:none;color:#fff;border:0;cursor:pointer}
 #v1100-body{padding:16px}.v11-note{color:#94a3b8;font-size:12px}.v11-row{margin:12px 0}.v11-row>div:first-child{display:flex;justify-content:space-between}.v11-row span{color:#cbd5e1;font-size:13px}.v11-bar{height:10px;background:#0f172a;border-radius:99px;overflow:hidden;margin-top:5px}.v11-bar i{display:block;height:100%;background:#38bdf8}
-.v11-ach-summary{text-align:center;font-size:20px;padding:8px}.v11-ach{display:flex;gap:12px;align-items:center;padding:10px;border-bottom:1px solid #334155;opacity:.55}.v11-ach.got{opacity:1}.v11-ach>span{font-size:24px}.v11-ach small{display:block;color:#94a3b8;margin-top:2px}
 .v11-choice{display:block;width:100%;margin:8px 0;padding:12px;text-align:left;border:2px solid #334155;border-radius:8px;background:#0f172a;color:#fff;cursor:pointer}.v11-choice:hover{border-color:#38bdf8}.v11-choice:disabled{opacity:.65;cursor:default}
 .v11-q{font-size:18px;line-height:1.7;padding:12px 0}.v11-source{font-size:12px;color:#67e8f9}.v11-ok{padding:10px;color:#4ade80;font-weight:bold}.v11-ng{padding:10px;color:#f87171;font-weight:bold}
 .v11-tools{background:#0f172a;border:2px solid #334155;border-radius:10px;padding:14px;margin-bottom:14px}.v11-tools small{display:block;color:#94a3b8;margin-top:3px}.v11-tool-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}.v11-tool-grid button,.v11-primary{padding:11px 8px;border:2px solid #38bdf8;background:#0b2b44;color:#fff;border-radius:8px;font-weight:bold;cursor:pointer}.v11-tool-grid button:hover,.v11-primary:hover{background:#164e70}
@@ -4094,13 +4012,6 @@ const _v1000SR=showRandomQuestion;showRandomQuestion=function(){v1000TickPlayer(
   /* Hook after DOM exists and after base initialization. */
   function boot11(){
     installTools11();installStorySkip();v11save();
-    // Make old inline buttons safe too.
-    document.querySelectorAll('#v900-tools button').forEach(b=>{
-      const t=b.textContent||'';
-      if(t.includes('文法修行'))b.onclick=window.v1100OpenTraining;
-      if(t.includes('苦手分析'))b.onclick=window.v1100OpenWeakness;
-      if(t.includes('実績'))b.onclick=window.v1100OpenAchievements;
-    });
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(boot11,250));
   else setTimeout(boot11,250);
@@ -4474,229 +4385,7 @@ body{background:radial-gradient(circle at 50% -10%,rgba(29,78,216,.20),transpare
   window.__BUNPOU_ARMOR_ARTS=armorArts;
 })();
 </script>
-<script>
-/* ===== v1600 FINAL FUNCTION FIX =====
-   文法修行・苦手分析・実績・仲間スキルを、既存データを壊さず
-   直接操作できる最終レイヤーとして再接続する。
-*/
-(function(){
-  const EXTRA='bunpou_v1600_learning';
-  const state={training:{correct:0,answered:0}, achievementBonus:{}, skillUsed:false};
-  window.v1600ResetCompanionSkill=()=>{state.skillUsed=false;window.v900AttackBoost=1;window.v900CritBoost=0;};
-  try{Object.assign(state,JSON.parse(localStorage.getItem(EXTRA)||'{}'));}catch(e){}
-  state.training=state.training||{correct:0,answered:0};
-  state.achievementBonus=state.achievementBonus||{};
 
-  const esc=x=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  const saveExtra=()=>{try{localStorage.setItem(EXTRA,JSON.stringify(state));}catch(e){}};
-  const allQuestions=()=>{
-    const a=(typeof questionPool!=='undefined'&&Array.isArray(questionPool))?questionPool:[];
-    const b=(typeof cleanEntranceExamQuestions!=='undefined'&&Array.isArray(cleanEntranceExamQuestions))?cleanEntranceExamQuestions:[];
-    const seen=new Set(), out=[];
-    [...a,...b].forEach(q=>{if(!q||!q.q||!Array.isArray(q.choices))return;let k;try{k=questionKey(q)}catch(e){k=q.q+'|'+q.choices.join('|')+'|'+q.answer}if(!seen.has(k)){seen.add(k);out.push(q)}});
-    return out;
-  };
-  const qkey=q=>{try{return questionKey(q)}catch(e){return q.q+'|'+(q.choices||[]).join('|')+'|'+q.answer}};
-
-  /* ---------- unified learning modal ---------- */
-  function modal(title,body,actions=''){
-    let m=document.getElementById('v1600-modal');
-    if(!m){
-      m=document.createElement('div');m.id='v1600-modal';
-      m.innerHTML='<div class="v1600-card"><div class="v1600-head"><b id="v1600-title"></b><button id="v1600-close">×</button></div><div id="v1600-body"></div><div id="v1600-actions"></div></div>';
-      document.body.appendChild(m);
-      document.getElementById('v1600-close').onclick=()=>m.style.display='none';
-      m.addEventListener('click',e=>{if(e.target===m)m.style.display='none'});
-    }
-    document.getElementById('v1600-title').innerHTML=title;
-    document.getElementById('v1600-body').innerHTML=body;
-    document.getElementById('v1600-actions').innerHTML=actions;
-    m.style.display='flex';
-    return m;
-  }
-  const close=()=>{const m=document.getElementById('v1600-modal');if(m)m.style.display='none'};
-
-  /* ---------- 文法修行 ---------- */
-  let tp=[],ti=0,tCorrect=0,tAnswered=0;
-  function buildPool(){
-    const all=allQuestions(), wrong=new Set(Array.isArray(wrongQuestionKeys)?wrongQuestionKeys:[]);
-    const bad=all.filter(q=>wrong.has(qkey(q)));
-    const rest=all.filter(q=>!wrong.has(q));
-    // 間違いを優先しつつ、毎回シャッフルして同じ順番にならないようにする。
-    const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
-    return [...shuffle(bad),...shuffle(rest)].slice(0,Math.min(60,all.length));
-  }
-  function training(){
-    tp=buildPool();ti=0;tCorrect=0;tAnswered=0;
-    if(!tp.length){modal('🏋️ 文法修行','<p>問題データを読み込めませんでした。</p>');return}
-    renderTraining();
-  }
-  function renderTraining(){
-    const q=tp[ti%tp.length];
-    const choices=(q.choices||[]).map((c,i)=>`<button class="v1600-choice" data-i="${i}">${i+1}. ${esc(c)}</button>`).join('');
-    modal(`🏋️ 文法修行 <small>${ti+1}/${tp.length}</small>`,
-      `<div class="v1600-progress"><span style="width:${Math.round(tCorrect/Math.max(1,tAnswered)*100)}%"></span></div>
-       <div class="v1600-source">${esc(q.sourceLabel||'復習問題')}</div>
-       <div class="v1600-question">${String(q.q||'').replace(/\n/g,'<br>')}</div>
-       <div id="v1600-tchoices">${choices}</div><div id="v1600-tmsg"></div>`);
-    document.querySelectorAll('#v1600-tchoices .v1600-choice').forEach(b=>b.onclick=()=>{
-      if(b.disabled)return;
-      const i=Number(b.dataset.i),ok=i===Number(q.answer);
-      tAnswered++;state.training.answered++;
-      document.querySelectorAll('#v1600-tchoices .v1600-choice').forEach(x=>x.disabled=true);
-      try{recordQuestionStat(q,ok)}catch(e){}
-      if(ok){
-        tCorrect++;state.training.correct++;
-        if(typeof totalCorrect!=='undefined')totalCorrect++;
-        if(typeof unlockAchievement==='function' && state.training.correct>=10)unlockAchievement('training');
-        const msg=document.getElementById('v1600-tmsg');
-        if(msg)msg.innerHTML='<div class="v11-ok">✅ 正解！</div>'+(typeof explainQuestion==='function'?explainQuestion(q):'');
-        saveExtra();try{saveGameData()}catch(e){}
-        setTimeout(()=>{ti++;renderTraining()},700);
-      }else{
-        const msg=document.getElementById('v1600-tmsg');
-        if(msg)msg.innerHTML='<div class="v11-ng">❌ 不正解。正解を確認して次へ！</div>'+
-          (typeof explainQuestion==='function'?explainQuestion(q):'');
-        saveExtra();try{saveGameData()}catch(e){}
-        setTimeout(()=>{ti++;renderTraining()},1000);
-      }
-    });
-  }
-
-  /* ---------- 苦手分析 ---------- */
-  function weakness(){
-    const stats=(typeof topicStats!=='undefined'?topicStats:{});
-    const cats=ANALYSIS_CATEGORIES.slice();
-    const entries=cats.map(k=>{
-      const v=stats[k]||{}; const total=Number(v.total)||0,correct=Number(v.correct)||0;
-      return {k,total,correct,p:total?Math.round(correct/total*100):0};
-    }).filter(x=>x.total>0).sort((a,b)=>a.p-b.p||b.total-a.total);
-    const unseen=cats.filter(k=>!stats[k]||!Number(stats[k].total));
-    const rows=entries.map(x=>`<div class="v1600-wrow"><div><b>${esc(x.k)}</b><span>${x.correct}/${x.total}（${x.p}%）</span></div><div class="v1600-wbar"><i style="width:${x.p}%"></i></div></div>`).join('');
-    const note=entries.length?'正答率が低い分野から表示しています。旧分類の記録は新分類へ無理に割り当てず、今後の解答から正確に記録します。':'まだ記録がありません。';
-    const unseenHtml=unseen.length?`<div class="v1600-unseen">未学習：${unseen.map(esc).join('・')}</div>`:'';
-    modal('📊 苦手分析',`<p class="v1600-note">${note}</p>${rows||'<p>まずは冒険や文法修行で問題を解いてみよう。</p>'}${unseenHtml}`,
-      '<button class="v1600-primary" id="v1600-practice-weak">🏋️ 文法修行をする</button>');
-    const b=document.getElementById('v1600-practice-weak');if(b)b.onclick=training;
-  }
-
-  /* ---------- 実績 ---------- */
-  function achievements(){
-    const master=(typeof achievementMaster!=='undefined'?achievementMaster:[]);
-    const got=master.filter(a=>typeof achievements!=='undefined'&&achievements[a[0]]).length;
-    const extra=state.achievementBonus||{};
-    const rows=master.map(a=>{
-      const ok=!!(typeof achievements!=='undefined'&&achievements[a[0]]);
-      return `<div class="v1600-ach ${ok?'got':''}"><span>${ok?a[3]:'🔒'}</span><div><b>${esc(a[1])}</b><small>${esc(a[2])}</small>${ok&&achievements[a[0]]?`<em>達成済み</em>`:''}</div></div>`;
-    }).join('');
-    modal(`🏆 実績 <small>${got}/${master.length}</small>`,
-      `<div class="v1600-ach-summary">現在 ${got} / ${master.length} 実績解除</div>${rows}`);
-  }
-
-  /* ---------- reliable tool buttons ---------- */
-  function install(){
-    const target=document.getElementById('adventure-tab');if(!target)return;
-    let box=document.getElementById('v1600-tools');
-    if(!box){
-      box=document.createElement('div');box.id='v1600-tools';
-      box.innerHTML='<div><b>📚 学習・やりこみ</b><small>文法修行・苦手分析・実績をいつでも確認できます。</small></div><div class="v1600-grid"><button id="v1600-training">🏋️ 文法修行</button><button id="v1600-weak">📊 苦手分析</button><button id="v1600-ach">🏆 実績</button></div>';
-      target.insertBefore(box,target.firstChild);
-    }
-    const b1=document.getElementById('v1600-training'),b2=document.getElementById('v1600-weak'),b3=document.getElementById('v1600-ach');
-    if(b1)b1.onclick=training;if(b2)b2.onclick=weakness;if(b3)b3.onclick=achievements;
-  }
-
-  /* ---------- companion skills ---------- */
-  const skillInfo={
-    atk:['猛攻','次の物理攻撃ダメージ +35%'], exp:['学習応援','この戦闘の獲得EXP +30%'],
-    def:['鉄壁','次の反撃ダメージを半減'], hp:['いやし','HPを20回復'],
-    magic:['魔導支援','次の魔法ダメージ +35%'], physical:['闘志','次の物理攻撃ダメージ +25%'],
-    gcoin:['幸運','今回の報酬G +100'], fire:['炎熱強化','次の炎魔法 +40%'],
-    ice:['氷結強化','次の氷魔法 +40%'], crit:['集中','次の攻撃CRI率 +20%'],
-    counter:['守護反撃','次の反撃を半減'], heal:['回復術','HPを15回復'], mp:['魔力補給','MPを3回復']
-  };
-  function skillOf(c){return skillInfo[c.type]||['応援','次の攻撃ダメージ +15%']}
-
-  window.v1600UseCompanionSkill=function(id){
-    if(state.skillUsed){if(typeof showToast==='function')showToast('🎴 この戦闘では仲間スキルをもう使えません');return}
-    const c=(typeof companions!=='undefined'?companions:[]).find(x=>x.id===id&&x.owned);if(!c)return;
-    state.skillUsed=true;
-    window.v900AttackBoost=1;window.v900CritBoost=0;
-    if(c.type==='hp'||c.type==='heal') currentPlayerHp=Math.min(getMaxHp(),currentPlayerHp+(c.type==='hp'?20:15)+getCompanionHealBonus());
-    else if(c.type==='mp') currentMp=Math.min(getMaxMp(),currentMp+3);
-    else if(c.type==='atk'||c.type==='physical') window.v900AttackBoost=c.type==='atk'?1.35:1.25;
-    else if(c.type==='magic'||c.type==='fire'||c.type==='ice') window.v900AttackBoost=1.35;
-    else if(c.type==='crit') window.v900CritBoost=20;
-    else if(c.type==='gcoin') window.v1100GoldBoost=100;
-    else if(c.type==='def'||c.type==='counter') window.v1100Guard=true;
-    else if(c.type==='exp') window.v1100ExpBoost=1.3;
-    else window.v900AttackBoost=1.15;
-    const s=skillOf(c);
-    if(typeof showToast==='function')showToast(`🎴 ${c.name}「${s[0]}」発動！`);
-    try{updateUI()}catch(e){}
-    try{saveGameData()}catch(e){}
-    renderSkills();
-  };
-
-  function renderSkills(){
-    const panel=document.getElementById('companion-battle-skill');if(!panel)return;
-    const owned=(typeof companions!=='undefined'?companions:[]).filter(c=>c.owned);
-    if(!owned.length){panel.innerHTML='<small>仲間を集めると戦闘スキルを使える！</small>';return}
-    // 連れている仲間を最初に表示し、その後に所持仲間を最大5体表示。
-    let activeId=(typeof v1000State!=='undefined'&&v1000State.activeCompanionId!=null)?v1000State.activeCompanionId:null;
-    const ordered=[...owned.filter(c=>c.id===activeId),...owned.filter(c=>c.id!==activeId)];
-    panel.innerHTML='<b>🎴 仲間スキル（戦闘中1回）</b><div>'+ordered.map(c=>{
-      const s=skillOf(c);return `<button type="button" data-v1600-comp="${c.id}" ${state.skillUsed?'disabled':''}>${esc(c.name)}<small>${esc(s[0])}<br>${esc(s[1])}</small></button>`;
-    }).join('')+'</div>';
-    panel.querySelectorAll('button[data-v1600-comp]').forEach(b=>b.onclick=()=>window.v1600UseCompanionSkill(Number(b.dataset.v1600Comp)));
-  }
-
-  function ensureSkillPanel(){
-    const p=document.getElementById('action-panel');if(!p)return;
-    let panel=document.getElementById('companion-battle-skill');
-    if(!panel){panel=document.createElement('div');panel.id='companion-battle-skill';panel.className='companion-battle-skill';p.appendChild(panel)}
-    renderSkills();
-  }
-
-  /* Reset skill state whenever a new battle starts. */
-  const origStart=window.startBattle;
-  if(typeof origStart==='function'){
-    window.startBattle=function(id){
-      state.skillUsed=false;window.v900AttackBoost=1;window.v900CritBoost=0;window.v1100GoldBoost=0;window.v1100Guard=false;window.v1100ExpBoost=1;
-      const r=origStart(id);setTimeout(ensureSkillPanel,80);return r;
-    };
-  }
-
-  /* Reattach after action panel redraws. */
-  const origShow=window.showActionPanel;
-  if(typeof origShow==='function'){
-    window.showActionPanel=function(){const r=origShow();setTimeout(ensureSkillPanel,0);return r};
-  }
-
-  /* Some existing wrappers call updateUI and rebuild the panel. Reattach after every redraw. */
-  const origUpdate=window.updateUI;
-  if(typeof origUpdate==='function'){
-    window.updateUI=function(){const r=origUpdate();setTimeout(()=>{install();ensureSkillPanel()},0);return r};
-  }
-
-  document.addEventListener('click',e=>{
-    if(e.target.closest('#v1600-tools'))return;
-    setTimeout(()=>{install();ensureSkillPanel()},0);
-  },{passive:true});
-
-  /* Persist training statistics and make them survive page reloads. */
-  const origSave=window.saveGameData;
-  if(typeof origSave==='function'){
-    window.saveGameData=function(){const r=origSave();saveExtra();return r};
-  }
-
-  function boot(){install();ensureSkillPanel();saveExtra();}
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,250));
-  else setTimeout(boot,250);
-
-  window.__bunpouQuestVersion='v1600-final-function-fix';
-})();
-</script>
 <style id="v1700-stability-fix">
 /* v1700: stable artwork rendering + dedicated learning tab */
 .v1700-art{display:block!important;visibility:visible!important;opacity:1!important;object-fit:contain!important;object-position:center!important;background:transparent!important;background-image:none!important;image-rendering:auto!important;}
@@ -4714,246 +4403,7 @@ body{background:radial-gradient(circle at 50% -10%,rgba(29,78,216,.20),transpare
 /* Never allow the old inline learning boxes to occupy the adventure screen. */
 #v900-tools,#v1100-tools,#v1500-tools,#v1600-tools{display:none!important;}
 </style>
-<script>
-(()=>{
-  'use strict';
 
-  /* ---------- 1. Dedicated 学習 tab ---------- */
-  function ensureLearningTab(){
-    const nav=document.getElementById('menu-tabs');
-    const adventure=document.getElementById('adventure-tab');
-    if(!nav || !adventure) return;
-
-    let btn=document.getElementById('learning-tab-btn');
-    if(!btn){
-      btn=document.createElement('button');
-      btn.id='learning-tab-btn';
-      btn.className='tab-btn';
-      btn.textContent='📚 学習・やりこみ';
-      btn.type='button';
-      nav.appendChild(btn);
-    }
-
-    let tab=document.getElementById('learning-tab');
-    if(!tab){
-      tab=document.createElement('div');
-      tab.id='learning-tab';
-      tab.className='box';
-      tab.style.display='none';
-      tab.innerHTML=`
-        <h3 style="color:#fbbf24;margin-top:0;">📚 学習・やりこみ</h3>
-        <p class="v1700-learning-note">冒険で解いた問題の復習、分野別の正答率、実績をここで確認できます。</p>
-        <div class="v1700-learning-nav">
-          <button type="button" data-learning-view="training">🏋️ 文法修行</button>
-          <button type="button" data-learning-view="weakness">📊 苦手分析</button>
-          <button type="button" data-learning-view="achievements">🏆 実績</button>
-        </div>
-        <div id="learning-training-panel" class="v1700-learning-panel"></div>
-        <div id="learning-weakness-panel" class="v1700-learning-panel"></div>
-        <div id="learning-achievements-panel" class="v1700-learning-panel"></div>`;
-      adventure.parentNode.insertBefore(tab,adventure);
-    }
-
-    const openView=(view)=>{
-      document.querySelectorAll('#learning-tab [data-learning-view]').forEach(b=>{
-        b.classList.toggle('active',b.dataset.learningView===view);
-      });
-      document.querySelectorAll('#learning-tab .v1700-learning-panel').forEach(p=>p.classList.remove('active'));
-      const panel=document.getElementById('learning-'+view+'-panel');
-      if(panel) panel.classList.add('active');
-
-      if(view==='training'){
-        panel.innerHTML='<p class="v1700-learning-note">間違えた問題を優先して練習します。</p><button type="button" class="v1600-primary" id="v1700-start-training">🏋️ 文法修行を開始</button>';
-        const b=document.getElementById('v1700-start-training');
-        if(b) b.onclick=()=>{ if(typeof window.v1100OpenTraining==='function') window.v1100OpenTraining(); else if(typeof window.openTrainingMode==='function') window.openTrainingMode(); };
-      }else if(view==='weakness'){
-        panel.innerHTML='<p class="v1700-learning-note">これまでの解答記録から分野別の正答率を確認できます。</p><button type="button" class="v1600-primary" id="v1700-open-weak">📊 苦手分析を表示</button>';
-        const b=document.getElementById('v1700-open-weak');
-        if(b) b.onclick=()=>{ if(typeof window.v1100OpenWeakness==='function') window.v1100OpenWeakness(); else if(typeof window.openWeaknessBoard==='function') window.openWeaknessBoard(); };
-      }else{
-        panel.innerHTML='<p class="v1700-learning-note">解除した実績を確認できます。</p><button type="button" class="v1600-primary" id="v1700-open-ach">🏆 実績を表示</button>';
-        const b=document.getElementById('v1700-open-ach');
-        if(b) b.onclick=()=>{ if(typeof window.v1100OpenAchievements==='function') window.v1100OpenAchievements(); else if(typeof window.openAchievementBoard==='function') window.openAchievementBoard(); };
-      }
-    };
-
-    if(!btn.dataset.bound){
-      btn.dataset.bound='1';
-      btn.onclick=()=>{
-        window.switchTab('learning');
-        openView('training');
-      };
-      tab.querySelectorAll('[data-learning-view]').forEach(b=>b.onclick=()=>openView(b.dataset.learningView));
-    }
-    if(!tab.dataset.initialized){
-      tab.dataset.initialized='1';
-      openView('training');
-    }
-  }
-
-  /* Replace the original tab switcher with one that knows about 学習.
-     It also deliberately does not touch the existing game tabs. */
-  const originalSwitch=window.switchTab;
-  window.switchTab=function(tabName){
-    const ids=['adventure','story','shop','collection','companions','learning'];
-    ids.forEach(n=>{
-      const el=document.getElementById(n+'-tab');
-      if(el) el.style.display=(n===tabName?'block':'none');
-    });
-    document.querySelectorAll('#menu-tabs .tab-btn').forEach(b=>b.classList.remove('active'));
-    const idx=ids.indexOf(tabName);
-    const buttons=document.querySelectorAll('#menu-tabs .tab-btn');
-    if(idx>=0 && buttons[idx]) buttons[idx].classList.add('active');
-
-    if(tabName==='collection' && typeof window.renderCollection==='function') window.renderCollection();
-    if(tabName==='story' && typeof window.renderStoryArchive==='function') window.renderStoryArchive();
-    if(tabName==='companions' && typeof window.renderCompanionUI==='function') window.renderCompanionUI();
-    if(tabName==='learning') ensureLearningTab();
-  };
-
-  /* ---------- 2. Stable artwork: use real <img>, not background crops ---------- */
-  function setImg(host,url,cls,alt){
-    if(!host || !url) return;
-    let im=host.querySelector(':scope > img.'+cls);
-    if(!im){
-      im=document.createElement('img');
-      im.className='v1700-art '+cls;
-      host.innerHTML='';
-      host.appendChild(im);
-    }
-    if(im.src!==url) im.src=url;
-    im.alt=alt||'';
-    host.style.backgroundImage='none';
-    host.style.backgroundColor='transparent';
-  }
-
-  function repairBattleArt(){
-    const A=window.__bunpouQuestArt||{};
-    try{if(typeof currentEnemy!=='undefined'&&currentEnemy&&Number(currentEnemy.id)>=20&&Number(currentEnemy.id)<=39)return;}catch(e){}
-    const ce=currentEnemy || (typeof currentEnemy!=='undefined'?currentEnemy:null);
-    if(ce && Array.isArray(A.enemies)){
-      const id=Math.max(0,Math.min(19,Number(ce.id)||0));
-      const url=(id===19&&A.finalBoss)?A.finalBoss:A.enemies[id];
-      setImg(document.getElementById('enemy-sprite'),url,'v1700-enemy-art','敵'+(id+1));
-    }
-    const story=document.getElementById('story-enemy-sprite');
-    if(story && story.dataset.bqFriend==='1') setImg(story,A.friend,'v1700-story-art','幼馴染');
-    const hero=document.getElementById('hero-sprite');
-    if(hero && A.hero) setImg(hero,A.hero,'v1700-hero-art','主人公');
-  }
-
-  function repairEnemyCards(){
-    const A=window.__bunpouQuestArt||{};
-    if(!Array.isArray(A.enemies)) return;
-    document.querySelectorAll('#enemy-list-container .enemy-card').forEach((card,i)=>{
-      const old=card.querySelector('.sprite-sheet,.v1300-enemy-art,.v1700-enemy-art');
-      const url=A.enemies[i];
-      if(!old || !url) return;
-      if(old.tagName==='IMG' && old.classList.contains('v1700-enemy-art')){if(old.src!==url)old.src=url;return;}
-      const im=document.createElement('img');
-      im.className='v1700-art v1700-enemy-art';
-      im.src=url; im.alt='敵'+(i+1);
-      old.replaceWith(im);
-    });
-  }
-
-  function repairCompanionCards(){
-    const arts=window.__BUNPOU_COMPANION_ARTS||[];
-    if(!arts.length) return;
-    document.querySelectorAll('#companion-list .companion-card').forEach((card,i)=>{
-      if(!arts[i]) return;
-      const old=card.querySelector('.companion-sheet,.v1300-companion-art,.v1500-companion-art,.v1700-companion-art');
-      if(!old) return;
-      if(old.tagName==='IMG' && old.classList.contains('v1700-companion-art')){if(old.src!==arts[i])old.src=arts[i];return;}
-      const im=document.createElement('img');
-      im.className='v1700-art v1700-companion-art';
-      im.src=arts[i]; im.alt='仲間'+(i+1);
-      old.replaceWith(im);
-    });
-  }
-
-  function repairCollectionArt(){
-    const A=window.__bunpouQuestArt||{};
-    if(!Array.isArray(A.enemies)) return;
-    document.querySelectorAll('#enemy-collection .collection-card').forEach((card,i)=>{
-      const icon=card.querySelector('.collection-icon');
-      if(!icon || !A.enemies[i]) return;
-      let im=icon.querySelector('img');
-      if(!im){im=document.createElement('img');icon.innerHTML='';icon.appendChild(im);}
-      im.className='v1700-art v1400-collection-art';
-      im.src=A.enemies[i]; im.alt='敵'+(i+1);
-    });
-  }
-
-  /* ---------- 3. Companion skill: bind to BOTH old/new renderers ---------- */
-  function repairSkillPanel(){
-    const panel=document.getElementById('companion-battle-skill');
-    if(!panel) return;
-    panel.querySelectorAll('button[data-v1600-comp],button[data-comp-id]').forEach(b=>{
-      const id=Number(b.dataset.v1600Comp||b.dataset.compId);
-      if(!Number.isFinite(id)) return;
-      b.disabled=!!b.disabled;
-      b.onclick=(ev)=>{
-        ev.preventDefault(); ev.stopPropagation();
-        if(typeof window.v1600UseCompanionSkill==='function') window.v1600UseCompanionSkill(id);
-        else if(typeof window.v1100UseCompanionSkill==='function') window.v1100UseCompanionSkill(id);
-        else if(typeof window.useCompanionSkill==='function') window.useCompanionSkill(id);
-      };
-    });
-  }
-
-  /* Expose reset for each new battle; v1600's internal state otherwise can
-     remain locked after a redraw. */
-  if(typeof window.v1600ResetCompanionSkill!=='function'){
-    window.v1600ResetCompanionSkill=function(){
-      /* The v1600 layer reads this flag through the public hook added below. */
-      window.__bunpouQuestSkillResetToken=(window.__bunpouQuestSkillResetToken||0)+1;
-    };
-  }
-
-  /* ---------- 4. Stop old render layers fighting each other ---------- */
-  const killOldLearning=()=>{
-    ['v900-tools','v1100-tools','v1500-tools','v1600-tools'].forEach(id=>{
-      const el=document.getElementById(id);
-      if(el) el.remove();
-    });
-    ensureLearningTab();
-    repairBattleArt(); repairEnemyCards(); repairCompanionCards(); repairCollectionArt(); repairSkillPanel();
-  };
-
-  const obs=new MutationObserver(()=>{
-    // 第二章戦闘中は、全DOM監視による旧UI修復を停止。
-    // 戦闘中のHP・問題・ボタン更新だけで大量の再描画が発生するため。
-    if(window.__bqC2BattlePerf) return;
-    clearTimeout(obs._t);
-    obs._t=setTimeout(killOldLearning,0);
-  });
-  obs.observe(document.body,{childList:true,subtree:true});
-
-  /* Patch major render points once. */
-  const wrap=(name,after)=>{
-    const fn=window[name];
-    if(typeof fn!=='function' || fn.__v1700wrapped) return;
-    const w=function(){const r=fn.apply(this,arguments);setTimeout(after,0);return r;};
-    w.__v1700wrapped=true;
-    window[name]=w;
-  };
-  wrap('renderEnemies',()=>{repairEnemyCards();repairBattleArt()});
-  wrap('renderCompanionUI',()=>repairCompanionCards());
-  wrap('showActionPanel',()=>{repairBattleArt();repairSkillPanel()});
-  wrap('startBattle',()=>{if(typeof window.v1600ResetCompanionSkill==='function')window.v1600ResetCompanionSkill();repairBattleArt();repairSkillPanel()});
-  wrap('updateUI',()=>{repairBattleArt();repairSkillPanel();repairCompanionCards()});
-
-  /* ---------- boot ---------- */
-  function boot(){
-    ensureLearningTab();
-    repairBattleArt();repairEnemyCards();repairCompanionCards();repairCollectionArt();repairSkillPanel();
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,0));
-  else setTimeout(boot,0);
-  window.__bunpouQuestVersion='v1700-stability-learning-tab';
-})();
-</script>
 <script id="v1901-strict-question-and-reset-fix">
 (function(){
   'use strict';
@@ -5042,102 +4492,7 @@ body{background:radial-gradient(circle at 50% -10%,rgba(29,78,216,.20),transpare
   window.__bunpouQuestVersion='v2000-mobile-final';
 })();
 </script>
-<script id="v2100-final-learning-fix">
-/* v2100: 文法修行・苦手分析・実績を旧モーダル依存から切り離し、学習タブ内で直接動作させる。 */
-(()=>{
-  const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  const getCat=q=>{try{return typeof questionCategory==='function'?questionCategory(q):(q.category||'その他')}catch(e){return q?.category||'その他'}};
-  const save=()=>{try{if(typeof saveGameData==='function')saveGameData();}catch(e){} try{localStorage.setItem('bunpou_v900_extra',JSON.stringify({achievements,wrongQuestionKeys,topicStats}));}catch(e){}};
-  const panel=id=>document.getElementById(id);
-  let training=[], ti=0, trainingCorrect=0, trainingAnswered=0;
 
-  function ensure(){
-    if(typeof ensureLearningTab==='function') ensureLearningTab();
-    const tab=panel('learning-tab'); if(!tab)return;
-    tab.querySelectorAll('[data-learning-view]').forEach(b=>{
-      b.onclick=()=>openView(b.dataset.learningView);
-    });
-    const old=tab.dataset.v2100ready==='1';
-    if(!old){tab.dataset.v2100ready='1'; openView('training');}
-  }
-  function openView(view){
-    const tab=panel('learning-tab'); if(!tab)return;
-    tab.querySelectorAll('[data-learning-view]').forEach(b=>b.classList.toggle('active',b.dataset.learningView===view));
-    tab.querySelectorAll('.v1700-learning-panel').forEach(p=>p.classList.remove('active'));
-    const p=panel('learning-'+view+'-panel'); if(p)p.classList.add('active');
-    if(view==='training')renderTrainingHome();
-    else if(view==='weakness')renderWeakness();
-    else renderAchievements();
-  }
-  function baseQuestions(){
-    const a=Array.isArray(questionPool)?questionPool.slice():[];
-    const b=Array.isArray(cleanEntranceExamQuestions)?cleanEntranceExamQuestions.slice():[];
-    return [...a,...b];
-  }
-  function qkey(q){try{return typeof questionKey==='function'?questionKey(q):JSON.stringify(q)}catch(e){return JSON.stringify(q)}}
-  function renderTrainingHome(){
-    const p=panel('learning-training-panel');if(!p)return;
-    const wrong=baseQuestions().filter(q=>Array.isArray(wrongQuestionKeys)&&wrongQuestionKeys.includes(qkey(q)));
-    p.innerHTML=`<div class="v2100-learning-card"><h3>🏋️ 文法修行</h3><p>間違えた問題を優先して、もう一度解き直します。</p><div class="v2100-stat">現在の苦手問題：<b>${wrong.length}問</b></div><button type="button" id="v2100-training-start">▶ 修行を始める</button></div>`;
-    panel('v2100-training-start').onclick=()=>startTraining(wrong.length?wrong:baseQuestions().slice(0,30));
-  }
-  function startTraining(pool){
-    training=pool.slice().sort(()=>Math.random()-0.5);ti=0;trainingCorrect=0;trainingAnswered=0;renderTrainingQuestion();
-  }
-  function renderTrainingQuestion(){
-    const p=panel('learning-training-panel');if(!p||!training.length)return;
-    const q=training[ti%training.length];
-    p.innerHTML=`<div class="v2100-learning-card"><div class="v2100-progress">修行 ${ti+1}/${training.length}　今回正解 ${trainingCorrect}/${trainingAnswered}</div><div class="v2100-source">${esc(q.sourceLabel||'復習問題')}</div><div class="v2100-question">${esc(q.q||'').replace(/\n/g,'<br>')}</div><div class="v2100-choices">${(q.choices||[]).map((c,i)=>`<button type="button" data-answer="${i}">${i+1}. ${esc(c)}</button>`).join('')}</div><div id="v2100-training-msg"></div></div>`;
-    p.querySelectorAll('[data-answer]').forEach(b=>b.onclick=()=>answerTraining(Number(b.dataset.answer),q));
-  }
-  function answerTraining(i,q){
-    if(i===Number(q.answer)){
-      trainingCorrect++;trainingAnswered++;
-      try{recordQuestionStat(q,true);}catch(e){}
-      if(trainingCorrect>=10 && typeof unlockAchievement==='function')unlockAchievement('training');
-      save();
-      ti++;
-      if(ti>=training.length){
-        const p=panel('learning-training-panel');
-        if(p)p.innerHTML=`<div class="v2100-learning-card"><h3>🎉 修行完了！</h3><p>${training.length}問中 <b>${trainingCorrect}問正解</b>。</p><button type="button" id="v2100-training-again">もう一度修行する</button></div>`;
-        const b=panel('v2100-training-again');if(b)b.onclick=renderTrainingHome;
-      }else renderTrainingQuestion();
-    }else{
-      trainingAnswered++;
-      try{recordQuestionStat(q,false);}catch(e){}
-      const msg=panel('v2100-training-msg');if(msg)msg.innerHTML='<span class="v2100-bad">❌ もう一度。正解するまで次へ進みません。</span>';
-      save();
-    }
-  }
-  function renderWeakness(){
-    const p=panel('learning-weakness-panel');if(!p)return;
-    const stats=(typeof topicStats==='object'&&topicStats)?topicStats:{};
-    const cats=ANALYSIS_CATEGORIES.slice();
-    const keys=cats;
-    const rows=keys.map(k=>{const v=stats[k]||{correct:0,total:0};const total=Number(v.total)||0,correct=Number(v.correct)||0,pct=total?Math.round(correct/total*100):0;return {k,total,correct,pct}}).sort((a,b)=>(a.total? a.pct:-1)-(b.total?b.pct:-1));
-    p.innerHTML=`<div class="v2100-learning-card"><h3>📊 苦手分析</h3><p>正答率が低い分野から表示。未学習は「未学習」としています。</p>${rows.map(x=>`<div class="v2100-weak"><div><b>${esc(x.k)}</b><span>${x.total?`${x.correct}/${x.total}（${x.pct}%）`:'未学習'}</span></div><div class="v2100-bar"><i style="width:${x.pct}%"></i></div></div>`).join('')}</div>`;
-  }
-  function renderAchievements(){
-    const p=panel('learning-achievements-panel');if(!p)return;
-    const master=(typeof achievementMaster!=='undefined'?achievementMaster:[]);
-    const got=(typeof achievements!=='undefined'?achievements:{});
-    const n=master.filter(a=>got[a[0]]).length;
-    p.innerHTML=`<div class="v2100-learning-card"><h3>🏆 実績 ${n}/${master.length}</h3><p>達成した実績は日時も保存されます。</p><div class="v2100-ach-grid">${master.map(a=>{const yes=!!got[a[0]];return `<div class="v2100-ach ${yes?'got':''}"><span>${yes?a[3]:'🔒'}</span><div><b>${esc(a[1])}</b><small>${esc(a[2])}</small></div></div>`}).join('')}</div></div>`;
-  }
-  const st=document.createElement('style');st.textContent=`
-    .v2100-learning-card{background:rgba(15,23,42,.72);border:2px solid #334155;border-radius:14px;padding:16px;box-sizing:border-box}
-    .v2100-learning-card h3{margin:0 0 10px}.v2100-learning-card p{color:#cbd5e1}
-    .v2100-learning-card button{width:100%;min-height:54px;margin-top:10px;padding:12px 14px;border:2px solid #38bdf8;border-radius:12px;background:#0b2b44;color:#fff;font-weight:900;font-size:16px;touch-action:manipulation}
-    .v2100-stat,.v2100-progress{padding:10px;border-radius:10px;background:rgba(2,6,23,.5);margin:10px 0}.v2100-source{font-size:12px;color:#38bdf8;margin-bottom:10px}.v2100-question{font-size:18px;line-height:1.8;margin:12px 0;white-space:normal}.v2100-choices{display:grid;gap:9px}.v2100-choices button{margin:0;text-align:left}.v2100-bad{display:block;margin-top:12px;color:#fca5a5;font-weight:900}
-    .v2100-weak{margin:14px 0}.v2100-weak>div:first-child{display:flex;justify-content:space-between;gap:8px}.v2100-bar{height:12px;background:#1e293b;border-radius:99px;overflow:hidden;margin-top:6px}.v2100-bar i{display:block;height:100%;background:#38bdf8}
-    .v2100-ach-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.v2100-ach{display:flex;gap:10px;align-items:center;padding:11px;border:1px solid #334155;border-radius:10px;opacity:.58}.v2100-ach.got{opacity:1;border-color:#fbbf24}.v2100-ach span{font-size:25px}.v2100-ach small{display:block;color:#94a3b8;margin-top:3px}
-    @media(max-width:650px){.v2100-learning-card{padding:12px}.v2100-question{font-size:17px}.v2100-ach-grid{grid-template-columns:1fr}.v2100-learning-card button{min-height:56px}}
-  `;document.head.appendChild(st);
-  function boot(){ensure();}
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,300));else setTimeout(boot,300);
-  window.v2100OpenLearningView=openView;
-})();
-</script>
 \n<!-- v2200: Persona-inspired title screen + authoritative companion skill system -->
 <script id="v2200-title-skill-overhaul">
 (function(){
@@ -5444,219 +4799,7 @@ body{background:radial-gradient(circle at 50% -10%,rgba(29,78,216,.20),transpare
   window.__bunpouQuestVersion='v2200-title-skill-overhaul';
 })();
 </script>\n
-<script id="v2317-achievement-engine-fix">
-/* v2317: 実績エンジン最終修正
-   - 解除条件をイベント後に必ず再判定
-   - 通知を専用ポップアップでも表示
-   - 修行10問は累計で判定
-   - 既存セーブの実績を壊さない
-*/
-(function(){
-  'use strict';
 
-  const KEY='bunpou_v2317_achievement_state';
-  let trainingTotal=0;
-  try{
-    const x=JSON.parse(localStorage.getItem(KEY)||'{}');
-    trainingTotal=Number(x.trainingTotal)||0;
-  }catch(e){}
-
-  function persist(){
-    try{localStorage.setItem(KEY,JSON.stringify({trainingTotal}));}catch(e){}
-    try{
-      const raw=localStorage.getItem('bunpou_save_v801');
-      if(raw){
-        const d=JSON.parse(raw);
-        d.achievements=(typeof achievements!=='undefined' && achievements && typeof achievements==='object')?achievements:{};
-        localStorage.setItem('bunpou_save_v801',JSON.stringify(d));
-      }
-    }catch(e){}
-  }
-
-  function achievementById(id){
-    try{return achievementMaster.find(a=>a[0]===id)||null;}catch(e){return null;}
-  }
-
-  function notifyAchievement(id){
-    const a=achievementById(id);
-    if(!a)return;
-
-    /* 既存トーストも残しつつ、見逃しにくい専用通知を出す */
-    try{
-      if(typeof showToast==='function') showToast(`${a[3]} 実績解除！「${a[1]}」`);
-    }catch(e){}
-
-    let el=document.getElementById('v2317-achievement-popup');
-    if(!el){
-      el=document.createElement('div');
-      el.id='v2317-achievement-popup';
-      el.innerHTML='<div class="v2317-ach-inner"><div class="v2317-ach-icon"></div><div class="v2317-ach-label">ACHIEVEMENT UNLOCKED</div><div class="v2317-ach-name"></div><div class="v2317-ach-desc"></div></div>';
-      document.body.appendChild(el);
-    }
-    const icon=el.querySelector('.v2317-ach-icon');
-    const name=el.querySelector('.v2317-ach-name');
-    const desc=el.querySelector('.v2317-ach-desc');
-    if(icon)icon.textContent=a[3];
-    if(name)name.textContent=a[1];
-    if(desc)desc.textContent=a[2];
-    el.style.display='block';
-    el.classList.remove('show');
-    void el.offsetWidth;
-    el.classList.add('show');
-    clearTimeout(el.__timer);
-    el.__timer=setTimeout(()=>el.classList.remove('show'),3200);
-  }
-
-  /* unlockAchievementそのものを一本化。
-     既存のachievementMaster / achievements / save処理はそのまま利用する。 */
-  const oldUnlock=window.unlockAchievement;
-  window.unlockAchievement=function(id){
-    try{
-      if(!window.achievements && typeof achievements!=='undefined') window.achievements=achievements;
-      const store=(typeof achievements!=='undefined')?achievements:window.achievements;
-      const before=!!(store&&store[id]);
-      if(typeof oldUnlock==='function') oldUnlock(id);
-      const after=!!(store&&store[id]);
-      if(!before && after) notifyAchievement(id);
-      if(after){
-        try{localStorage.setItem('bunpou_v2317_achievements',JSON.stringify(store));}catch(e){}
-        try{if(typeof saveGameData==='function')saveGameData();}catch(e){}
-      }
-      return after;
-    }catch(e){
-      try{
-        const store=(typeof achievements!=='undefined')?achievements:(window.achievements||{});
-        if(!store[id]){
-          store[id]=Date.now();
-          notifyAchievement(id);
-          if(typeof saveGameData==='function')saveGameData();
-          return true;
-        }
-      }catch(_){}
-      return false;
-    }
-  };
-
-  function unlock(id){
-    try{ window.unlockAchievement(id); }catch(e){}
-  }
-
-  function countDefeated(){
-    try{return Object.values(defeatedEnemies||{}).filter(Boolean).length;}catch(e){return 0;}
-  }
-  function ownedCompanions(){
-    try{return (companions||[]).filter(c=>c.owned).length;}catch(e){return 0;}
-  }
-
-  function checkAll(){
-    try{
-      if(countDefeated()>=1) unlock('first_battle');
-      if(countDefeated()>=10) unlock('enemy10');
-      if(countDefeated()>=20) unlock('all_enemy');
-
-      const n=ownedCompanions();
-      if(n>=3)unlock('companion3');
-      if(n>=10)unlock('companion10');
-
-      if((typeof battleCombo!=='undefined'?battleCombo:0)>=5)unlock('combo5');
-      if((typeof battleCombo!=='undefined'?battleCombo:0)>=5)unlock('no_mistake');
-      if((typeof battleCombo!=='undefined'?battleCombo:0)>=10)unlock('perfect10');
-
-      if(typeof topicStats!=='undefined' && topicStats && Object.keys(topicStats).length>=3)unlock('category3');
-
-      if(typeof learnedSpells!=='undefined' && Array.isArray(learnedSpells)){
-        if(learnedSpells.length>=1)unlock('first_magic');
-        if(typeof spellMaster!=='undefined' && Array.isArray(spellMaster) && learnedSpells.length>=spellMaster.length && spellMaster.length>0)unlock('all_magic');
-      }
-
-      if(trainingTotal>=10)unlock('training');
-    }catch(e){console.warn('achievement check',e);}
-  }
-
-  window.__v2317AchievementCheck=checkAll;
-  window.__v2317AchievementTrainingCorrect=function(){
-    trainingTotal++;
-    persist();
-    if(trainingTotal>=10)unlock('training');
-    checkAll();
-    try{if(typeof saveGameData==='function')saveGameData();}catch(e){}
-  };
-
-  /* 通常戦闘：最終的なcheckAnswerを包む */
-  if(typeof window.checkAnswer==='function'){
-    const baseCheck=window.checkAnswer;
-    window.checkAnswer=function(){
-      const r=baseCheck.apply(this,arguments);
-      setTimeout(checkAll,0);
-      return r;
-    };
-  }
-
-  /* 報酬画面：討伐系・仲間系 */
-  if(typeof window.showRewardNotification==='function'){
-    const baseReward=window.showRewardNotification;
-    window.showRewardNotification=function(){
-      const r=baseReward.apply(this,arguments);
-      setTimeout(checkAll,30);
-      return r;
-    };
-  }
-
-  /* 魔法習得 */
-  if(typeof window.learnSpell==='function'){
-    const baseLearn=window.learnSpell;
-    window.learnSpell=function(){
-      const before=(typeof learnedSpells!=='undefined'&&Array.isArray(learnedSpells))?learnedSpells.length:0;
-      const r=baseLearn.apply(this,arguments);
-      const after=(typeof learnedSpells!=='undefined'&&Array.isArray(learnedSpells))?learnedSpells.length:before;
-      if(after>before)checkAll();
-      return r;
-    };
-  }
-
-  /* 修行：v2100の正解処理から累計カウンタを加算 */
-  const oldAT=window.answerTraining;
-  if(typeof oldAT==='function'){
-    window.answerTraining=function(i){
-      let q=null;
-      try{q=(typeof training!=='undefined'&&Array.isArray(training))?training[ti%training.length]:null;}catch(e){}
-      let correct=false;
-      try{correct=!!q && Number(i)===Number(q.answer);}catch(e){}
-      const r=oldAT.apply(this,arguments);
-      if(correct)setTimeout(window.__v2317AchievementTrainingCorrect,0);
-      return r;
-    };
-  }
-
-  /* 起動時に既存データから条件を再判定 */
-  const boot=()=>setTimeout(checkAll,250);
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);
-  else boot();
-
-  const st=document.createElement('style');
-  st.textContent=`
-#v2317-achievement-popup{
-  position:fixed;left:50%;top:14%;transform:translate(-50%,-25px) scale(.92);
-  opacity:0;pointer-events:none;z-index:100000;
-  width:min(430px,calc(100vw - 28px));box-sizing:border-box;
-  padding:18px 20px;text-align:center;border:2px solid #fbbf24;border-radius:18px;
-  background:linear-gradient(145deg,#111827,#312e1e);
-  box-shadow:0 16px 60px rgba(0,0,0,.65),0 0 35px rgba(251,191,36,.25);
-  transition:opacity .22s ease,transform .22s ease;
-}
-#v2317-achievement-popup.show{opacity:1;transform:translate(-50%,0) scale(1)}
-.v2317-ach-icon{font-size:38px;line-height:1.1}
-.v2317-ach-label{margin-top:5px;color:#fbbf24;font-size:11px;letter-spacing:2px;font-weight:1000}
-.v2317-ach-name{margin-top:5px;color:#fff;font-size:22px;font-weight:1000}
-.v2317-ach-desc{margin-top:4px;color:#cbd5e1;font-size:13px}
-@media(max-width:650px){
-  #v2317-achievement-popup{top:9%;padding:15px}
-  .v2317-ach-name{font-size:20px}
-}
-`;
-  document.head.appendChild(st);
-})();
-</script>
 <style id="v2319-gacha-cinematic-css">
 #v2318-gacha-overlay{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 48%,rgba(18,55,110,.96),rgba(2,6,23,.995) 76%);opacity:0;pointer-events:none;transition:opacity .35s ease}
 #v2318-gacha-overlay.show{opacity:1;pointer-events:auto}
@@ -6604,7 +5747,7 @@ if(typeof oldShow==='function'){
   // 戦闘進行は finishC2Battle() → 共通報酬処理 → beginPendingStory() に一本化。
 
   // Strengthen the full-new-game reset: clear every known legacy game save/extra key.
-  const GAME_KEYS=['bunpou_save_v801','bunpou_save_v801_backup','bunpou_v900_extra','bunpou_save_v1000_extra','bunpou_save_v1000_extra_backup','bunpou_save_v1100_complete','bunpou_v1600_learning','bunpou_v2317_achievement_state','bunpou_v2317_achievements','bunpou_chapter2_unlocked','bunpou_chapter2_progress','bunpou_ch2_battle_v1','bunpou_ch2_battle_mechanics_v1'];
+  const GAME_KEYS=['bunpou_save_v801','bunpou_save_v801_backup','bunpou_v900_extra','bunpou_save_v1000_extra','bunpou_save_v1000_extra_backup','bunpou_save_v1100_complete','bunpou_v1600_learning','bunpou_v2317_achievement_state','bunpou_v2317_achievements','bunpou_quest_achievements_v1','bunpou_chapter2_unlocked','bunpou_chapter2_progress','bunpou_ch2_battle_v1','bunpou_ch2_battle_mechanics_v1'];
   const oldHard=window.__bqHardResetAll;
   window.__bqHardResetAll=function(){
     for(const k of GAME_KEYS){try{localStorage.removeItem(k);}catch(e){}}
@@ -7357,7 +6500,7 @@ window.addEventListener('storage',()=>setTimeout(render,0));
   let box=document.getElementById('bq2770-side-info');
   if(!box){
    box=document.createElement('aside');box.id='bq2770-side-info';box.hidden=true;
-   box.innerHTML='<div class="bq2770-head">⚔️ 状態異常・アップデート</div><div id="bq2770-active"></div><div class="bq2770-update"><div class="bq2770-update-title">🆕 今回のアップデート</div><div id="bq2770-update-text"></div></div>';
+   box.innerHTML='<div class="bq2770-head">⚔️ 状態異常・今回のアップデート</div><div id="bq2770-active"></div><div class="bq2770-update"><div class="bq2770-update-title">🆕 今回のアップデート</div><div id="bq2770-update-text"></div></div>';
    document.body.appendChild(box);
   }
   return box;
@@ -7369,7 +6512,7 @@ window.addEventListener('storage',()=>setTimeout(render,0));
   activeBox.innerHTML=active.length
    ? active.map(k=>{const [label,desc]=STATUS[k];const turns=Number(window.__bq2740Status?.active?.[k]||0);return `<div class="bq2770-active"><b>${esc(label)}　${turns}T</b><br><span>${esc(desc)}</span></div>`}).join('')
    : '<div class="bq2770-none">現在、主人公に有効な状態異常はありません。</div>';
-  box.querySelector('#bq2770-update-text').innerHTML='• 硬化中は通常攻撃ボタンを表示しない<br>• 暗黙を廃止し、硬化へ統一<br>• 状態異常の効果を右側で確認可能<br>• ストーリー復帰・はじめから処理を安定化';
+  box.querySelector('#bq2770-update-text').innerHTML='• 🌀 混乱：攻撃系行動が一定確率で自分を攻撃（攻撃力の1/10）<br>• 🛡️ 硬化：通常攻撃を使用不可・通常攻撃ボタンも非表示<br>• 🔇 沈黙：魔法攻撃を使用不可<br>• ⚡ 麻痺：正解しても一定条件で攻撃不能<br>• ☠️ 毒／🔥 炎上／🩸 出血：継続ダメージ<br>• ⛓️ 呪縛：フィニッシャー使用不可';
   const battleVisible=document.getElementById('battle-field')?.style.display!=='none' && document.getElementById('battle-field')?.offsetParent!==null;
   box.hidden=!battleVisible;
  }
@@ -7555,6 +6698,225 @@ window.addEventListener('storage',()=>setTimeout(render,0));
 #story-skip-btn,.bq-ch2-skip{position:relative!important;z-index:50!important;pointer-events:auto!important;}
 #story-skip-btn:disabled,.bq-ch2-skip:disabled{opacity:1!important;cursor:pointer!important;}
 </style>
+
+<script id="bq-clean-achievements-v2">
+(()=>{
+  'use strict';
+  /* 文法クエスト：実績システム v2
+     - 実績はこのエンジンだけで管理
+     - 100個を1つのMASTERで管理
+     - 学習・やりこみは「文法修行／苦手分析／実績」の3ボタンだけ
+     - 2206はゲーム全開放を行うが、学習ボタンを再構築・無効化しない
+  */
+  const KEY='bunpou_quest_achievements_v2';
+  const N=(id,name,icon,condition,test)=>({id,name,icon,condition,test});
+  const MASTER=[
+    N('a001','はじめの一歩','🌱','問題に初めて正解する',s=>s.correct>=1),
+    N('a002','五歩前進','👣','5問正解する',s=>s.correct>=5),
+    N('a003','十問突破','🔟','10問正解する',s=>s.correct>=10),
+    N('a004','二十五問突破','📘','25問正解する',s=>s.correct>=25),
+    N('a005','五十問突破','📚','50問正解する',s=>s.correct>=50),
+    N('a006','百問突破','💯','100問正解する',s=>s.correct>=100),
+    N('a007','二百五十問突破','🏃','250問正解する',s=>s.correct>=250),
+    N('a008','五百問突破','🏋️','500問正解する',s=>s.correct>=500),
+    N('a009','千問突破','🏆','1000問正解する',s=>s.correct>=1000),
+    N('a010','二千問突破','👑','2000問正解する',s=>s.correct>=2000),
+
+    N('a011','初陣','⚔️','敵を初めて1体倒す',s=>s.defeated>=1),
+    N('a012','五体討伐','🗡️','敵を5体倒す',s=>s.defeated>=5),
+    N('a013','十体討伐','👾','敵を10体倒す',s=>s.defeated>=10),
+    N('a014','十五体討伐','🔥','敵を15体倒す',s=>s.defeated>=15),
+    N('a015','二十体討伐','👑','20体すべての敵を倒す',s=>s.defeated>=20),
+    N('a016','青ぷるりん撃破','💧','青ぷるりんを倒す',s=>s.enemy0),
+    N('a017','最初のボス','🐉','16体目以降のボスを初めて倒す',s=>s.boss>=1),
+    N('a018','ボスハンター','💀','ボスを3体倒す',s=>s.boss>=3),
+    N('a019','魔王討伐','😈','深紅の魔王を倒す',s=>s.enemy18),
+    N('a020','鏡との対峙','🪞','鏡像の勇者との戦いに到達する',s=>s.enemy19Reached),
+
+    N('a021','真の勇者','⚔️','ラスボス「鏡像の勇者」を倒す',s=>s.finalBoss),
+    N('a022','勇者の証','🏅','ラスボス撃破後にレベル99へ到達する',s=>s.finalBoss&&s.level>=99),
+    N('a023','全敵図鑑完成','📖','20体すべてを討伐済みにする',s=>s.defeated>=20),
+    N('a024','最終試験突破','🎓','高校入試ランクの敵を倒す',s=>s.finalBoss),
+    N('a025','第一章完結','📜','第一章の20体目を倒す',s=>s.finalBoss),
+    N('a026','一度も逃げない','🛡️','敵を20体倒すまで撤退記録を残さない',s=>s.defeated>=20&&s.battles>=20),
+    N('a027','連戦の達人','⚔️','10回以上の戦闘をこなす',s=>s.battles>=10),
+    N('a028','百戦錬磨','⚔️','50回以上の戦闘をこなす',s=>s.battles>=50),
+    N('a029','戦場の常連','⚔️','100回以上の戦闘をこなす',s=>s.battles>=100),
+    N('a030','完全制覇','🌌','敵・魔法・仲間をすべて集める',s=>s.defeated>=20&&s.allMagic&&s.companions>=20),
+
+    N('a031','コンボ職人','🔥','5コンボ以上を達成する',s=>s.maxCombo>=5),
+    N('a032','十連撃','⚡','10コンボ以上を達成する',s=>s.maxCombo>=10),
+    N('a033','二十連撃','💥','20コンボ以上を達成する',s=>s.maxCombo>=20),
+    N('a034','三十連撃','🌋','30コンボ以上を達成する',s=>s.maxCombo>=30),
+    N('a035','五十連撃','☄️','50コンボ以上を達成する',s=>s.maxCombo>=50),
+    N('a036','戦闘ノーミス','🌟','1戦闘で5問連続正解する',s=>s.maxBattleCombo>=5),
+    N('a037','戦闘十連正解','🌠','1戦闘で10問連続正解する',s=>s.maxBattleCombo>=10),
+    N('a038','百発百中','🎯','正答率90%以上・100問以上解答する',s=>s.answered>=100&&s.accuracy>=90),
+    N('a039','文法精密機械','🎯','正答率95%以上・200問以上解答する',s=>s.answered>=200&&s.accuracy>=95),
+    N('a040','完璧主義者','💎','正答率98%以上・500問以上解答する',s=>s.answered>=500&&s.accuracy>=98),
+
+    N('a041','魔法使い','✨','初めて魔法を習得する',s=>s.magic>=1),
+    N('a042','魔法三つ','🔮','魔法を3種類習得する',s=>s.magic>=3),
+    N('a043','魔法五つ','🪄','魔法を5種類習得する',s=>s.magic>=5),
+    N('a044','魔法コレクター','🌈','魔法を8種類習得する',s=>s.magic>=8),
+    N('a045','魔法コンプリート','🌈','すべての魔法を習得する',s=>s.allMagic),
+    N('a046','炎の使い手','🔥','炎属性の魔法を習得する',s=>s.fireMagic),
+    N('a047','氷の使い手','❄️','氷属性の魔法を習得する',s=>s.iceMagic),
+    N('a048','魔力充填','💙','最大MPが30以上になる',s=>s.maxMp>=30),
+    N('a049','魔力の極み','💜','最大MPが50以上になる',s=>s.maxMp>=50),
+    N('a050','フィニッシャー','💥','5コンボ以上からフィニッシャーを使用する',s=>s.finisher>=1),
+
+    N('a051','仲間が増えた','🎴','仲間を3体集める',s=>s.companions>=3),
+    N('a052','仲間コレクター','🎴','仲間を10体集める',s=>s.companions>=10),
+    N('a053','仲間全員集合','👥','20体すべての仲間を集める',s=>s.companions>=20),
+    N('a054','初ガチャ','🎁','仲間ガチャを初めて引く',s=>s.gacha>=1),
+    N('a055','ガチャ十連','🎁','仲間ガチャを10回引く',s=>s.gacha>=10),
+    N('a056','ガチャ三十連','🎁','仲間ガチャを30回引く',s=>s.gacha>=30),
+    N('a057','ガチャ職人','🎲','仲間ガチャを50回引く',s=>s.gacha>=50),
+    N('a058','仲間の力','💪','仲間の戦闘スキルを初めて使う',s=>s.companionSkill>=1),
+    N('a059','仲間とともに','🤝','仲間の戦闘スキルを10回使う',s=>s.companionSkill>=10),
+    N('a060','最強パーティー','👑','仲間20体＋全魔法を揃える',s=>s.companions>=20&&s.allMagic),
+
+    N('a061','文法探究者','🔎','3種類以上の文法分野で正解する',s=>s.categories>=3),
+    N('a062','分野マスター','📚','5種類以上の文法分野で正解する',s=>s.categories>=5),
+    N('a063','全分野制覇','📚','10種類以上の文法分野で正解する',s=>s.categories>=10),
+    N('a064','文節の達人','✂️','文節・単語分野で10問正解する',s=>s.catCorrect['文節・単語']>=10),
+    N('a065','助詞の達人','📝','助詞分野で10問正解する',s=>s.catCorrect['助詞']>=10),
+    N('a066','助動詞の達人','📝','助動詞分野で10問正解する',s=>s.catCorrect['助動詞']>=10),
+    N('a067','品詞の達人','🧩','品詞分野で10問正解する',s=>s.catCorrect['品詞']>=10),
+    N('a068','活用の達人','🔄','活用分野で10問正解する',s=>s.catCorrect['活用']>=10),
+    N('a069','成分の達人','🧱','文の成分分野で10問正解する',s=>s.catCorrect['文の成分']>=10),
+    N('a070','苦手克服','💡','間違えた問題を文法修行で20問正解する',s=>s.trainingCorrect>=20),
+
+    N('a071','修行開始','🏋️','文法修行を初めて行う',s=>s.trainingCorrect>=1),
+    N('a072','修行十問','🏋️','文法修行で10問正解する',s=>s.trainingCorrect>=10),
+    N('a073','修行五十問','🏋️','文法修行で50問正解する',s=>s.trainingCorrect>=50),
+    N('a074','修行百問','🏋️','文法修行で100問正解する',s=>s.trainingCorrect>=100),
+    N('a075','復習の鬼','👹','文法修行で200問正解する',s=>s.trainingCorrect>=200),
+    N('a076','間違いを恐れない','🧠','間違えた問題を50問記録する',s=>s.wrong>=50),
+    N('a077','弱点発見','🔍','苦手分析を開く',s=>s.weaknessOpen>=1),
+    N('a078','弱点攻略','🔓','苦手分析を開いてから文法修行を行う',s=>s.weaknessOpen>=1&&s.trainingCorrect>=1),
+    N('a079','学習習慣','📅','異なる10日分の学習記録を作る',s=>s.days>=10),
+    N('a080','毎日コツコツ','🌱','異なる30日分の学習記録を作る',s=>s.days>=30),
+
+    N('a081','物語の旅人','📖','ストーリーを1話以上進める',s=>s.story>=1),
+    N('a082','物語の中盤','📖','ストーリーを10話以上進める',s=>s.story>=10),
+    N('a083','物語の終盤','📖','ストーリーを19話以上進める',s=>s.story>=19),
+    N('a084','エンディング到達','🎬','第一章のエンディングに到達する',s=>s.story>=20||s.finalBoss),
+    N('a085','第二章への扉','🚪','第二章を解放する',s=>s.chapter2),
+    N('a086','言葉の迷宮','🌀','第二章の敵に挑戦する',s=>s.chapter2Battle),
+    N('a087','新たな物語','📜','第二章を5話以上進める',s=>s.chapter2Story>=5),
+    N('a088','迷宮の奥へ','🗝️','第二章を10話以上進める',s=>s.chapter2Story>=10),
+    N('a089','第二章制覇','👑','第二章20話をすべて進める',s=>s.chapter2Story>=20),
+    N('a090','言葉を取り戻す者','🌌','第二章を最後まで進める',s=>s.chapter2Story>=20),
+
+    N('a091','隠された力','🔑','隠しコード2206を使用する',s=>s.cheatUsed),
+    N('a092','全開放','🌠','隠しコードで全要素を開放する',s=>s.cheatUsed),
+    N('a093','レベル10','⬆️','レベル10に到達する',s=>s.level>=10),
+    N('a094','レベル30','⬆️','レベル30に到達する',s=>s.level>=30),
+    N('a095','レベル50','⬆️','レベル50に到達する',s=>s.level>=50),
+    N('a096','レベル80','⬆️','レベル80に到達する',s=>s.level>=80),
+    N('a097','レベル99','👑','レベル99に到達する',s=>s.level>=99),
+    N('a098','装備の極み','⚔️','最終武器と最終防具を入手する',s=>s.finalEquipment),
+    N('a099','やりこみの証','🏆','正解1000問・敵20体・仲間20体を達成する',s=>s.correct>=1000&&s.defeated>=20&&s.companions>=20),
+    N('a100','文法クエスト完全制覇','🌟','ラスボス撃破・全魔法・全仲間・レベル99を達成する',s=>s.finalBoss&&s.allMagic&&s.companions>=20&&s.level>=99)
+  ];
+  let state={unlocked:{},correct:0,answered:0,defeated:0,boss:0,enemy0:false,enemy18:false,enemy19Reached:false,finalBoss:false,battles:0,maxCombo:0,maxBattleCombo:0,magic:0,allMagic:false,fireMagic:false,iceMagic:false,maxMp:0,finisher:0,companions:0,gacha:0,companionSkill:0,categories:0,catCorrect:{},trainingCorrect:0,wrong:0,weaknessOpen:0,days:0,story:0,chapter2:false,chapter2Battle:false,chapter2Story:0,cheatUsed:false,level:1,accuracy:0,finalEquipment:false};
+  let announced={};
+  const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  function load(){try{const x=JSON.parse(localStorage.getItem(KEY)||'null');if(x&&typeof x==='object'){state=Object.assign(state,x);state.unlocked=Object.assign({},x.unlocked||{});state.catCorrect=Object.assign({},x.catCorrect||{});}}catch(e){}}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+  function announce(a){if(announced[a.id])return;announced[a.id]=1;try{if(typeof window.showToast==='function')window.showToast(`${a.icon} 実績解除！「${a.name}」`);}catch(e){}}
+  function check(){MASTER.forEach(a=>{if(!state.unlocked[a.id]&&a.test(state)){state.unlocked[a.id]=Date.now();announce(a);}});save();}
+  function num(v){return Number(v)||0;}
+  function syncFromGame(){
+    try{
+      if(typeof totalCorrect!=='undefined') state.correct=Math.max(state.correct,num(totalCorrect));
+      if(typeof totalAnswered!=='undefined') state.answered=Math.max(state.answered,num(totalAnswered));
+      if(typeof level!=='undefined') state.level=Math.max(state.level,num(level));
+      if(typeof defeatedEnemies!=='undefined'){
+        const ids=Object.keys(defeatedEnemies).filter(k=>defeatedEnemies[k]).map(Number);
+        state.defeated=Math.max(state.defeated,ids.length);state.enemy0=state.enemy0||!!defeatedEnemies[0];state.enemy18=state.enemy18||!!defeatedEnemies[18];state.finalBoss=state.finalBoss||!!defeatedEnemies[19];state.enemy19Reached=state.enemy19Reached||!!(typeof currentEnemy!=='undefined'&&currentEnemy&&Number(currentEnemy.id)===19);
+        state.boss=Math.max(state.boss,ids.filter(i=>i>=15).length);
+      }
+      if(typeof learnedSpells!=='undefined'&&Array.isArray(learnedSpells)){state.magic=Math.max(state.magic,learnedSpells.length);state.allMagic=state.allMagic||learnedSpells.length>0&&typeof spellMaster!=='undefined'&&learnedSpells.length>=spellMaster.length;state.fireMagic=state.fireMagic||learnedSpells.some(x=>String(x).includes('ファイア'));state.iceMagic=state.iceMagic||learnedSpells.some(x=>String(x).includes('ブリザド')||String(x).includes('アイス'))}
+      if(typeof companions!=='undefined'&&Array.isArray(companions))state.companions=Math.max(state.companions,companions.filter(c=>c&&c.owned).length);
+      if(typeof gachaPoints!=='undefined') state.gacha=Math.max(state.gacha,0);
+      if(typeof maxMp!=='undefined') state.maxMp=Math.max(state.maxMp,num(maxMp));
+      if(typeof currentWeaponIndex!=='undefined'&&typeof weapons!=='undefined'&&typeof currentArmorIndex!=='undefined'&&typeof armors!=='undefined') state.finalEquipment=state.finalEquipment||Number(currentWeaponIndex)>=weapons.length-1&&Number(currentArmorIndex)>=armors.length-1;
+      try{const gh=JSON.parse(localStorage.getItem('bunpou_save_v801')||'null');if(gh&&Array.isArray(gh.gachaHistory))state.gacha=Math.max(state.gacha,gh.gachaHistory.length);}catch(e){}
+      if(typeof topicStats!=='undefined'&&topicStats){const keys=Object.keys(topicStats).filter(k=>num(topicStats[k]?.total)>0);state.categories=Math.max(state.categories,keys.length);for(const k of keys)state.catCorrect[k]=Math.max(state.catCorrect[k]||0,num(topicStats[k]?.correct));}
+      if(typeof wrongQuestionKeys!=='undefined'&&Array.isArray(wrongQuestionKeys))state.wrong=Math.max(state.wrong,wrongQuestionKeys.length);
+      if(typeof storyChapter!=='undefined')state.story=Math.max(state.story,num(storyChapter));
+      if(typeof worldDay!=='undefined')state.days=Math.max(state.days,num(worldDay));
+      state.chapter2=state.chapter2||localStorage.getItem('bunpou_chapter2_unlocked')==='1';
+      const c2=localStorage.getItem('bunpou_chapter2_progress');if(c2)state.chapter2Story=Math.max(state.chapter2Story,num(c2));
+      if(typeof pendingRewardData!=='undefined'&&pendingRewardData)state.battles=Math.max(state.battles,state.defeated);
+      const raw=localStorage.getItem('bunpou_save_v801');if(raw){const d=JSON.parse(raw);state.correct=Math.max(state.correct,num(d.totalCorrect));state.answered=Math.max(state.answered,num(d.totalAnswered));state.level=Math.max(state.level,num(d.level));state.battles=Math.max(state.battles,num(d.dailyGoals?.battles));state.accuracy=state.answered?Math.round(state.correct/state.answered*100):0;state.companions=Math.max(state.companions,Array.isArray(d.companions)?d.companions.filter(c=>c&&c.owned).length:0);state.categories=Math.max(state.categories,Object.keys(d.topicStats||{}).filter(k=>num(d.topicStats[k]?.total)>0).length);}
+      try{const v=JSON.parse(localStorage.getItem('bunpou_save_v1100_complete')||'null');if(v){state.trainingCorrect=Math.max(state.trainingCorrect,num(v.trainingCorrect));}}catch(e){}
+    }catch(e){}
+    check();
+  }
+  function render(){const root=document.getElementById('bq-clean-achievements');if(!root)return;const got=MASTER.filter(a=>!!state.unlocked[a.id]).length;root.innerHTML=`<div class="bq-clean-ach-head"><div><h3>🏆 実績 <span>${got}/${MASTER.length}</span></h3><p>解除条件つき・全100個</p></div></div><div class="bq-clean-ach-list">${MASTER.map(a=>{const ok=!!state.unlocked[a.id];return `<div class="bq-clean-ach ${ok?'got':''}"><span>${ok?a.icon:'🔒'}</span><div><b>${esc(a.name)}</b><small>解除条件：${esc(a.condition)}</small>${ok?'<em>達成済み</em>':''}</div></div>`}).join('')}</div>`;}
+  function cleanLegacy(){document.querySelectorAll('#v900-tools,#v1100-tools,#v1500-tools,#v900-mini,#v2317-achievement-popup,#learning-achievements-panel').forEach(e=>e.remove());}
+  function buildLearning(){
+    const tab=document.getElementById('learning-tab'),nav=document.getElementById('menu-tabs');if(!tab||!nav)return;
+    cleanLegacy();
+    let btn=document.getElementById('learning-tab-btn');if(!btn){btn=document.createElement('button');btn.id='learning-tab-btn';btn.className='tab-btn';btn.type='button';btn.textContent='📚 学習・やりこみ';nav.appendChild(btn);}
+    btn.onclick=e=>{e.preventDefault();if(typeof window.switchTab==='function')window.switchTab('learning');};
+    if(!document.getElementById('bq-clean-learning')){
+      tab.innerHTML=`<div class="bq-clean-learning" id="bq-clean-learning"><div class="bq-clean-learning-head"><h2>📚 学習・やりこみ</h2><p>冒険で間違えた問題の復習、苦手分野、実績を確認できます。</p></div><div class="bq-clean-learning-tabs"><button type="button" id="bq-clean-training">🏋️ 文法修行</button><button type="button" id="bq-clean-weak">📊 苦手分析</button><button type="button" id="bq-clean-ach-btn">🏆 実績</button></div><div id="bq-clean-learning-content"><p style="color:#94a3b8">3つのメニューから選んでください。</p></div></div>`;
+    }
+    const t=document.getElementById('bq-clean-training'),w=document.getElementById('bq-clean-weak'),a=document.getElementById('bq-clean-ach-btn');
+    if(t&&!t.dataset.bound){t.dataset.bound='1';t.onclick=e=>{e.preventDefault();syncFromGame();const fn=window.v1100OpenTraining||window.openTrainingMode;if(typeof fn==='function')fn();};}
+    if(w&&!w.dataset.bound){w.dataset.bound='1';w.onclick=e=>{e.preventDefault();state.weaknessOpen++;save();syncFromGame();const fn=window.v1100OpenWeakness||window.openWeaknessBoard;if(typeof fn==='function')fn();};}
+    if(a&&!a.dataset.bound){a.dataset.bound='1';a.onclick=e=>{e.preventDefault();syncFromGame();showAchievements();};}
+  }
+  function showAchievements(){buildLearning();syncFromGame();const c=document.getElementById('bq-clean-learning-content');if(!c)return;c.innerHTML='<div id="bq-clean-achievements"></div>';render();}
+  function install(){
+    load();buildLearning();syncFromGame();
+    // 連続正解・特殊操作系は、この実績エンジンだけで記録する。既存ゲーム処理は変更しない。
+    if(typeof window.checkAnswer==='function'&&!window.checkAnswer.__bqAchV2Check){
+      const base=window.checkAnswer;let streak=0,battle=0;
+      const f=function(selected,correct){
+        const ok=selected===correct;
+        if(ok){streak++;battle++;state.maxCombo=Math.max(state.maxCombo,streak);state.maxBattleCombo=Math.max(state.maxBattleCombo,battle);state.correct=Math.max(state.correct,1);}else{streak=0;battle=0;}
+        const r=base.apply(this,arguments);setTimeout(()=>{syncFromGame();},0);return r;
+      };f.__bqAchV2Check=true;window.checkAnswer=f;
+    }
+    if(typeof window.startBattle==='function'&&!window.startBattle.__bqAchV2Battle){
+      const base=window.startBattle;const f=function(){const r=base.apply(this,arguments);state.battles++;state.maxBattleCombo=0;setTimeout(syncFromGame,0);return r;};f.__bqAchV2Battle=true;window.startBattle=f;
+    }
+    if(typeof window.performFinisher==='function'&&!window.performFinisher.__bqAchV2Finisher){
+      const base=window.performFinisher;const f=function(){state.finisher++;const r=base.apply(this,arguments);setTimeout(()=>{syncFromGame();},0);return r;};f.__bqAchV2Finisher=true;window.performFinisher=f;
+    }
+    if(typeof window.v1100UseCompanionSkill==='function'&&!window.v1100UseCompanionSkill.__bqAchV2Skill){
+      const base=window.v1100UseCompanionSkill;const f=function(){state.companionSkill++;const r=base.apply(this,arguments);setTimeout(()=>{syncFromGame();},0);return r;};f.__bqAchV2Skill=true;window.v1100UseCompanionSkill=f;
+    }
+    check();
+  }
+  // 2206はゲーム本体の全開放処理と競合させず、実績側では「使用した」という記録だけ残す。
+  let buf='';document.addEventListener('keydown',e=>{if(!/^\d$/.test(String(e.key||'')))return;buf=(buf+e.key).slice(-4);if(buf==='2206'){buf='';state.cheatUsed=true;save();check();}},true);
+  // updateUIのたびに学習画面を作り直さない。存在確認だけにすることで、2206後も3ボタンを壊さない。
+  const oldUpdate=window.updateUI;if(typeof oldUpdate==='function'&&!oldUpdate.__bqAchV2){const f=function(){const r=oldUpdate.apply(this,arguments);setTimeout(()=>{syncFromGame();buildLearning();},0);return r;};f.__bqAchV2=true;window.updateUI=f;}
+  window.__bqCleanAchievements={version:'v2',master:MASTER,state:()=>state,check,syncFromGame,showAchievements};
+  window.bqOpenAchievements=showAchievements;
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(install,0));else setTimeout(install,0);
+  [250,900,1800,2600].forEach(ms=>setTimeout(()=>{try{install();}catch(e){}},ms));
+})();
+</script>
+<style id="bq-clean-achievements-css">
+.bq-clean-learning{margin-top:10px;padding:16px;border:1px solid #334155;border-radius:14px;background:#1e293b}
+.bq-clean-learning-head h2{margin:0 0 6px;color:#fbbf24}.bq-clean-learning-head p{margin:0;color:#94a3b8;font-size:13px}
+.bq-clean-learning-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:14px 0}
+.bq-clean-learning-tabs button{padding:13px 10px;border:1px solid #334155;border-radius:10px;background:#0f172a;color:#f8fafc;font-weight:800;cursor:pointer}
+.bq-clean-learning-tabs button:hover{border-color:#38bdf8}
+.bq-clean-ach-head{display:flex;justify-content:space-between;align-items:center;padding:10px 4px}.bq-clean-ach-head h3{margin:0}.bq-clean-ach-head p{margin:3px 0 0;color:#94a3b8}
+.bq-clean-ach-list{display:grid;gap:7px}.bq-clean-ach{display:flex;gap:10px;align-items:center;padding:10px;border:1px solid #334155;border-radius:10px;background:#0f172a;opacity:.52}.bq-clean-ach.got{opacity:1;border-color:#fbbf24}.bq-clean-ach>span{font-size:23px;width:32px;text-align:center}.bq-clean-ach b{display:block}.bq-clean-ach small{display:block;color:#94a3b8;margin-top:3px}.bq-clean-ach em{display:inline-block;margin-top:4px;color:#86efac;font-style:normal;font-size:12px;font-weight:800}
+@media(max-width:700px){.bq-clean-learning-tabs{grid-template-columns:1fr}.bq-clean-ach{font-size:14px}}
+</style>
+
+
 </body>
 <style id="v2320-gacha-stability-css">
 #v2320-gacha-overlay{position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 48%,rgba(15,55,115,.72),rgba(1,5,18,.985) 78%);opacity:0;pointer-events:none;transition:opacity .55s ease}
@@ -7776,19 +7138,19 @@ setInterval(()=>{if(!window.__bqC2BattlePerf)scrubSkillButtons();},800);
     }
   }
 
-  function installLearningTools(){
+  function installLearningTools(){ return; /* legacy learning tools disabled: single Learning tab only. */
+    
     const target=document.getElementById('adventure-tab'); if(!target) return;
     ['v900-tools','v1100-tools'].forEach(id=>{const el=document.getElementById(id);if(el)el.remove();});
     let box=document.getElementById('v1500-tools');
     if(!box){
       box=document.createElement('div'); box.id='v1500-tools';
-      box.innerHTML='<div><b style="font-size:16px">📚 学習・やりこみ</b><small style="display:block;color:#94a3b8;margin-top:3px">間違えた問題の復習、苦手分野、実績をここから確認できます。</small></div><div class="v1500-grid"><button id="v1500-training">🏋️ 文法修行</button><button id="v1500-weak">📊 苦手分析</button><button id="v1500-ach">🏆 実績</button></div>';
+      box.innerHTML='<div><b style="font-size:16px">📚 学習・やりこみ</b><small style="display:block;color:#94a3b8;margin-top:3px">間違えた問題の復習、苦手分野を確認できます。</small></div><div class="v1500-grid"><button id="v1500-training">🏋️ 文法修行</button><button id="v1500-weak">📊 苦手分析</button></div>';
       target.insertBefore(box,target.firstChild);
     }
     const bind=(id,fn)=>{const b=document.getElementById(id);if(b&&typeof fn==='function'){b.onclick=null;b.addEventListener('click',fn);}};
     bind('v1500-training',window.v1100OpenTraining||window.openTrainingMode);
     bind('v1500-weak',window.v1100OpenWeakness||window.openWeaknessBoard);
-    bind('v1500-ach',window.v1100OpenAchievements||window.openAchievementBoard);
   }
 
   // Event delegation guarantees companion skill buttons stay clickable after every redraw.
@@ -7820,7 +7182,7 @@ setInterval(()=>{if(!window.__bqC2BattlePerf)scrubSkillButtons();},800);
 /* ===== v1800 STABILITY PATCH =====
    武器・防具の画像を「毎回確実にimgで再装着」。
    仲間スキルを攻撃選択肢内へ移動し、クリック経路を一本化。
-   2206で実績も全解除・全表示。
+   2206の全解除処理は新・実績エンジン側へ移管。
 */
 (function(){
   'use strict';
@@ -8019,33 +7381,7 @@ setInterval(()=>{if(!window.__bqC2BattlePerf)scrubSkillButtons();},800);
   });
   obs.observe(root,{subtree:true,childList:true});
 
-  /* ---------- 3. 2206: achievements are truly all unlocked ---------- */
-  function unlockAllAchievements2206(){
-    try{
-      if(typeof achievementMaster!=='undefined' && typeof achievements!=='undefined'){
-        const now=Date.now();
-        achievementMaster.forEach(a=>achievements[a[0]]=now);
-      }
-      try{ localStorage.setItem('bunpou_v900_extra',JSON.stringify({
-        achievements,
-        wrongQuestionKeys:(typeof wrongQuestionKeys!=='undefined'?wrongQuestionKeys:[]),
-        topicStats:(typeof topicStats!=='undefined'?topicStats:{})
-      })); }catch(e){}
-      try{ if(typeof saveGameData==='function')saveGameData(); }catch(e){}
-    }catch(e){}
-  }
-
-  let buf='';
-  document.addEventListener('keydown',e=>{
-    const k=String(e.key||'');
-    if(!/^[0-9]$/.test(k))return;
-    buf=(buf+k).slice(-4);
-    if(buf==='2206'){
-      buf='';
-      setTimeout(unlockAllAchievements2206,250);
-    }
-  });
-
+  /* ---------- 3. 2206: no legacy achievement side effects ---------- */
   const css=document.createElement('style');
   css.textContent=`
     .v1800-equipment-art{
@@ -9042,188 +8378,12 @@ setTimeout(install,750);setTimeout(install,1200);setTimeout(()=>{const r=window.
   `;document.head.appendChild(style);
 })();
 </script>
-<script id="v2746-final-battle-achievement-audit">
-(()=>{
-  const audit=()=>{try{window.__bunpouQuestFinalAudit={version:'v2746',finisherRequired:5,endArmorStatus:'crit-per-turn',achievementPersistence:'main-save+compat-key'};}catch(e){}};
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(audit,0));else setTimeout(audit,0);
-})();
-</script>
 
-<script id="v2747-achievement-focused-rebuild">
-(()=>{
-  'use strict';
-  /*
-   * v2747 実績集中改修
-   * 目的：実績の「解除・保存・復元・表示」を一本の責務に寄せる。
-   * 既存の実績ID/条件/名称は変更しない。
-   * 旧セーブ(v801 / v900_extra / v2317)は読み取り、v2747へ統合保存する。
-   */
-  const KEY='bunpou_v2747_achievements';
-  const TRAIN_KEY='bunpou_v2747_training_total';
-  const safeObj=()=> (typeof achievements!=='undefined' && achievements && typeof achievements==='object') ? achievements : {};
-  const master=()=> (typeof achievementMaster!=='undefined' && Array.isArray(achievementMaster)) ? achievementMaster : [];
 
-  function readJSON(key,fallback){
-    try{const raw=localStorage.getItem(key);return raw?JSON.parse(raw):fallback;}catch(e){return fallback;}
-  }
-  function mergeAchievements(){
-    let merged={};
-    const sources=[];
-    const a=readJSON(KEY,null); if(a&&typeof a==='object')sources.push(a);
-    const old=readJSON('bunpou_v2317_achievements',null); if(old&&typeof old==='object')sources.push(old);
-    const ex=readJSON('bunpou_v900_extra',null); if(ex&&ex.achievements&&typeof ex.achievements==='object')sources.push(ex.achievements);
-    const save=readJSON('bunpou_save_v801',null); if(save&&save.achievements&&typeof save.achievements==='object')sources.push(save.achievements);
-    for(const obj of sources) for(const [id,val] of Object.entries(obj)) if(val) merged[id]=merged[id]||val;
-    try{ Object.keys(merged).forEach(id=>{ if(typeof achievements!=='undefined') achievements[id]=merged[id]; }); }catch(e){}
-    return merged;
-  }
 
-  function persistAchievements(){
-    try{
-      const data={version:2747,achievements:{...safeObj()},savedAt:Date.now()};
-      localStorage.setItem(KEY,JSON.stringify(data.achievements));
-    }catch(e){}
-    try{localStorage.setItem('bunpou_v2317_achievements',JSON.stringify(safeObj()));}catch(e){}
-    try{localStorage.setItem('bunpou_v900_extra',JSON.stringify({
-      achievements:{...safeObj()},
-      wrongQuestionKeys:(typeof wrongQuestionKeys!=='undefined'?wrongQuestionKeys:[]),
-      topicStats:(typeof topicStats!=='undefined'?topicStats:{})
-    }));}catch(e){}
-    try{if(typeof saveGameData==='function')saveGameData();}catch(e){}
-  }
 
-  function notify(id){
-    const a=master().find(x=>x[0]===id); if(!a)return;
-    try{if(typeof showToast==='function')showToast(`${a[3]} 実績解除！「${a[1]}」`);}catch(e){}
-    let el=document.getElementById('v2747-achievement-popup');
-    if(!el){
-      el=document.createElement('div');el.id='v2747-achievement-popup';
-      el.innerHTML='<div class="v2747-ach-inner"><div class="v2747-ach-icon"></div><div class="v2747-ach-label">ACHIEVEMENT UNLOCKED</div><div class="v2747-ach-name"></div><div class="v2747-ach-desc"></div></div>';
-      document.body.appendChild(el);
-    }
-    el.querySelector('.v2747-ach-icon').textContent=a[3];
-    el.querySelector('.v2747-ach-name').textContent=a[1];
-    el.querySelector('.v2747-ach-desc').textContent=a[2];
-    el.classList.remove('show');void el.offsetWidth;el.classList.add('show');
-    clearTimeout(el.__timer);el.__timer=setTimeout(()=>el.classList.remove('show'),3200);
-  }
 
-  function coreUnlock(id,opts={}){
-    const m=master(); if(!m.some(a=>a[0]===id))return false;
-    const store=safeObj();
-    const was=!!store[id];
-    if(!was)store[id]=Date.now();
-    if(!was || opts.persist!==false)persistAchievements();
-    if(!was && opts.notify!==false)notify(id);
-    render();
-    return !was;
-  }
 
-  /* 既存のグローバル実績解除入口を一本化 */
-  try{window.unlockAchievement=coreUnlock;}catch(e){}
-  try{unlockAchievement=coreUnlock;}catch(e){}
 
-  function trainingTotal(){
-    const x=readJSON(TRAIN_KEY,0);
-    if(typeof x==='number')return x;
-    if(x&&typeof x.total!=='undefined')return Number(x.total)||0;
-    return 0;
-  }
-  function saveTrainingTotal(n){try{localStorage.setItem(TRAIN_KEY,JSON.stringify(Math.max(0,n|0)));}catch(e){}}
 
-  function check(){
-    try{
-      const defeated=Object.values(typeof defeatedEnemies!=='undefined'?defeatedEnemies:{}).filter(Boolean).length;
-      const owned=(typeof companions!=='undefined'&&Array.isArray(companions))?companions.filter(c=>c.owned).length:0;
-      const combo=Number(typeof battleCombo!=='undefined'?battleCombo:0)||0;
-      const stats=(typeof topicStats!=='undefined'&&topicStats&&typeof topicStats==='object')?topicStats:{};
-      const spells=(typeof learnedSpells!=='undefined'&&Array.isArray(learnedSpells))?learnedSpells:[];
-      if(defeated>=1)coreUnlock('first_battle',{notify:false});
-      if(defeated>=10)coreUnlock('enemy10',{notify:false});
-      if(defeated>=20)coreUnlock('all_enemy',{notify:false});
-      if(owned>=3)coreUnlock('companion3',{notify:false});
-      if(owned>=10)coreUnlock('companion10',{notify:false});
-      if(combo>=5)coreUnlock('combo5',{notify:false});
-      if(combo>=5)coreUnlock('no_mistake',{notify:false});
-      if(combo>=10)coreUnlock('perfect10',{notify:false});
-      if(Object.keys(stats).length>=3)coreUnlock('category3',{notify:false});
-      if(spells.length>=1)coreUnlock('first_magic',{notify:false});
-      if(typeof spellMaster!=='undefined'&&Array.isArray(spellMaster)&&spellMaster.length>0&&spells.length>=spellMaster.length)coreUnlock('all_magic',{notify:false});
-      if(trainingTotal()>=10)coreUnlock('training',{notify:false});
-      persistAchievements();
-    }catch(e){console.warn('v2747 achievement check',e);}
-    render();
-  }
-
-  function esc(s){try{return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}catch(e){return String(s);}}
-  function render(){
-    const m=master(), store=safeObj();
-    const n=m.filter(a=>store[a[0]]).length;
-    const p=document.getElementById('learning-achievements-panel');
-    if(p && p.classList.contains('active')){
-      p.innerHTML=`<div class="v2747-ach-card"><h3>🏆 実績 ${n}/${m.length}</h3><p>解除状況はPC・スマホ共通のセーブデータに保存されます。</p><div class="v2747-ach-grid">${m.map(a=>{const ok=!!store[a[0]];return `<div class="v2747-ach ${ok?'got':''}"><span>${ok?a[3]:'🔒'}</span><div><b>${esc(a[1])}</b><small>${esc(a[2])}</small>${ok?'<em>達成済み</em>':''}</div></div>`}).join('')}</div></div>`;
-    }
-    const mini=document.getElementById('v900-mini');
-    if(mini)mini.innerHTML=`🏆 実績 ${n}/${m.length}　｜　📚 復習 ${(typeof wrongQuestionKeys!=='undefined'?wrongQuestionKeys:[]).length}問　｜　🎴 仲間 ${(typeof companions!=='undefined'?companions:[]).filter(c=>c.owned).length}/${(typeof companions!=='undefined'?companions:[]).length}`;
-  }
-
-  /* 実績画面をPCでも直接開けるように一本化 */
-  window.v2747OpenAchievements=function(){
-    mergeAchievements();
-    const m=master(),store=safeObj(),n=m.filter(a=>store[a[0]]).length;
-    if(typeof window.modal11==='function'){
-      const body=`<div class="v2747-ach-summary">🏆 ${n} / ${m.length} 達成</div><div class="v2747-ach-grid">${m.map(a=>{const ok=!!store[a[0]];return `<div class="v2747-ach ${ok?'got':''}"><span>${ok?a[3]:'🔒'}</span><div><b>${esc(a[1])}</b><small>${esc(a[2])}</small>${ok?'<em>達成済み</em>':''}</div></div>`}).join('')}</div>`;
-      window.modal11(`🏆 実績 <small>${n}/${m.length}</small>`,body,'');
-    }else if(typeof window.openModal==='function'){
-      window.openModal(`🏆 実績 ${n}/${m.length}`,m.map(a=>`<div class="achievement ${store[a[0]]?'got':''}"><span>${store[a[0]]?a[3]:'🔒'}</span><div><b>${esc(a[1])}</b><small>${esc(a[2])}</small></div></div>`).join(''));
-    }
-    render();
-  };
-  window.v1100OpenAchievements=window.v2747OpenAchievements;
-  window.openAchievementBoard=window.v2747OpenAchievements;
-
-  /* 修行10問：既存カウンタとは別に、PCでも確実に永続化 */
-  window.__v2747AchievementTrainingCorrect=function(){
-    const n=trainingTotal()+1;saveTrainingTotal(n);
-    if(n>=10)coreUnlock('training');
-    persistAchievements();render();
-  };
-
-  /* 既存の修行処理に二重加算を起こさないため、v2317のカウンタを使わずイベントフラグで1回だけ加算 */
-  let lastTrainingEvent=0;
-  document.addEventListener('bq-training-correct',()=>{
-    const now=Date.now();if(now-lastTrainingEvent<50)return;lastTrainingEvent=now;
-    window.__v2747AchievementTrainingCorrect();
-  });
-
-  /* 起動時：旧データを統合→条件再判定→保存→表示 */
-  function boot(){
-    mergeAchievements();
-    check();
-    render();
-    document.querySelectorAll('[data-learning-view="achievements"]').forEach(b=>{
-      b.onclick=function(){
-        try{if(typeof window.switchTab==='function')window.switchTab('learning');}catch(e){}
-        setTimeout(window.v2747OpenAchievements,0);
-      };
-    });
-  }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(boot,250));else setTimeout(boot,250);
-
-  const st=document.createElement('style');st.textContent=`
-#v2747-achievement-popup{position:fixed;left:50%;top:10%;transform:translate(-50%,-20px) scale(.95);opacity:0;pointer-events:none;z-index:2147483646;width:min(440px,calc(100vw - 24px));box-sizing:border-box;padding:18px;border:2px solid #fbbf24;border-radius:18px;background:#111827;box-shadow:0 18px 70px rgba(0,0,0,.7);transition:.2s}
-#v2747-achievement-popup.show{opacity:1;transform:translate(-50%,0) scale(1)}
-.v2747-ach-icon{text-align:center;font-size:40px}.v2747-ach-label{text-align:center;color:#fbbf24;font-weight:900;letter-spacing:2px;font-size:11px}.v2747-ach-name{text-align:center;color:#fff;font-size:22px;font-weight:1000;margin-top:4px}.v2747-ach-desc{text-align:center;color:#cbd5e1;font-size:13px;margin-top:4px}
-.v2747-ach-card{padding:16px;border:2px solid #334155;border-radius:14px;background:rgba(15,23,42,.72)}.v2747-ach-card h3{margin:0 0 8px}.v2747-ach-card p{color:#cbd5e1}.v2747-ach-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.v2747-ach{display:flex;gap:10px;align-items:center;padding:11px;border:1px solid #334155;border-radius:10px;opacity:.55}.v2747-ach.got{opacity:1;border-color:#fbbf24}.v2747-ach span{font-size:25px}.v2747-ach small{display:block;color:#94a3b8;margin-top:3px}.v2747-ach em{display:block;color:#fbbf24;font-style:normal;font-size:11px;margin-top:3px;font-weight:900}.v2747-ach-summary{font-size:20px;font-weight:1000;text-align:center;margin-bottom:12px}@media(max-width:650px){.v2747-ach-grid{grid-template-columns:1fr}}
-`;
-  document.head.appendChild(st);
-
-  window.__v2747AchievementAudit=()=>({
-    masterCount:master().length,
-    unlockedCount:master().filter(a=>safeObj()[a[0]]).length,
-    storageKeys:['bunpou_v2747_achievements','bunpou_v2317_achievements','bunpou_v900_extra','bunpou_save_v801'],
-    trainingTotal:trainingTotal()
-  });
-})();
-</script>
 </html>
