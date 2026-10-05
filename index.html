@@ -6823,10 +6823,59 @@ window.addEventListener('storage',()=>setTimeout(render,0));
   ];
   let state={unlocked:{},correct:0,answered:0,defeated:0,boss:0,enemy0:false,enemy18:false,enemy19Reached:false,finalBoss:false,battles:0,maxCombo:0,maxBattleCombo:0,magic:0,allMagic:false,fireMagic:false,iceMagic:false,maxMp:0,finisher:0,companions:0,gacha:0,companionSkill:0,categories:0,catCorrect:{},trainingCorrect:0,wrong:0,weaknessOpen:0,days:0,story:0,chapter2:false,chapter2Battle:false,chapter2Story:0,cheatUsed:false,level:1,accuracy:0,finalEquipment:false};
   let announced={};
+  let bannerQueue=[];
+  let bannerBusy=false;
   const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   function load(){try{const x=JSON.parse(localStorage.getItem(KEY)||'null');if(x&&typeof x==='object'){state=Object.assign(state,x);state.unlocked=Object.assign({},x.unlocked||{});state.catCorrect=Object.assign({},x.catCorrect||{});}}catch(e){}}
   function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
-  function announce(a){if(announced[a.id])return;announced[a.id]=1;try{if(typeof window.showToast==='function')window.showToast(`${a.icon} 実績解除！「${a.name}」`);}catch(e){}}
+  function ensureAchievementBanner(){
+    let el=document.getElementById('bq-achievement-banner');
+    if(el)return el;
+    const st=document.createElement('style');
+    st.id='bq-achievement-banner-css';
+    st.textContent=`
+      #bq-achievement-banner{
+        position:fixed;left:50%;top:22px;transform:translate(-50%,-140%);
+        width:min(620px,calc(100vw - 28px));box-sizing:border-box;
+        z-index:2147483646;pointer-events:none;opacity:0;
+        border:1px solid rgba(251,191,36,.9);border-radius:16px;
+        background:linear-gradient(135deg,rgba(15,23,42,.98),rgba(49,46,129,.97));
+        box-shadow:0 18px 55px rgba(0,0,0,.55),0 0 30px rgba(251,191,36,.22);
+        color:#fff;padding:13px 18px;display:flex;align-items:center;gap:13px;
+        transition:transform .35s cubic-bezier(.2,.8,.2,1),opacity .25s ease;
+      }
+      #bq-achievement-banner.show{transform:translate(-50%,0);opacity:1}
+      #bq-achievement-banner .bq-ach-icon{font-size:34px;line-height:1;flex:0 0 auto;filter:drop-shadow(0 0 8px rgba(251,191,36,.45))}
+      #bq-achievement-banner .bq-ach-kicker{font-size:11px;letter-spacing:.12em;color:#fbbf24;font-weight:900;margin-bottom:2px}
+      #bq-achievement-banner .bq-ach-name{font-size:19px;font-weight:900;line-height:1.25}
+      #bq-achievement-banner .bq-ach-cond{font-size:11px;color:#cbd5e1;margin-top:3px}
+      @media(max-width:600px){#bq-achievement-banner{top:10px;padding:11px 13px}.bq-ach-icon{font-size:29px!important}.bq-ach-name{font-size:16px!important}}
+    `;
+    document.head.appendChild(st);
+    el=document.createElement('div');el.id='bq-achievement-banner';
+    el.setAttribute('role','status');el.setAttribute('aria-live','polite');
+    document.body.appendChild(el);
+    return el;
+  }
+  function playAchievementBanner(){
+    if(bannerBusy||!bannerQueue.length)return;
+    const a=bannerQueue.shift();
+    bannerBusy=true;
+    const el=ensureAchievementBanner();
+    el.innerHTML=`<span class="bq-ach-icon">${esc(a.icon)}</span><div><div class="bq-ach-kicker">🏆 実績解除！</div><div class="bq-ach-name">${esc(a.name)}</div><div class="bq-ach-cond">${esc(a.condition)}</div></div>`;
+    el.classList.remove('show');
+    requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add('show')));
+    setTimeout(()=>{
+      el.classList.remove('show');
+      setTimeout(()=>{bannerBusy=false;playAchievementBanner();},380);
+    },3200);
+  }
+  function announce(a){
+    if(announced[a.id])return;
+    announced[a.id]=1;
+    bannerQueue.push(a);
+    playAchievementBanner();
+  }
   function check(){MASTER.forEach(a=>{if(!state.unlocked[a.id]&&a.test(state)){state.unlocked[a.id]=Date.now();announce(a);}});save();}
   function num(v){return Number(v)||0;}
   function syncFromGame(){
@@ -6917,6 +6966,63 @@ window.addEventListener('storage',()=>setTimeout(render,0));
 </style>
 
 
+
+<script>
+/* v2816 MONSTER ART HOTFIX
+   敵選択画面に残っていた旧5x4ドット絵スプライトを完全に切り離し、
+   v1200公式アート（window.__bunpouQuestArt.enemies）を常に使用する。
+   戦闘・第二章のアート処理には干渉しない。
+*/
+(()=>{
+  'use strict';
+  const STYLE_ID='v2816-modern-enemy-card-art-css';
+  if(!document.getElementById(STYLE_ID)){
+    const st=document.createElement('style'); st.id=STYLE_ID;
+    st.textContent=`
+      .enemy-card .v2816-modern-enemy-art{
+        width:78px!important;height:96px!important;margin:0 auto 6px!important;
+        background-repeat:no-repeat!important;background-position:center!important;
+        background-size:contain!important;background-color:transparent!important;
+        image-rendering:auto!important;display:block!important;
+      }
+      #enemy-list-container .enemy-card .enemy-sprite{
+        background-color:transparent!important;
+      }
+    `;
+    document.head.appendChild(st);
+  }
+  function getArt(){
+    const a=window.__bunpouQuestArt;
+    return a && Array.isArray(a.enemies) ? a.enemies : null;
+  }
+  function paint(){
+    const arts=getArt(); if(!arts) return;
+    document.querySelectorAll('#enemy-list-container .enemy-card').forEach(card=>{
+      const onclick=card.getAttribute('onclick')||'';
+      const m=onclick.match(/startBattle\((\d+)\)/);
+      if(!m)return;
+      const id=Number(m[1]);
+      const url=arts[id]; if(!url)return;
+      const el=card.querySelector('.enemy-sprite'); if(!el)return;
+      el.classList.add('v2816-modern-enemy-art');
+      el.style.backgroundImage=`url("${url}")`;
+      el.style.backgroundSize='contain';
+      el.style.backgroundPosition='center';
+      el.style.backgroundRepeat='no-repeat';
+      el.style.imageRendering='auto';
+      el.style.backgroundColor='transparent';
+      el.textContent='';
+      el.setAttribute('aria-label',(card.querySelector('.enemy-info b')?.textContent||`敵No.${id+1}`));
+    });
+  }
+  window.__bq2816PaintModernEnemyArt=paint;
+  let tries=0;
+  const boot=()=>{paint(); if(!getArt() && tries++<100) setTimeout(boot,100);};
+  boot();
+  const root=document.getElementById('enemy-list-container')||document.body;
+  new MutationObserver(()=>paint()).observe(root,{childList:true,subtree:true});
+})();
+</script>
 </body>
 <style id="v2320-gacha-stability-css">
 #v2320-gacha-overlay{position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 48%,rgba(15,55,115,.72),rgba(1,5,18,.985) 78%);opacity:0;pointer-events:none;transition:opacity .55s ease}
@@ -8387,3 +8493,119 @@ setTimeout(install,750);setTimeout(install,1200);setTimeout(()=>{const r=window.
 
 
 </html>
+
+<script id="bq-v2817-learning-repair">
+/* ============================================================
+   v2817 学習・やりこみ修復
+   - 文法修行／苦手分析を旧モーダルへ依存させず、学習画面内で直接動作
+   - 2206やupdateUI後の再描画でもクリック経路を維持
+   - 実績v2とは連携するが、実績画面そのものは変更しない
+   ============================================================ */
+(function(){
+  'use strict';
+  let pool=[], index=0, trainingActive=false;
+
+  function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+  function getPool(){
+    const all=[...(typeof questionPool!=='undefined'&&Array.isArray(questionPool)?questionPool:[]),
+               ...(typeof cleanEntranceExamQuestions!=='undefined'&&Array.isArray(cleanEntranceExamQuestions)?cleanEntranceExamQuestions:[])];
+    const wrong=new Set(typeof wrongQuestionKeys!=='undefined'&&Array.isArray(wrongQuestionKeys)?wrongQuestionKeys:[]);
+    const bad=all.filter(q=>{try{return wrong.has(questionKey(q));}catch(e){return false;}});
+    const rest=all.filter(q=>!bad.includes(q));
+    return [...bad,...rest].filter(q=>q&&Array.isArray(q.choices)&&q.choices.length).slice(0,80);
+  }
+  function content(){return document.getElementById('bq-clean-learning-content');}
+  function syncAchievements(){try{window.__bqCleanAchievements?.syncFromGame?.();}catch(e){} try{window.__bqCleanAchievements?.check?.();}catch(e){}}
+  function saveTrainingCount(){
+    try{
+      const key='bunpou_save_v1100_complete';
+      const d=JSON.parse(localStorage.getItem(key)||'{}');
+      d.trainingCorrect=Number(d.trainingCorrect)||0;
+      d.trainingCorrect++;
+      localStorage.setItem(key,JSON.stringify(d));
+    }catch(e){}
+  }
+  function showHome(){
+    trainingActive=false;
+    const c=content(); if(!c)return;
+    c.innerHTML='<p style="color:#94a3b8">3つのメニューから選んでください。</p>';
+  }
+  function renderTraining(){
+    const c=content(); if(!c)return;
+    if(!pool.length){
+      c.innerHTML='<div class="bq-v2817-panel"><h3>🏋️ 文法修行</h3><p>問題データがまだありません。まず通常の冒険で問題を解いてみよう。</p><button type="button" data-learning-home>戻る</button></div>';
+      return;
+    }
+    trainingActive=true;
+    const q=pool[index%pool.length];
+    const choices=q.choices.map((x,i)=>`<button type="button" class="bq-v2817-choice" data-answer-index="${i}">${i+1}. ${esc(x)}</button>`).join('');
+    c.innerHTML=`<div class="bq-v2817-panel"><div class="bq-v2817-head"><h3>🏋️ 文法修行</h3><span>${index+1}/${pool.length}</span></div><div class="bq-v2817-source">${esc(q.sourceLabel||'復習問題')}</div><div class="bq-v2817-question">${esc(q.q||'').replace(/\n/g,'<br>')}</div><div id="bq-v2817-choices">${choices}</div><div id="bq-v2817-msg"></div><button type="button" data-learning-home class="bq-v2817-back">← 学習メニューに戻る</button></div>`;
+  }
+  function renderWeakness(){
+    const c=content(); if(!c)return;
+    const cats=(typeof ANALYSIS_CATEGORIES!=='undefined'&&Array.isArray(ANALYSIS_CATEGORIES))?ANALYSIS_CATEGORIES.slice():Object.keys(typeof topicStats!=='undefined'&&topicStats?topicStats:{});
+    const rows=cats.map(k=>{
+      const v=(typeof topicStats!=='undefined'&&topicStats&&topicStats[k])?topicStats[k]:{correct:0,total:0};
+      const total=Number(v.total)||0, correct=Number(v.correct)||0, p=total?Math.round(correct/total*100):0;
+      return {k,total,correct,p};
+    }).sort((a,b)=>(a.total?a.p:101)-(b.total?b.p:101));
+    c.innerHTML=`<div class="bq-v2817-panel"><div class="bq-v2817-head"><h3>📊 苦手分析</h3><span>正答率が低い順</span></div><p class="bq-v2817-note">冒険で解いた問題の記録から、分野ごとの正答率を表示しています。</p>${rows.map(x=>`<div class="bq-v2817-weak"><div><b>${esc(x.k)}</b><span>${x.total?`${x.correct}/${x.total}（${x.p}%）`:'未学習'}</span></div><div class="bq-v2817-bar"><i style="width:${x.p}%"></i></div></div>`).join('')}<button type="button" data-learning-training class="bq-v2817-primary">🏋️ このまま文法修行</button><button type="button" data-learning-home class="bq-v2817-back">← 学習メニューに戻る</button></div>`;
+  }
+  function openTraining(){
+    try{if(typeof state!=='undefined'&&state.weaknessOpen!=null){} }catch(e){}
+    pool=getPool(); index=0; renderTraining();
+  }
+  function openWeakness(){
+    try{window.__bqCleanAchievements?.state?.();}catch(e){}
+    renderWeakness();
+    try{
+      const ach=window.__bqCleanAchievements?.state?.();
+      if(ach){ach.weaknessOpen=Number(ach.weaknessOpen)||0;ach.weaknessOpen++;}
+      window.__bqCleanAchievements?.check?.();
+    }catch(e){}
+  }
+  function answer(i){
+    if(!trainingActive||!pool.length)return;
+    const q=pool[index%pool.length];
+    const msg=document.getElementById('bq-v2817-msg');
+    const buttons=[...document.querySelectorAll('#bq-v2817-choices .bq-v2817-choice')];
+    const ok=Number(i)===Number(q.answer);
+    if(ok){
+      buttons.forEach(b=>b.disabled=true);
+      try{if(typeof recordQuestionStat==='function')recordQuestionStat(q,true);}catch(e){}
+      try{if(typeof totalCorrect!=='undefined')totalCorrect++;}catch(e){}
+      saveTrainingCount();
+      if(msg)msg.innerHTML=`<div class="bq-v2817-ok">✅ 正解！</div>${typeof explainQuestion==='function'?explainQuestion(q):''}`;
+      syncAchievements();
+      setTimeout(()=>{if(trainingActive){index++;renderTraining();}},650);
+    }else{
+      try{if(typeof recordQuestionStat==='function')recordQuestionStat(q,false);}catch(e){}
+      if(msg)msg.innerHTML='<div class="bq-v2817-ng">❌ もう一度考えよう</div>';
+    }
+  }
+  function bind(){
+    const tab=document.getElementById('learning-tab'); if(!tab||tab.dataset.v2817Bound==='1')return;
+    tab.dataset.v2817Bound='1';
+    tab.addEventListener('click',e=>{
+      const b=e.target.closest('button'); if(!b||!tab.contains(b))return;
+      if(b.id==='bq-clean-training'){e.preventDefault();e.stopImmediatePropagation();openTraining();return;}
+      if(b.id==='bq-clean-weak'){e.preventDefault();e.stopImmediatePropagation();openWeakness();return;}
+      if(b.id==='bq-clean-ach-btn')return; // 実績v2の既存処理へ
+      if(b.hasAttribute('data-answer-index')){e.preventDefault();answer(b.getAttribute('data-answer-index'));return;}
+      if(b.hasAttribute('data-learning-training')){e.preventDefault();e.stopImmediatePropagation();openTraining();return;}
+      if(b.hasAttribute('data-learning-home')){e.preventDefault();showHome();return;}
+    },true);
+  }
+  window.bqRepairLearningTools={openTraining,openWeakness,renderTraining,renderWeakness};
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(bind,50));else setTimeout(bind,50);
+  [300,1000,2000,3500].forEach(ms=>setTimeout(bind,ms));
+})();
+</script>
+<style id="bq-v2817-learning-repair-css">
+.bq-v2817-panel{padding:14px;border:1px solid #334155;border-radius:12px;background:#0f172a}
+.bq-v2817-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}.bq-v2817-head h3{margin:0;color:#fbbf24}.bq-v2817-head span{color:#94a3b8;font-size:12px}
+.bq-v2817-source{color:#67e8f9;font-size:12px;margin-bottom:8px}.bq-v2817-question{font-size:18px;line-height:1.7;padding:13px;margin-bottom:10px;border-radius:10px;background:#111827}
+.bq-v2817-choice{display:block;width:100%;text-align:left;margin:7px 0;padding:11px;border:1px solid #475569;border-radius:9px;background:#172033;color:#f8fafc;cursor:pointer}.bq-v2817-choice:disabled{opacity:.55;cursor:default}
+.bq-v2817-ok{margin:10px 0;padding:9px;border-radius:9px;background:rgba(34,197,94,.14);color:#86efac;font-weight:800}.bq-v2817-ng{margin:10px 0;padding:9px;border-radius:9px;background:rgba(239,68,68,.14);color:#fca5a5;font-weight:800}
+.bq-v2817-weak{margin:10px 0}.bq-v2817-weak>div:first-child{display:flex;justify-content:space-between;gap:8px}.bq-v2817-weak>div:first-child span{color:#cbd5e1;font-size:12px}.bq-v2817-bar{height:8px;background:#1e293b;border-radius:10px;overflow:hidden;margin-top:5px}.bq-v2817-bar i{display:block;height:100%;background:#38bdf8;border-radius:10px}.bq-v2817-primary,.bq-v2817-back{margin-top:12px;padding:9px 12px;border-radius:9px;border:1px solid #475569;background:#172033;color:#fff;font-weight:800;cursor:pointer}.bq-v2817-primary{border-color:#38bdf8}.bq-v2817-note{color:#94a3b8;font-size:13px}
+</style>
