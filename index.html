@@ -9138,6 +9138,44 @@ const observer=new MutationObserver(()=>{try{if(typeof currentEnemy!=='undefined
 function watch(){const panel=document.getElementById('action-panel');if(panel)observer.observe(panel,{childList:true,subtree:true});setInterval(()=>{try{if(typeof currentEnemy!=='undefined'&&currentEnemy){const id=String(currentEnemy.id);if(id!==lastEnemyId){lastEnemyId=id;skillUsed=false;}renderSkills();}}catch(e){}},900);}
 load();if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{mount();watch();});else{mount();watch();}setTimeout(mount,1000);setTimeout(mount,2500);
 })();</script>
+
+<script id="bq-reset-all-save-data-fix">
+/* セーブデータ完全リセット修正：全章の進行・ガチャ・実績・学習状態をまとめて初期化 */
+(function () {
+  'use strict';
+  window.resetSaveData = function () {
+    if (!window.confirm('セーブデータを完全にリセットしますか？\n全章の進行状況・仲間ガチャ・実績・学習記録も初期化されます。')) return;
+
+    try {
+      // バージョン違いでキー名が増えても、ゲーム用プレフィックスを一括削除する。
+      const keys = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && (key.startsWith('bunpou_') || key.startsWith('bq_'))) keys.push(key);
+      }
+      keys.forEach(key => localStorage.removeItem(key));
+    } catch (e) {
+      console.error('セーブデータのリセットに失敗しました', e);
+      window.alert('セーブデータを削除できませんでした。ブラウザの保存領域へのアクセスを確認してください。');
+      return;
+    }
+
+    try {
+      const keys = [];
+      for (let i = 0; i < sessionStorage.length; i++) {
+        const key = sessionStorage.key(i);
+        if (key && (key.startsWith('bunpou_') || key.startsWith('bq_'))) keys.push(key);
+      }
+      keys.forEach(key => sessionStorage.removeItem(key));
+    } catch (e) {
+      // sessionStorageを利用できない環境でも、localStorageの初期化は有効。
+    }
+
+    window.location.reload();
+  };
+})();
+</script>
+
 </body>
 <style id="v2320-gacha-stability-css">
 #v2320-gacha-overlay{position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 48%,rgba(15,55,115,.72),rgba(1,5,18,.985) 78%);opacity:0;pointer-events:none;transition:opacity .55s ease}
