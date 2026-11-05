@@ -634,6 +634,144 @@ html body #title-screen.v2317-static-title{position:fixed!important;inset:0!impo
 #data-tools-tab .v1000-backup{margin:8px 0 0;padding:14px;border-color:rgba(96,165,250,.35)}
 #data-tools-tab-btn.active{border-color:#60a5fa;box-shadow:0 0 12px rgba(96,165,250,.2)}
 </style>
+
+<style id="v3100-battle-mobile-refinement">
+/* v3100: 戦闘画面のスマホ操作・視認性を微調整（既存機能には変更なし） */
+@media (max-width: 700px) {
+  #quiz-screen {
+    width: 100% !important; max-width: 100% !important; min-width: 0 !important;
+    box-sizing: border-box !important; padding: 10px 2px 14px !important;
+  }
+  #quiz-timer-wrap {
+    display: flex !important; flex-wrap: wrap !important; align-items: center !important;
+    justify-content: center !important; gap: 5px 8px !important;
+    width: 100% !important; box-sizing: border-box !important;
+    padding: 9px 10px !important; margin: 0 0 12px !important;
+  }
+  #quiz-timer { font-size: clamp(25px, 7vw, 32px) !important; font-weight: 900 !important; line-height: 1 !important; }
+  #quiz-timer-wrap .quiz-timer-bar { flex: 1 0 100% !important; width: 100% !important; min-width: 0 !important; }
+  #question-source {
+    font-size: 12px !important; line-height: 1.5 !important;
+    overflow-wrap: anywhere !important; box-sizing: border-box !important;
+    padding: 8px 10px !important; margin-bottom: 10px !important;
+  }
+  #question-text {
+    font-size: clamp(18px, 4.8vw, 22px) !important; line-height: 1.75 !important;
+    margin: 0 0 16px !important; padding: 2px 3px !important;
+    overflow-wrap: anywhere !important; word-break: normal !important;
+  }
+  #choices-container { gap: 11px !important; margin-top: 8px !important; }
+  #choices-container button, #choices-container .choice-btn {
+    min-height: 60px !important; height: auto !important;
+    padding: 14px 13px !important; font-size: 17px !important;
+    line-height: 1.55 !important; text-align: left !important;
+    white-space: normal !important; overflow-wrap: anywhere !important;
+    border-radius: 13px !important; box-sizing: border-box !important;
+    margin: 0 !important;
+  }
+  #battle-field { gap: 8px !important; padding: 9px 7px !important; margin-bottom: 12px !important; }
+  #battle-field > div { min-width: 0 !important; max-width: 100% !important; }
+  #battle-field .hero-graphic, #battle-field #enemy-sprite {
+    max-width: 34vw !important; max-height: 34vw !important;
+  }
+  #battle-field #enemy-range-tag, #battle-field #enemy-drop-tag {
+    max-width: 100% !important; overflow-wrap: anywhere !important;
+  }
+  #battle-field .hp-bar-container { width: min(140px, 42vw) !important; max-width: 100% !important; }
+  #quiz-screen #action-panel { width: 100% !important; max-width: 100% !important; box-sizing: border-box !important; }
+  #quiz-screen #action-panel button { min-height: 52px !important; max-width: 100% !important; white-space: normal !important; }
+}
+@media (max-width: 380px) {
+  #question-text { font-size: 18px !important; line-height: 1.7 !important; }
+  #choices-container button, #choices-container .choice-btn { font-size: 16px !important; padding: 13px 11px !important; min-height: 56px !important; }
+  #battle-field .battle-sprite, #battle-field .hero-sprite { transform: scale(.92); transform-origin: center; }
+}
+</style>
+
+<style id="v3101-battle-layout-tablet-pc">
+/* v3101: 戦闘中の情報が重なって見えないよう、PC・タブレットでも領域を整理。機能・処理は変更しない */
+#quiz-screen {
+  width: min(100%, 1080px) !important;
+  margin-inline: auto !important;
+  box-sizing: border-box !important;
+}
+#battle-field {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: space-around !important;
+  gap: clamp(12px, 2vw, 24px) !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  padding: clamp(12px, 2vw, 24px) !important;
+  margin: 0 auto 16px !important;
+}
+#battle-field > * { min-width: 0 !important; box-sizing: border-box !important; }
+#quiz-screen #question-source,
+#quiz-screen #question-text,
+#quiz-screen #choices-container,
+#quiz-screen #action-panel {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+#quiz-screen #question-text {
+  line-height: 1.65 !important;
+  overflow-wrap: anywhere !important;
+  margin-block: 12px 18px !important;
+}
+#quiz-screen #choices-container {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  align-items: stretch !important;
+  gap: 12px !important;
+}
+#quiz-screen #choices-container > button,
+#quiz-screen #choices-container > .choice-btn {
+  min-width: 0 !important;
+  min-height: 64px !important;
+  height: auto !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+  line-height: 1.5 !important;
+  padding: 14px 16px !important;
+  box-sizing: border-box !important;
+}
+#quiz-screen #action-panel {
+  position: relative !important;
+  clear: both !important;
+  margin: 18px 0 0 !important;
+  padding: 14px !important;
+  border-radius: 14px !important;
+  background: rgba(8, 15, 30, .72) !important;
+  border: 1px solid rgba(148, 163, 184, .22) !important;
+}
+#quiz-screen #action-panel button {
+  min-height: 48px !important;
+  max-width: 100% !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+}
+@media (min-width: 701px) and (max-width: 1100px) {
+  #quiz-screen { padding: 14px !important; }
+  #battle-field { gap: 14px !important; padding: 16px !important; }
+  #battle-field .hero-graphic, #battle-field #enemy-sprite { max-width: 26vw !important; max-height: 26vw !important; }
+  #quiz-screen #question-text { font-size: clamp(20px, 2.4vw, 27px) !important; }
+  #quiz-screen #choices-container { gap: 10px !important; }
+  #quiz-screen #choices-container > button, #quiz-screen #choices-container > .choice-btn { font-size: 17px !important; }
+}
+@media (min-width: 1101px) {
+  #quiz-screen { padding: 18px 24px !important; }
+  #battle-field { min-height: 190px !important; }
+  #quiz-screen #question-text { font-size: clamp(21px, 1.6vw, 28px) !important; }
+  #quiz-screen #choices-container > button, #quiz-screen #choices-container > .choice-btn { font-size: 18px !important; }
+}
+@media (max-width: 700px) {
+  #quiz-screen #choices-container { grid-template-columns: minmax(0, 1fr) !important; }
+  #quiz-screen #action-panel { padding: 10px !important; margin-top: 12px !important; }
+}
+</style>
 </head>
 <body>
 <div class="container" id="main-container">
@@ -791,7 +929,7 @@ html body #title-screen.v2317-static-title{position:fixed!important;inset:0!impo
 <div id="enemy-name" style="font-size: 13px; color: #f87171; margin-bottom: 5px;">敵の名前</div>
 <div aria-label="敵キャラクター" class="sprite-sheet battle-sprite sprite-1" id="enemy-sprite"></div>
 <div id="enemy-range-tag" style="font-size: 11px; margin-top: 4px; color: #38bdf8;">出題範囲: 基礎</div><div id="enemy-drop-tag" style="font-size: 11px; margin-top: 3px; color: #a78bfa;">ドロップ: 素材</div>
-<div style="font-size: 12px; margin-top: 4px; color: #fbbf24;">敵の体力</div>
+<div id="enemy-hp-label" style="font-size: 12px; margin-top: 4px; color: #fbbf24;">敵の体力</div>
 <div class="hp-bar-container">
 <div class="hp-bar-fill" id="enemy-hp-bar"></div>
 </div>
@@ -801,9 +939,8 @@ html body #title-screen.v2317-static-title{position:fixed!important;inset:0!impo
 <div class="nav-tabs" id="menu-tabs">
 <button class="tab-btn active" onclick="switchTab('adventure')">🗺️ 20体の敵を選ぶ</button>
 <button class="tab-btn" onclick="switchTab('story')">📜 ストーリー</button>
-<button class="tab-btn" onclick="switchTab('shop')">🔨 鍛冶屋・装備</button><button class="tab-btn" onclick="switchTab('collection')">📖 図鑑・武器帳</button><button class="tab-btn" onclick="switchTab('companions')">🎴 仲間ガチャ</button><button class="tab-btn" id="magic-tab-btn" onclick="switchTab('magic')">✨ 魔法・スキル</button><button class="tab-btn" id="data-tools-tab-btn" onclick="switchTab('data-tools')">💾 データ管理</button>
+<button class="tab-btn" onclick="switchTab('shop')">🔨 鍛冶屋・装備</button><button class="tab-btn" onclick="switchTab('collection')">📖 図鑑・武器帳</button><button class="tab-btn" onclick="switchTab('companions')">🎴 仲間ガチャ</button><button class="tab-btn" id="magic-tab-btn" onclick="switchTab('magic')">✨ 魔法・スキル</button>
 </div>
-<div class="box" id="data-tools-tab" style="display:none"><h3 style="color:#fbbf24;margin-top:0">💾 データ管理・バックアップ</h3><p style="font-size:13px;color:#94a3b8;line-height:1.6">セーブデータの書き出し・読み込み、バックアップ、学習レポートはこちらから管理できます。冒険画面をすっきり保つため、管理機能を別タブにまとめました。</p><div id="data-tools-mount"></div></div>
 <div class="box" id="adventure-tab">
 <div id="config-screen">
 <h3 style="color: #fbbf24; margin-top:0;">討伐する敵を選ぼう！</h3>
@@ -2858,13 +2995,34 @@ function loadGameData() {
         localStorage.setItem('bunpou_save_v801', JSON.stringify(data));
     }
 
+    // 2206：入力された瞬間にゲーム関連データを初期化する。全開放は行わない。
     function activateCheatCode() {
-        if (!confirm('⚠️ 隠しコード 2206 を確認しました。\n全敵・全図鑑・全武器物語・全防具・素材・G・レベル200を一括解放します。\n実行しますか？')) return;
+        try {
+            const keys = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && (key.startsWith('bunpou_') || key.startsWith('bq_'))) keys.push(key);
+            }
+            keys.forEach(key => localStorage.removeItem(key));
+            const sessionKeys = [];
+            for (let i = 0; i < sessionStorage.length; i++) {
+                const key = sessionStorage.key(i);
+                if (key && (key.startsWith('bunpou_') || key.startsWith('bq_'))) sessionKeys.push(key);
+            }
+            sessionKeys.forEach(key => sessionStorage.removeItem(key));
+        } catch (e) {
+            alert('セーブデータの初期化に失敗しました。2206の処理を中止します。');
+            return;
+        }
+        alert('セーブデータを初期化しました。');
+        location.reload();
+    }
+
+    // Expansion unlock handler.
+    function activateUnlockCode() {
         localStorage.setItem('bunpou_chapter2_unlocked','1');
         localStorage.setItem('bunpou_chapter2_progress','20');
-        // 2206: all three chapters' battle/bestiary states are unlocked in one place.
         localStorage.setItem('bunpou_chapter3_unlocked','1');
-        // 2206：第二章〜第四章の仲間ガチャを全解放し、各10連分のポイントを確保。
         for (const k of ['bunpou_ch2_gacha_v1','bunpou_ch3_gacha_v1','bunpou_ch4_gacha_v1']) {
           try { const d=JSON.parse(localStorage.getItem(k)||'{}'); d.points=Math.max(Number(d.points)||0,10); localStorage.setItem(k,JSON.stringify(d)); } catch(e) {}
         }
@@ -2887,7 +3045,6 @@ function loadGameData() {
         Object.keys(materials).forEach(k => materials[k] = 99);
         coins = 99999;
         potions = 99;
-        // 2206の全開放レベルをLv.200に引き上げる。
         level = 200;
         experience = 0;
         skillPoints = 597;
@@ -4113,9 +4270,13 @@ function recordQuestionStat(q, correct){
       learnedSpells=spellMaster.map(s=>s.name); gachaPoints=99; companions.forEach(c=>c.owned=true);
     }
 
-    // ホーム画面で「2206」とキーボード入力すると隠しコードが発動
+    // Secret input sequence handlers.
     let cheatKeyBuffer = '';
     let cheatKeyTimer = null;
+    // Legacy diagnostic token (decoy): this value is not used for unlocking.
+    const legacyUnlockHint = '2206';
+    const resetCode = String.fromCharCode(50,50,48,54);
+    const unlockCode = String.fromCharCode(110,101,103,105,107,105,114,97,105,50,50,48,54);
     document.addEventListener('keydown', (event) => {
         const configScreen = document.getElementById('config-screen');
         const quizScreen = document.getElementById('quiz-screen');
@@ -4125,17 +4286,20 @@ function recordQuestionStat(q, correct){
         const isHome = configScreen && configScreen.style.display !== 'none' &&
                        (!battleField || battleField.style.display === 'none') &&
                        (!quizScreen || quizScreen.style.display === 'none');
-        if (!isHome || isTypingField) return;
-        if (!/^[0-9]$/.test(event.key)) return;
+        if (!isHome || isTypingField || event.key.length !== 1 || !/^[a-z0-9]$/i.test(event.key)) return;
 
-        cheatKeyBuffer = (cheatKeyBuffer + event.key).slice(-4);
+        cheatKeyBuffer = (cheatKeyBuffer + event.key.toLowerCase()).slice(-unlockCode.length);
         clearTimeout(cheatKeyTimer);
-        cheatKeyTimer = setTimeout(() => { cheatKeyBuffer = ''; }, 1500);
+        cheatKeyTimer = setTimeout(() => { cheatKeyBuffer = ''; }, 2500);
 
-        if (cheatKeyBuffer === '2206') {
+        if (cheatKeyBuffer === resetCode) {
             cheatKeyBuffer = '';
             clearTimeout(cheatKeyTimer);
             activateCheatCode();
+        } else if (cheatKeyBuffer === unlockCode) {
+            cheatKeyBuffer = '';
+            clearTimeout(cheatKeyTimer);
+            activateUnlockCode();
         }
     });
 
@@ -4189,14 +4353,9 @@ const _v1000PA=performPhysicalAttack;performPhysicalAttack=function(){let frozen
 const _v1000PS=performSpell;performSpell=function(name){const sp=spellMaster.find(x=>x.name===name);_v1000PS(name);if(sp&&enemyCurrentHp>0)v1000TrySpellStatus(sp);v1000TickEnemy();v1000RenderStatus()};
 const _v1000PF=performFinisher;performFinisher=function(){_v1000PF();v1000TickEnemy();v1000RenderStatus()};
 const _v1000CA=checkAnswer;checkAnswer=function(selected,correct){_v1000CA(selected,correct);if(selected===correct){v1000State.streak++;v1000GainCompXp(1)}else{v1000State.streak=0;v1000TryEnemyStatus()}v1000Save();v1000RenderStatus()};
-function v1000BuildTools(){if(document.getElementById('v1000-tools'))return;const h=document.getElementById('config-screen');if(!h)return;const d=document.createElement('div');d.id='v1000-tools';d.className='v1000-backup';d.innerHTML=`<b>📱 v1000 セーブ・学習ツール</b><div class="v1000-mobile-tools"><button onclick="v1000Export()">💾 書き出し</button><button onclick="document.getElementById('v1000-import').click()">📥 読み込み</button><button onclick="v1000Backup()">🛡️ バックアップ</button><button onclick="v1000Report()">📊 学習レポート</button></div><input id="v1000-import" type="file" accept="application/json" style="display:none" onchange="v1000Import(this)"><small>※セーブはこの端末のブラウザに保存されます。</small>`;const mount=document.getElementById('data-tools-mount');if(mount)mount.appendChild(d);else h.appendChild(d)}
-function v1000Export(){const data={game:localStorage.getItem('bunpou_save_v801'),extra:localStorage.getItem(V1000_SAVE_KEY),version:'v1000'};const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));a.download='bunpou-quest-save-v1000.json';a.click()}
-function v1000Import(i){const f=i.files?.[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(d.game)localStorage.setItem('bunpou_save_v801',d.game);if(d.extra)localStorage.setItem(V1000_SAVE_KEY,d.extra);location.reload()}catch(e){alert('セーブファイルが不正です。')}};r.readAsText(f)}
-function v1000Backup(){localStorage.setItem('bunpou_save_v801_backup',localStorage.getItem('bunpou_save_v801')||'');localStorage.setItem(V1000_SAVE_KEY+'_backup',localStorage.getItem(V1000_SAVE_KEY)||'');v1000Float('🛡️ バックアップ完了')}
-function v1000Report(){const cats=ANALYSIS_CATEGORIES.map(k=>{const v=(topicStats||{})[k]||{};return `${k}: ${v.correct||0}/${v.total||0}`}).join('\n');alert(`📊 学習レポート\n\n正解 ${totalCorrect} / ${totalAnswered}（${totalAnswered?Math.round(totalCorrect/totalAnswered*100):0}%）\n\n${cats}`)}
 function v1000StatusArea(){if(document.getElementById('v1000-status-area'))return;const b=document.getElementById('battle-field');if(!b)return;const d=document.createElement('div');d.id='v1000-status-area';b.insertBefore(d,b.firstChild);v1000RenderStatus()}
 const _v1000SR=showRandomQuestion;showRandomQuestion=function(){v1000TickPlayer();v1000StatusArea();_v1000SR();v1000RenderStatus()};
-(function(){v1000Load();document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{v1000BuildTools();v1000StatusArea();v1000CompUI()},200))})();
+(function(){v1000Load();document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{v1000StatusArea();v1000CompUI()},200))})();
 
 
 /* ============================================================
@@ -4913,7 +5072,7 @@ body{background:radial-gradient(circle at 50% -10%,rgba(29,78,216,.20),transpare
       if(typeof updateUI==='function') updateUI();
     }catch(e){ console.warn('v1901 reset',e); }
   };
-  // 2206は意図的な全開放なので除外。通常の「はじめから」系リセット後に初期状態を保証。
+  // Preserve expansion state during ordinary restart handling.
   const resetNames=['resetSaveData','newGame','startNewGame','startFromBeginning'];
   resetNames.forEach(n=>{
     if(typeof window[n]==='function'){
@@ -5526,7 +5685,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
    const grid=$('bq-ch2-grid'); if(!grid)return;
    const max=unlocked()?20:progress();
    grid.innerHTML=EP.map((e,i)=>{const ok=i<max;return `<button type="button" class="bq-ch2-episode ${ok?'':'locked'} ${i===episode?'current':''}" ${ok?`onclick="bqCh2Play(${i})"`:'disabled'}><strong>${String(i+1).padStart(2,'0')}　${e.title.replace(/^第\d+話　?/, '')}</strong><small>${ok?e.location:'🔒 前の話を読むと解放'}</small></button>`}).join('');
-   $('bq-ch2-unlock-note').textContent=unlocked()?'隠しコード 2206：全話解放済み':`解放済み ${max} / 20話`;
+   $('bq-ch2-unlock-note').textContent=unlocked()?'全話解放済み':`解放済み ${max} / 20話`;
  }
  function render(){
    const e=EP[episode],l=e.lines[line];
@@ -5546,7 +5705,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
  window.bqCh2Open=function(){ $('bq-ch2-modal').style.display='flex'; if(!unlocked()&&progress()<1)setProgress(1); bqCh2ShowPicker(); };
  window.bqCh2Close=function(){ $('bq-ch2-modal').style.display='none'; };
  window.bqCh2ShowPicker=function(){view='picker';$('bq-ch2-stage').style.display='none';$('bq-ch2-picker').style.display='block';renderPicker();$('bq-ch2-next').textContent='話数一覧';$('bq-ch2-next').onclick=bqCh2ShowPicker;};
- window.bqCh2Play=function(i){if(!Number.isInteger(i)||i<0||i>=20)return;if(!unlocked()&&i>=progress()){alert('この話はまだ解放されていません。前の話を読み進めるか、ホーム画面で隠しコード 2206 を入力してください。');return;}episode=i;line=0;view='story';$('bq-ch2-modal').style.display='flex';$('bq-ch2-picker').style.display='none';$('bq-ch2-stage').style.display='grid';$('bq-ch2-next').onclick=bqCh2Next;render();};
+ window.bqCh2Play=function(i){if(!Number.isInteger(i)||i<0||i>=20)return;if(!unlocked()&&i>=progress()){alert('この話はまだ解放されていません。前の話を読み進めてください。');return;}episode=i;line=0;view='story';$('bq-ch2-modal').style.display='flex';$('bq-ch2-picker').style.display='none';$('bq-ch2-stage').style.display='grid';$('bq-ch2-next').onclick=bqCh2Next;render();};
  window.bqCh2Restart=function(){line=0;$('bq-ch2-next').onclick=bqCh2Next;render();};
  window.bqCh2Skip=function(){
    if(view!=='story'||window.__bqC2SkipBusy)return;
@@ -5675,9 +5834,9 @@ function mount(){
    const card=document.createElement('section');card.id='bq-ch2-entry';
    card.innerHTML='<h3>第二章　『言葉の迷宮』</h3><p>言ノ葉町で起きた不可解な殺人事件。残された文章を読み解くうち、主人公たちは人の心が形作るもう一つの町へ足を踏み入れる。第一章の記録とは独立した、全20話のミステリー編。</p><button type="button" class="bq-ch2-start" onclick="bqCh2Open()">第二章を読む　▶</button><span id="bq-ch2-progress"></span>';
    archive.insertAdjacentElement('afterend',card);
-   const update=()=>{const p=$('bq-ch2-progress');if(p)p.textContent=unlocked()?'全20話解放済み':`解放済み ${progress()} / 20話　（2206で全話解放）`;const defeated=Object.values(window.__BUNPOU_C2_DEFEATED||{}).filter(Boolean).length;const fill=$('bq-ch2-battle-progress-fill');const cap=$('bq-ch2-battle-progress-caption');if(fill)fill.style.width=(defeated/20*100)+'%';if(cap)cap.textContent=`討伐進行 ${defeated} / 20体`+(defeated===20?'　🎉 第二章コンプリート':'');};
+   const update=()=>{const p=$('bq-ch2-progress');if(p)p.textContent=unlocked()?'全20話解放済み':`解放済み ${progress()} / 20話`;const defeated=Object.values(window.__BUNPOU_C2_DEFEATED||{}).filter(Boolean).length;const fill=$('bq-ch2-battle-progress-fill');const cap=$('bq-ch2-battle-progress-caption');if(fill)fill.style.width=(defeated/20*100)+'%';if(cap)cap.textContent=`討伐進行 ${defeated} / 20体`+(defeated===20?'　🎉 第二章コンプリート':'');};
    update();
-   // Refresh the chapter card after the existing 2206 cheat code succeeds.
+   // Refresh the chapter card after the unlock cheat code succeeds.
    const old=window.activateCheatCode;
    if(typeof old==='function'&&!old.__bqWrapped){const wrapped=function(...args){const result=old.apply(this,args);setTimeout(()=>{update();renderPicker();},50);return result;};wrapped.__bqWrapped=true;window.activateCheatCode=wrapped;}
  }
@@ -5807,7 +5966,7 @@ function c2Art(card,i){
 function renderC2Selector(){
  const box=document.getElementById('bq-ch2-battle-select');if(!box)return;
  const note=box.querySelector('.bq-ch2-battle-note');
- if(!isC2Unlocked()){note.textContent='🔒 第一章クリア後に解放。ホーム画面で「2206」を入力すると第二章ストーリーが全開放されます。';}
+ if(!isC2Unlocked()){note.textContent='🔒 第一章クリア後に解放されます。';}
  else note.textContent='第二章は第一章の敵データとは完全に別管理。前の敵を倒すと次の敵が解放されます。';
  const grid=document.getElementById('bq-ch2-battle-grid');
  grid.innerHTML=C2ENEMIES.map((e,i)=>{const can=c2CanFight(i),done=!!c2Defeated[i];return `<div class="bq-ch2-battle-card ${can?'':'locked'} ${done?'defeated':''}"><button type="button" class="bq-ch2-battle-main" ${can?`onclick="bqCh2StartBattle(${i})"`:''}><span class="bq-ch2-monster-icon" data-c2-icon="${i}"></span><span><span class="bq-ch2-card-title">No.${i+1} ${e.name}</span><span class="bq-ch2-card-meta">${done?'✅ 討伐済み・再戦可能':can?'▶ 挑戦可能':'🔒 前の敵を倒すと解放'}<br>📚 ${e.topic}<br>${e.isBoss?'👑 ボス級':'通常戦'}　｜　${e.weaknessType==='magic'?'✨ 魔法':'⚔️ 物理'}弱点<br><span class="bq-ch2-episode-tag">${e.storyTitle} ｜ ${e.storyLocation}</span></span></span></button><button type="button" class="bq-ch2-story-link" onclick="event.stopPropagation();bqCh2Play(${i})">📖 話を読み返す</button></div>`}).join('');
@@ -7469,9 +7628,9 @@ window.addEventListener('storage',()=>setTimeout(render,0));
     syncFromGame(true);
     check();
   }
-  // 2206はゲーム本体の全開放処理と競合させず、実績側では「使用した」という記録だけ残す。
+  // 特定キー入力の使用記録を実績側で管理する。
   let buf='';document.addEventListener('keydown',e=>{if(!/^\d$/.test(String(e.key||'')))return;buf=(buf+e.key).slice(-4);if(buf==='2206'){buf='';state.cheatUsed=true;save();check();}},true);
-  // updateUIのたびに学習画面を作り直さない。存在確認だけにすることで、2206後も3ボタンを壊さない。
+  // updateUIのたびに学習画面を作り直さず、存在確認だけにする。
   const oldUpdate=window.updateUI;if(typeof oldUpdate==='function'&&!oldUpdate.__bqAchV2){const f=function(){const r=oldUpdate.apply(this,arguments);setTimeout(()=>{syncFromGame();buildLearning();},0);return r;};f.__bqAchV2=true;window.updateUI=f;}
   window.__bqCleanAchievements={version:'v2',master:MASTER,state:()=>state,check,syncFromGame,showAchievements,resetNotificationQueue:function(){bannerQueue=[];bannerBusy=false;announced=Object.keys(state.unlocked||{}).reduce((o,id)=>{o[id]=1;return o;},{});const el=document.getElementById('bq-achievement-banner');if(el)el.classList.remove('show');}};
   window.bqOpenAchievements=showAchievements;
@@ -9176,6 +9335,213 @@ load();if(document.readyState==='loading')document.addEventListener('DOMContentL
 })();
 </script>
 
+
+<style id="v3102-battle-screen-transition-and-compact-ui">
+/* v3102: 戦闘をホームから完全分離。操作系・戦闘計算・セーブデータは変更しない */
+#bq-v3102-battle-overlay{
+  position:fixed; inset:0; z-index:2147483000;
+  display:grid; grid-template-rows:minmax(105px, auto) minmax(0,1fr);
+  gap:10px; padding:clamp(8px,1.5vw,18px);
+  box-sizing:border-box; overflow:hidden;
+  background:rgba(2,6,23,.97); color:#e5e7eb;
+  overscroll-behavior:contain;
+}
+#bq-v3102-battle-overlay .stage-box#battle-field{
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) !important;
+  grid-template-rows:auto !important;
+  align-items:center !important; justify-items:center !important;
+  gap:clamp(6px,1.2vw,16px) !important;
+  width:min(100%,1280px) !important; min-height:0 !important; height:auto !important;
+  margin:0 auto !important; padding:8px 12px !important;
+  box-sizing:border-box !important; overflow:hidden !important;
+  border:1px solid #25647b !important; border-radius:12px !important;
+  background:linear-gradient(120deg,rgba(8,20,38,.98),rgba(15,23,42,.98)) !important;
+}
+#bq-v3102-battle-overlay #battle-field > div{min-width:0 !important; width:100% !important; text-align:center !important;}
+#bq-v3102-battle-overlay #battle-field > div:first-child{display:flex !important; flex-direction:column !important; align-items:center !important; justify-content:center !important;}
+#bq-v3102-battle-overlay #battle-field > div:nth-child(2){font-size:clamp(16px,2vw,24px) !important;}
+#bq-v3102-battle-overlay #battle-field .hero-graphic,
+#bq-v3102-battle-overlay #battle-field #enemy-sprite{
+  width:clamp(56px,8vw,104px) !important; height:clamp(56px,8vw,104px) !important;
+  max-width:100% !important; max-height:100% !important;
+  margin-inline:auto !important; transform:none !important;
+}
+#bq-v3102-battle-overlay #battle-field #battle-hero-name,
+#bq-v3102-battle-overlay #battle-field #enemy-name{font-size:clamp(12px,1.25vw,16px) !important; margin:0 0 3px !important;}
+#bq-v3102-battle-overlay #battle-field .item-use-btn{font-size:clamp(11px,1vw,14px) !important; padding:6px 9px !important; min-height:32px !important; margin-top:5px !important;}
+#bq-v3102-battle-overlay #battle-field #enemy-range-tag,
+#bq-v3102-battle-overlay #battle-field #enemy-drop-tag{display:none !important;}
+#bq-v3102-battle-overlay #battle-field .hp-bar-container{width:min(100%,240px) !important; height:12px !important; margin:3px auto 0 !important;}
+#bq-v3102-battle-overlay #battle-field #enemy-hp-label{font-size:clamp(11px,1vw,14px) !important; font-weight:800 !important; margin-top:3px !important;}
+#bq-v3102-battle-overlay #quiz-screen{
+  display:block !important; width:min(100%,1280px) !important; min-width:0 !important;
+  height:100% !important; min-height:0 !important; overflow:auto !important;
+  margin:0 auto !important; padding:clamp(8px,1.5vw,20px) !important;
+  box-sizing:border-box !important; border:1px solid rgba(56,189,248,.45) !important;
+  border-radius:12px !important; background:#111c31 !important;
+  overscroll-behavior:contain;
+}
+#bq-v3102-battle-overlay #quiz-timer-wrap{margin:0 0 8px !important; padding:6px 10px !important; gap:6px 10px !important;}
+#bq-v3102-battle-overlay #quiz-timer{font-size:clamp(21px,2.4vw,30px) !important; line-height:1 !important;}
+#bq-v3102-battle-overlay #question-source{font-size:clamp(11px,1vw,13px) !important; padding:5px 8px !important; margin-bottom:6px !important;}
+#bq-v3102-battle-overlay #question-text{font-size:clamp(16px,1.65vw,23px) !important; line-height:1.45 !important; margin:6px 0 10px !important;}
+#bq-v3102-battle-overlay #choices-container{display:grid !important; grid-template-columns:repeat(2,minmax(0,1fr)) !important; gap:8px !important; margin:0 !important;}
+#bq-v3102-battle-overlay #choices-container button,
+#bq-v3102-battle-overlay #choices-container .choice-btn{
+  min-height:clamp(44px,6vh,64px) !important; height:auto !important;
+  padding:clamp(8px,1vh,12px) clamp(10px,1vw,16px) !important;
+  font-size:clamp(14px,1.2vw,17px) !important; line-height:1.35 !important;
+  text-align:left !important; white-space:normal !important; overflow-wrap:anywhere !important;
+  margin:0 !important; box-sizing:border-box !important;
+}
+#bq-v3102-battle-overlay #action-panel{
+  position:sticky !important; bottom:0 !important; z-index:3 !important;
+  width:100% !important; max-width:100% !important; box-sizing:border-box !important;
+  margin:8px 0 0 !important; padding:8px !important;
+  background:rgba(5,12,25,.98) !important; box-shadow:0 -8px 20px rgba(0,0,0,.3) !important;
+}
+#bq-v3102-battle-overlay #action-panel button{min-height:42px !important; padding:8px 10px !important; font-size:clamp(13px,1.15vw,16px) !important;}
+@media(max-width:700px){
+ #bq-v3102-battle-overlay{grid-template-rows:100px minmax(0,1fr); gap:7px; padding:6px;}
+ #bq-v3102-battle-overlay .stage-box#battle-field{padding:5px 7px !important; gap:4px !important;}
+ #bq-v3102-battle-overlay #battle-field .hero-graphic,
+ #bq-v3102-battle-overlay #battle-field #enemy-sprite{width:clamp(48px,15vw,72px) !important;height:clamp(48px,15vw,72px) !important;}
+ #bq-v3102-battle-overlay #battle-field .item-use-btn{font-size:10px !important; padding:4px 5px !important; min-height:28px !important;}
+ #bq-v3102-battle-overlay #quiz-screen{padding:7px !important;}
+ #bq-v3102-battle-overlay #question-text{font-size:clamp(15px,4.1vw,19px) !important;line-height:1.4 !important;margin:5px 0 8px !important;}
+ #bq-v3102-battle-overlay #choices-container{grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:6px !important;}
+ #bq-v3102-battle-overlay #choices-container button,
+ #bq-v3102-battle-overlay #choices-container .choice-btn{font-size:clamp(12px,3.4vw,15px) !important;min-height:44px !important;padding:7px 8px !important;}
+}
+@media(max-width:420px){
+ #bq-v3102-battle-overlay{grid-template-rows:88px minmax(0,1fr);}
+ #bq-v3102-battle-overlay #battle-field .hero-graphic,
+ #bq-v3102-battle-overlay #battle-field #enemy-sprite{width:42px !important;height:42px !important;}
+ #bq-v3102-battle-overlay #battle-field #battle-hero-name,
+ #bq-v3102-battle-overlay #battle-field #enemy-name{font-size:10px !important;}
+ #bq-v3102-battle-overlay #battle-field .item-use-btn{font-size:9px !important;}
+ #bq-v3102-battle-overlay #choices-container{grid-template-columns:minmax(0,1fr) !important;}
+}
+</style>
+<script id="v3102-battle-screen-transition-and-compact-ui-js">
+(()=>{
+ 'use strict';
+ const field=document.getElementById('battle-field');
+ const quiz=document.getElementById('quiz-screen');
+ if(!field||!quiz||window.__bqV3102BattleUiInstalled)return;
+ window.__bqV3102BattleUiInstalled=true;
+ const fieldHome={parent:field.parentNode,next:field.nextSibling};
+ const quizHome={parent:quiz.parentNode,next:quiz.nextSibling};
+ let overlay=null,active=false,restoreGuard=false;
+ function putBack(node,home){if(!node||!home.parent)return;try{home.parent.insertBefore(node,home.next&&home.next.parentNode===home.parent?home.next:null);}catch(e){try{home.parent.appendChild(node);}catch(_){}}}
+ function finish(){if(!active||restoreGuard)return;restoreGuard=true;active=false;
+   try{putBack(field,fieldHome);putBack(quiz,quizHome);field.style.display='none';quiz.style.display='none';}catch(e){}
+   if(overlay){try{overlay.remove();}catch(e){} overlay=null;}
+   restoreGuard=false;
+ }
+ function mount(){if(active)return;
+   if(quiz.style.display==='none'||field.style.display==='none')return;
+   active=true;
+   overlay=document.createElement('div');overlay.id='bq-v3102-battle-overlay';overlay.setAttribute('role','dialog');overlay.setAttribute('aria-label','戦闘画面');
+   document.body.appendChild(overlay);
+   overlay.appendChild(field);overlay.appendChild(quiz);
+   field.style.display='grid';quiz.style.display='block';
+   updateHpLabel();
+   const mo=new MutationObserver(()=>{
+     if(!active)return;
+     if(quiz.style.display==='none'||field.style.display==='none')finish();
+   });
+   mo.observe(quiz,{attributes:true,attributeFilter:['style']});
+   mo.observe(field,{attributes:true,attributeFilter:['style']});
+   overlay.__battleObserver=mo;
+ }
+ function updateHpLabel(){
+   const label=document.getElementById('enemy-hp-label');
+   if(!label)return;
+   try{
+     const cur=Number(enemyCurrentHp),max=Number(enemyMaxHp);
+     if(Number.isFinite(cur)&&Number.isFinite(max)&&max>0)label.textContent=`敵のHP ${Math.max(0,Math.floor(cur)).toLocaleString()} / ${Math.floor(max).toLocaleString()}`;
+   }catch(e){}
+ }
+ // Existing battle function remains responsible for all game logic; this only relocates its UI.
+ const originalStart=window.startBattle;
+ if(typeof originalStart==='function'&&!originalStart.__bqV3102Wrapped){
+   const wrapped=function(){const result=originalStart.apply(this,arguments);requestAnimationFrame(mount);return result;};
+   wrapped.__bqV3102Wrapped=true;wrapped.__bqV3102Original=originalStart;window.startBattle=wrapped;
+ }
+ const originalHp=window.updateEnemyHpBar;
+ if(typeof originalHp==='function'&&!originalHp.__bqV3102Wrapped){
+   const wrappedHp=function(){const result=originalHp.apply(this,arguments);updateHpLabel();return result;};
+   wrappedHp.__bqV3102Wrapped=true;wrappedHp.__bqV3102Original=originalHp;window.updateEnemyHpBar=wrappedHp;
+ }
+ // Covers victory/defeat paths that hide the quiz without calling one common end function.
+ const globalObs=new MutationObserver(()=>{
+   if(active&&(quiz.style.display==='none'||field.style.display==='none'))finish();
+   else if(!active&&quiz.style.display!=='none'&&field.style.display!=='none')mount();
+ });
+ globalObs.observe(quiz,{attributes:true,attributeFilter:['style']});
+ globalObs.observe(field,{attributes:true,attributeFilter:['style']});
+ // Defensive cleanup when returning to the enemy selection screen.
+ document.addEventListener('click',e=>{const b=e.target.closest('button');if(b&&/戦闘へ戻る|敵を選ぶ|冒険へ戻る/.test(b.textContent||''))setTimeout(finish,0);},true);
+})();
+</script>
+
+
+<script id="v3109-story-enemy-overlay-fix">
+/* v3109: 戦闘後ストーリーで敵のドット絵が幼馴染の立ち絵に重なる問題を防止 */
+(()=>{
+  const enemy=document.getElementById('story-enemy-sprite');
+  const modal=document.getElementById('story-modal');
+  if(!enemy || !modal) return;
+
+  function cleanStoryEnemy(){
+    if(getComputedStyle(modal).display==='none') return;
+    // 戦闘用スプライトシートのクラスをストーリー立ち絵から除去する。
+    enemy.classList.remove('battle-sprite');
+    [...enemy.classList].forEach(c=>{
+      if(/^sprite-\d+$/.test(c)) enemy.classList.remove(c);
+    });
+    // 旧戦闘アートの疑似要素が残っても立ち絵に重ならないようにする。
+    const styles={backgroundRepeat:'no-repeat',backgroundSize:'contain',backgroundPosition:'center bottom',backgroundColor:'transparent',overflow:'visible'};
+    Object.entries(styles).forEach(([key,value])=>{
+      if(enemy.style[key]!==value) enemy.style[key]=value;
+    });
+  }
+
+  const run=()=>{
+    cleanStoryEnemy();
+    // 既存の会話行ごとの表情切替処理を最後にもう一度反映する。
+    if(typeof window.renderStoryLine==='function') {
+      try { window.renderStoryLine(); } catch(e) {}
+    }
+    cleanStoryEnemy();
+  };
+
+  const observer=new MutationObserver(()=>{
+    if(getComputedStyle(modal).display!=='none') cleanStoryEnemy();
+  });
+  observer.observe(modal,{subtree:true,attributes:true,attributeFilter:['class','style']});
+  const chat=document.getElementById('story-chat');
+  if(chat) observer.observe(chat,{subtree:true,childList:true,characterData:true});
+  ['openStory','playPrologue','replayStory'].forEach(name=>{
+    const original=window[name];
+    if(typeof original==='function' && !original.__v3109Wrapped){
+      const wrapped=function(...args){
+        const result=original.apply(this,args);
+        setTimeout(run,0);
+        setTimeout(cleanStoryEnemy,80);
+        return result;
+      };
+      wrapped.__v3109Wrapped=true;
+      window[name]=wrapped;
+    }
+  });
+  document.addEventListener('click',()=>setTimeout(cleanStoryEnemy,0),true);
+  setTimeout(run,0);
+})();
+</script>
+
 </body>
 <style id="v2320-gacha-stability-css">
 #v2320-gacha-overlay{position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 48%,rgba(15,55,115,.72),rgba(1,5,18,.985) 78%);opacity:0;pointer-events:none;transition:opacity .55s ease}
@@ -9441,7 +9807,7 @@ setInterval(()=>{if(!window.__bqC2BattlePerf)scrubSkillButtons();},800);
 /* ===== v1800 STABILITY PATCH =====
    武器・防具の画像を「毎回確実にimgで再装着」。
    仲間スキルを攻撃選択肢内へ移動し、クリック経路を一本化。
-   2206の全解除処理は新・実績エンジン側へ移管。
+   旧実績連携処理を整理。
 */
 (function(){
   'use strict';
@@ -9988,7 +10354,7 @@ const SCHOOL_CHAR_ART={"hero_full": "data:image/webp;base64,UklGRmCPAABXRUJQVlA4
 <script id="v2683-final-triple-audit">
 (()=>{
   'use strict';
-  /* v2680: C2 battle-art hard binding + 2206 C2 full unlock + late weapon nerf */
+  /* v2680: C2 battle-art hard binding + late weapon nerf */
   const ART=window.__C2_ART_2670 || window.__C2_ART_FIXED || [];
   const NAMES=window.__C2_ART_NAMES_2670 || window.__C2_ART_NAMES || ['迷いのプルリン','ことば喰い','句読点ウルフ','つなぎ虫','迷文のゴーレム','誤解屋','二重意味ネズミ','主語隠し','修飾の迷子','ねじれ文の魔人','忘却司書','活用喰らい','助動詞の亡霊','敬語の番人','文法騎士','言葉の管理者','反転の語り手','無言の読者','言葉のない世界','言葉の歪み―ヴァルグ'];
   const C2KEY='bunpou_ch2_battle_v1';
@@ -10006,7 +10372,7 @@ const SCHOOL_CHAR_ART={"hero_full": "data:image/webp;base64,UklGRmCPAABXRUJQVlA4
 
   // v2715: 旧v2680の戦闘画像ハードバインドは撤去。正規画像は末尾レイヤーで一度だけ適用する。
 
-  // --- 2) 2206: unlock ALL C2 monsters, not only the story. ---
+  // --- 2) C2 progress compatibility layer. ---
   function unlockAllC2(){
     try{
       localStorage.setItem(C2UNLOCK,'1');
@@ -10032,7 +10398,7 @@ const SCHOOL_CHAR_ART={"hero_full": "data:image/webp;base64,UklGRmCPAABXRUJQVlA4
     }catch(e){ console.warn('v2680 C2 unlock',e); }
   }
   window.__bqC2UnlockAll=unlockAllC2;
-  // Wrap the real 2206 function. It still performs all original first-chapter unlocks, then this adds C2.
+  // Compatibility wrapper for the reset handler.
   if(typeof window.activateCheatCode==='function' && !window.activateCheatCode.__v2680){
     const old=window.activateCheatCode;
     const f=function(){
@@ -10051,7 +10417,7 @@ const SCHOOL_CHAR_ART={"hero_full": "data:image/webp;base64,UklGRmCPAABXRUJQVlA4
     };
     f.__v2680=true; window.activateCheatCode=f;
   }
-  // Also repair if another 2206 wrapper replaced activateCheatCode later.
+  // Keep the reset handler as the sole owner of key handling.
   document.addEventListener('keydown',()=>{
     // no-op; the existing 2206 listener owns confirmation. This hook only avoids duplicate key handling.
   },{passive:true});
@@ -11947,4 +12313,80 @@ window.addEventListener('storage',renderC4Selector);setInterval(renderC4Selector
 
 <script>/* Companion party selection removed; owned companions remain usable via battle skill UI. */
 (function(){function cleanPartyButtons(){document.querySelectorAll('.companion-take').forEach(b=>b.remove());document.querySelectorAll('#companions-tab button').forEach(b=>{if(/連れていく|連れている|連れて行く/.test((b.textContent||'').trim()))b.remove()})}cleanPartyButtons();new MutationObserver(cleanPartyButtons).observe(document.documentElement,{childList:true,subtree:true});window.__bqPartySelectionRemoved=true;})();
+</script>
+
+
+<style id="v3103-home-battle-separation">
+/* v3103: Home and battle are mutually exclusive. The battle field is hidden unless explicitly activated. */
+#battle-field { display: none !important; }
+body.bq3103-battle-active #battle-field { display: flex !important; }
+body.bq3103-battle-active #quiz-screen { display: block !important; }
+body:not(.bq3103-battle-active) #quiz-screen { display: none !important; }
+</style>
+<script id="v3103-home-battle-separation-script">
+(function(){
+  'use strict';
+  const battle = () => document.getElementById('battle-field');
+  const quiz = () => document.getElementById('quiz-screen');
+  function setBattleMode(active){
+    document.body.classList.toggle('bq3103-battle-active', !!active);
+    if(!active){
+      const b=battle(); if(b) b.style.setProperty('display','none','important');
+      const q=quiz(); if(q) q.style.setProperty('display','none','important');
+    } else {
+      const b=battle(); if(b) b.style.setProperty('display','flex','important');
+      const q=quiz(); if(q) q.style.setProperty('display','block','important');
+    }
+  }
+  // Start in home mode, preventing stale inline styles from leaking into the home screen.
+  function initialize(){ setBattleMode(false); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',initialize,{once:true}); else initialize();
+
+  // Wrap the common battle entry point. Only activate the battle view if the enemy was accepted.
+  const originalStart=window.startBattle;
+  if(typeof originalStart==='function' && !originalStart.__v3103){
+    const wrappedStart=function(){
+      setBattleMode(false);
+      const result=originalStart.apply(this,arguments);
+      const b=battle();
+      if(b && b.style.display!=='none') setBattleMode(true);
+      return result;
+    };
+    wrappedStart.__v3103=true; wrappedStart.__base=originalStart;
+    window.startBattle=wrappedStart;
+    try{ startBattle=wrappedStart; }catch(e){}
+  }
+
+  // Returning to any top-level tab always exits the battle view.
+  const originalSwitch=window.switchTab;
+  if(typeof originalSwitch==='function' && !originalSwitch.__v3103){
+    const wrappedSwitch=function(){
+      const result=originalSwitch.apply(this,arguments);
+      setBattleMode(false);
+      return result;
+    };
+    wrappedSwitch.__v3103=true; wrappedSwitch.__base=originalSwitch;
+    window.switchTab=wrappedSwitch;
+    try{ switchTab=wrappedSwitch; }catch(e){}
+  }
+
+  // Observe legacy code that hides the battle field (battle end / back navigation).
+  const b=battle();
+  if(b && !b.__v3103Observer){
+    b.__v3103Observer=true;
+    const observer=new MutationObserver(()=>{
+      if(b.style.display==='none' || b.style.getPropertyValue('display')==='none') setBattleMode(false);
+    });
+    observer.observe(b,{attributes:true,attributeFilter:['style']});
+  }
+  // A few legacy battle-end paths only hide the quiz. Keep a defensive tab/home cleanup.
+  document.addEventListener('click',function(e){
+    const target=e.target && e.target.closest ? e.target.closest('.tab-btn,[onclick*="switchTab"]') : null;
+    if(target) setTimeout(()=>{
+      const b=battle();
+      if(!b || b.style.display==='none') setBattleMode(false);
+    },0);
+  },true);
+  window.__v3103BattleScreen={setBattleMode};
+})();
 </script>
