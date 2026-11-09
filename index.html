@@ -7364,7 +7364,7 @@ window.addEventListener('storage',()=>setTimeout(render,0));
     N('a027','連戦の達人','⚔️','10回以上の戦闘をこなす',s=>s.battles>=10),
     N('a028','百戦錬磨','⚔️','50回以上の戦闘をこなす',s=>s.battles>=50),
     N('a029','戦場の常連','⚔️','100回以上の戦闘をこなす',s=>s.battles>=100),
-    N('a030','完全制覇','🌌','敵・魔法・仲間をすべて集める',s=>s.defeated>=20&&s.allMagic&&s.companions>=20),
+    N('a030','完全制覇','🌌','敵20体・全魔法・仲間40体をすべて集める',s=>s.defeated>=20&&s.allMagic&&s.companions>=40),
 
     N('a031','コンボ職人','🔥','5コンボ以上を達成する',s=>s.maxCombo>=5),
     N('a032','十連撃','⚡','10コンボ以上を達成する',s=>s.maxCombo>=10),
@@ -7390,14 +7390,14 @@ window.addEventListener('storage',()=>setTimeout(render,0));
 
     N('a051','仲間が増えた','🎴','仲間を3体集める',s=>s.companions>=3),
     N('a052','仲間コレクター','🎴','仲間を10体集める',s=>s.companions>=10),
-    N('a053','仲間全員集合','👥','20体すべての仲間を集める',s=>s.companions>=20),
+    N('a053','仲間全員集合','👥','全4章・40体すべての仲間を集める',s=>s.companions>=40),
     N('a054','初ガチャ','🎁','仲間ガチャを初めて引く',s=>s.gacha>=1),
     N('a055','ガチャ十連','🎁','仲間ガチャを10回引く',s=>s.gacha>=10),
     N('a056','ガチャ三十連','🎁','仲間ガチャを30回引く',s=>s.gacha>=30),
     N('a057','ガチャ職人','🎲','仲間ガチャを50回引く',s=>s.gacha>=50),
     N('a058','仲間の力','💪','仲間の戦闘スキルを初めて使う',s=>s.companionSkill>=1),
     N('a059','仲間とともに','🤝','仲間の戦闘スキルを10回使う',s=>s.companionSkill>=10),
-    N('a060','最強パーティー','👑','仲間20体＋全魔法を揃える',s=>s.companions>=20&&s.allMagic),
+    N('a060','最強パーティー','👑','全4章の仲間40体＋全魔法を揃える',s=>s.companions>=40&&s.allMagic),
 
     N('a061','文法探究者','🔎','3種類以上の文法分野で正解する',s=>s.categories>=3),
     N('a062','分野マスター','📚','5種類以上の文法分野で正解する',s=>s.categories>=5),
@@ -7440,8 +7440,8 @@ window.addEventListener('storage',()=>setTimeout(render,0));
     N('a096','レベル80','⬆️','レベル80に到達する',s=>s.level>=80),
     N('a097','レベル99','👑','レベル99に到達する',s=>s.level>=99),
     N('a098','装備の極み','⚔️','最終武器と最終防具を入手する',s=>s.finalEquipment),
-    N('a099','やりこみの証','🏆','正解1000問・敵20体・仲間20体を達成する',s=>s.correct>=1000&&s.defeated>=20&&s.companions>=20),
-    N('a100','文法クエスト完全制覇','🌟','ラスボス撃破・全魔法・全仲間・レベル99を達成する',s=>s.finalBoss&&s.allMagic&&s.companions>=20&&s.level>=99)
+    N('a099','やりこみの証','🏆','正解1000問・敵20体・仲間40体を達成する',s=>s.correct>=1000&&s.defeated>=20&&s.companions>=40),
+    N('a100','文法クエスト完全制覇','🌟','ラスボス撃破・全魔法・全4章の仲間40体・レベル99を達成する',s=>s.finalBoss&&s.allMagic&&s.companions>=40&&s.level>=99)
   ];
   let state={unlocked:{},correct:0,answered:0,defeated:0,boss:0,enemy0:false,enemy18:false,enemy19Reached:false,finalBoss:false,battles:0,maxCombo:0,maxBattleCombo:0,magic:0,allMagic:false,fireMagic:false,iceMagic:false,maxMp:0,finisher:0,companions:0,gacha:0,companionSkill:0,categories:0,catCorrect:{},trainingCorrect:0,wrong:0,weaknessOpen:0,days:0,story:0,chapter2:false,chapter2Battle:false,chapter2Defeated:0,chapter2Final:false,chapter2Story:0,cheatUsed:false,level:1,accuracy:0,finalEquipment:false,trainingWrongCorrect:0,escapes:0,learningDates:[]};
   let announced={};
@@ -7514,6 +7514,34 @@ window.addEventListener('storage',()=>setTimeout(render,0));
     save();
   }
   function num(v){return Number(v)||0;}
+  // 仲間は各章で別管理。第1章〜第4章の図鑑を章ごとに数え、合計40体で判定する。
+  function countOwnedCompanionsAcrossChapters(){
+    const countRoster=arr=>Array.isArray(arr)?new Set(arr.filter(c=>c&&c.owned).map(c=>String(c.id))).size:0;
+    const readStored=(key,field)=>{
+      try{
+        const d=JSON.parse(localStorage.getItem(key)||'null');
+        if(!d)return 0;
+        const a=d[field];
+        if(!Array.isArray(a))return 0;
+        if(a.length&&typeof a[0]==='object')return countRoster(a);
+        return new Set(a.map(String)).size;
+      }catch(e){return 0;}
+    };
+    let total=0;
+    const mainLive=(typeof companions!=='undefined'&&Array.isArray(companions))?companions:null;
+    total+=Math.max(countRoster(mainLive),readStored('bunpou_save_v801','companions'));
+    const chapters=[
+      {live:window.__bqCh2GachaState?.roster,key:'bunpou_ch2_gacha_state_v1'},
+      {live:window.__bqCh3GachaState?.roster,key:'bunpou_ch3_gacha_v1'},
+      {live:window.__bqCh4GachaState?.roster,key:'bunpou_ch4_gacha_v1'}
+    ];
+    chapters.forEach(ch=>{
+      let stored=0;
+      try{const d=JSON.parse(localStorage.getItem(ch.key)||'null');if(d&&Array.isArray(d.owned))stored=new Set(d.owned.map(String)).size;}catch(e){}
+      total+=Math.max(countRoster(ch.live),stored);
+    });
+    return total;
+  }
   function syncFromGame(silent=false){
     try{
       if(typeof totalCorrect!=='undefined') state.correct=Math.max(state.correct,num(totalCorrect));
@@ -7540,6 +7568,10 @@ window.addEventListener('storage',()=>setTimeout(render,0));
       if(typeof pendingRewardData!=='undefined'&&pendingRewardData)state.battles=Math.max(state.battles,state.defeated);
       const raw=localStorage.getItem('bunpou_save_v801');if(raw){const d=JSON.parse(raw);state.correct=Math.max(state.correct,num(d.totalCorrect));state.answered=Math.max(state.answered,num(d.totalAnswered));state.level=Math.max(state.level,num(d.level));state.battles=Math.max(state.battles,num(d.dailyGoals?.battles));if(Array.isArray(d.gachaHistory))state.gacha=Math.max(state.gacha,d.gachaHistory.length);state.accuracy=state.answered?Math.round(Math.min(100,state.correct/state.answered*100)):0;state.companions=Math.max(state.companions,Array.isArray(d.companions)?d.companions.filter(c=>c&&c.owned).length:0);state.categories=Math.max(state.categories,Object.keys(d.topicStats||{}).filter(k=>num(d.topicStats[k]?.total)>0).length);}
       try{const v=JSON.parse(localStorage.getItem('bunpou_save_v1100_complete')||'null');if(v){state.trainingCorrect=Math.max(state.trainingCorrect,num(v.trainingCorrect));}}catch(e){}
+      // 旧実績v2の「仲間20体」は旧構成の数え方。現在の全4章40体を実数で再集計する。
+      state.companions=countOwnedCompanionsAcrossChapters();
+      // 旧条件（20体）で誤って解除済みになっていた全員集合・複合実績は、40体達成まで再判定する。
+      if(state.companions<40){['a030','a053','a060','a099','a100'].forEach(id=>{delete state.unlocked[id];delete announced[id];});}
     }catch(e){}
     check(!silent);
   }
