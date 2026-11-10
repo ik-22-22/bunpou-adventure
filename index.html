@@ -4197,12 +4197,12 @@ function recordQuestionStat(q, correct){
     }
 
     function rollRarity(){
-        // 全章共通の超低確率枠：UR 0.00001%、SSR 0.00001%。
-        // 残りはSR 10%、R 89.99998%。乱数は0〜1なので各0.0000001。
+        // 第一章：UR・SSRは各0.00001%、SRは0.01%、残りはR。
+        // SRの確率0.0001を、UR・SSRの累積分の後ろに設定する。
         const r=Math.random();
         if(r < 0.0000001) return "UR";
         if(r < 0.0000002) return "SSR";
-        if(r < 0.1000002) return "SR";
+        if(r < 0.0001002) return "SR";
         return "R";
     }
     function drawCompanion(){
